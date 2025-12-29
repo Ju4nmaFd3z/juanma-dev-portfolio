@@ -78,12 +78,12 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         </div>
       ) : (
         <div className="relative group flex items-center">
-          <div className="absolute right-full mr-4 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 pointer-events-none transition-all duration-500">
+          <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 pointer-events-none transition-all duration-500">
             <div className="bg-amber-500/[0.08] backdrop-blur-xl border border-amber-500/30 px-4 py-2 rounded-xl whitespace-nowrap shadow-2xl">
               <span className="text-[10px] font-black uppercase tracking-[0.15em] text-amber-200/90">{t.tooltip}</span>
             </div>
           </div>
-          <button onClick={() => setIsOpen(true)} className="relative w-16 h-16 bg-white/5 text-white/30 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 hover:rounded-[2rem] border border-white/10">
+          <button onClick={() => setIsOpen(true)} className="relative w-16 h-16 bg-white/12 text-white/30 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 hover:rounded-[2rem] border border-white/10">
             <i className="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
             <span className="absolute -top-1 -right-1 flex h-4 w-4">
               <span className="relative inline-flex rounded-full h-4 w-4 bg-amber-500 border-2 border-[#050505]"></span>

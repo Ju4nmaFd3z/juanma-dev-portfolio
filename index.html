@@ -38,9 +38,16 @@
         }
       }
 
+      html {
+        overflow-x: hidden;
+      }
+
       body {
         overflow-x: hidden;
         -webkit-font-smoothing: antialiased;
+        touch-action: pan-y;
+        overscroll-behavior-x: none;
+        -webkit-overflow-scrolling: touch;
       }
       
       .gradient-text {
