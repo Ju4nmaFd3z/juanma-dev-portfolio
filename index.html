@@ -29,7 +29,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      @media (min-width: 768px) {
+      @media (min-width: 1280px) {
         body, a, button, input, textarea, .cursor-pointer {
           cursor: none !important;
         }
@@ -140,7 +140,7 @@
     <script type="module" src="/index.tsx"></script>
     <script>
       const cursor = document.createElement('div');
-      cursor.className = 'custom-cursor hidden md:block';
+      cursor.className = 'custom-cursor hidden xl:block';
       document.body.appendChild(cursor);
 
       document.addEventListener('mousemove', (e) => {
