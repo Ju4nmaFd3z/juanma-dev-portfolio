@@ -92,7 +92,7 @@ const App: React.FC = () => {
           <About lang={lang} />
         </section>
         
-        <section id="projects" className="pt-6 pb-10 md:pt-8 lg:py-24 border-t border-black/5 dark:border-white/5">
+        <section id="projects" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
           <Projects lang={lang} />
         </section>
         
