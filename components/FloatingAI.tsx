@@ -118,46 +118,47 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      // Intentamos obtener la clave de varias fuentes posibles
-      const apiKey = process.env.API_KEY || (import.meta as any).env?.VITE_API_KEY || (import.meta as any).env?.API_KEY;
+      // Acceso directo a la variable inyectada.
+      const apiKey = process.env.API_KEY;
 
       if (!apiKey) {
-        // En desarrollo local/AI Studio, puede que dependamos de la selección del usuario
+        // Verificación para entorno de desarrollo/AI Studio
         const hasKey = (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') 
           ? await window.aistudio.hasSelectedApiKey() 
           : false;
           
         if (!hasKey) {
-          throw new Error("MISSING_ENV_KEY");
+          throw new Error("MISSING_KEY");
         }
       }
 
-      const ai = new GoogleGenAI({ apiKey: apiKey || process.env.API_KEY! });
-      const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recientes: ${githubData.recent}.` : ''}`;
+      // Inicialización instanciada justo antes del uso para asegurar la clave más reciente
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB ACTUALES DE JUANMA: Bio: ${githubData.bio}. Repos públicos: ${githubData.public_repos}. Repos actualizados recientemente: ${githubData.recent}.` : ''}`;
 
-      const chat = ai.chats.create({
+      const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
+        contents: userMsg,
         config: {
           systemInstruction: dynamicInstruction,
           tools: [{ googleSearch: {} }]
         }
       });
 
-      const result = await chat.sendMessage({ message: userMsg });
-      const botResponse = result.text || (lang === 'es' ? "No he podido procesar eso ahora mismo." : "I couldn't process that right now.");
+      const botResponse = response.text || (lang === 'es' ? "No he podido obtener una respuesta clara. ¿Puedes intentarlo de nuevo?" : "I couldn't get a clear response. Can you try again?");
       
       setMessages(prev => [...prev, {role: 'bot', text: botResponse}]);
     } catch (error: any) {
       console.error("AI Assistant Error:", error);
       
       let friendlyText = lang === 'es' 
-        ? "Lo siento, ha ocurrido un error al conectar con el asistente." 
-        : "Sorry, an error occurred while connecting to the assistant.";
+        ? "Ha ocurrido un error inesperado al conectar con el servidor de IA." 
+        : "An unexpected error occurred while connecting to the AI server.";
         
-      if (error.message === "MISSING_ENV_KEY" || error.message.includes("API key") || error.status === 403) {
+      if (error.message === "MISSING_KEY" || error.status === 403 || error.message.includes("API key")) {
         friendlyText = lang === 'es'
-          ? "Falta la clave API. Si has desplegado en Vercel, asegúrate de añadir 'API_KEY' en las variables de entorno del proyecto."
-          : "API Key missing. If deployed on Vercel, ensure you added 'API_KEY' in the project's Environment Variables.";
+          ? "Error de autenticación. Verifica que 'API_KEY' esté correctamente configurada en las variables de entorno de Vercel y que el despliegue esté actualizado."
+          : "Authentication error. Verify that 'API_KEY' is correctly configured in Vercel environment variables and the deployment is up to date.";
       }
       
       setMessages(prev => [...prev, {
