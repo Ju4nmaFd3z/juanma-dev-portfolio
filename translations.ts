@@ -126,22 +126,16 @@ export const translations = {
     },
     ai: {
       label: 'Asistente Virtual',
-      status: 'En línea',
-      placeholder: 'Pregunta sobre Juanma...',
+      status: 'Fuera de servicio',
+      placeholder: 'Temporalmente deshabilitado...',
       prompt: 'Potenciado por Gemini AI',
-      tooltip: '¿Alguna duda? Pregúntame',
-      errorTitle: 'Asistente fuera de servicio',
-      errorDesc: 'Parece que hay un problema con la configuración de la IA. Por favor, revisa la API Key en el panel de control o inténtalo más tarde.',
+      tooltip: 'Asistente en mantenimiento',
+      errorTitle: 'Mantenimiento Técnico',
+      errorDesc: 'Estamos configurando los servicios de búsqueda inteligente. El asistente volverá a estar operativo pronto.',
       greetings: [
-        "¡Hola! Soy el asistente virtual de Juanma. Estoy aquí para ayudarte a conocer mejor su perfil profesional. ¿Qué te gustaría saber sobre él?",
-        "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos, habilidades o formación. ¿Hablamos?",
-        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas sobre su trabajo. ¿En qué puedo ayudarte hoy?"
+        "¡Hola! Actualmente el asistente se encuentra en mantenimiento técnico para mejorar su integración con los servicios de búsqueda. Disculpa las molestias."
       ],
-      system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
-      REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él. Usa expresiones como "Juanma es...", "Él domina...", "El autor de este portfolio...". Tu identidad es la de un asistente externo.
-      CONTEXTO DINÁMICO: Tienes acceso a la herramienta googleSearch para buscar información actualizada en su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
-      PERFIL PRINCIPAL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
-      Si no sabes algo, utiliza la búsqueda de Google para encontrar información reciente sobre "Juan Manuel Fernández Rodríguez DAM SMR". Responde de forma concisa, profesional y siempre en tercera persona.`
+      system: ``
     }
   },
   en: {
@@ -270,22 +264,16 @@ export const translations = {
     },
     ai: {
       label: 'Virtual Assistant',
-      status: 'Online',
-      placeholder: 'Ask about Juanma...',
+      status: 'Out of service',
+      placeholder: 'Temporarily disabled...',
       prompt: 'Powered by Gemini AI',
-      tooltip: 'Any questions? Ask me',
-      errorTitle: 'Assistant offline',
-      errorDesc: 'There seems to be an issue with the AI configuration. Please check the API Key or try again later.',
+      tooltip: 'Assistant under maintenance',
+      errorTitle: 'Technical Maintenance',
+      errorDesc: 'We are configuring the smart search services. The assistant will be back online soon.',
       greetings: [
-        "Hi! I'm Juanma's virtual assistant. I'm here to help you explore his professional profile. What would you like to know about him?",
-        "Hello! As Juanma's assistant, I can provide information about his projects, skills, or education. Shall we talk?",
-        "Hi there! I have access to Juanma's career path to answer any questions you might have. How can I assist you today?"
+        "Hi! The assistant is currently under technical maintenance to improve its integration with search services. Sorry for the inconvenience."
       ],
-      system: `You are Juan Manuel Fernández Rodríguez's Virtual Assistant. Always respond in ENGLISH.
-      CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him. Use expressions like "Juanma is...", "He masters...", "The author of this portfolio...". Your identity is that of an external assistant.
-      DYNAMIC CONTEXT: You have access to googleSearch to find updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
-      CORE PROFILE: Software student, IT tech (9.2 GPA), CCNA certified. 
-      If you don't know something, use Google Search to find recent info about "Juan Manuel Fernández Rodríguez DAM SMR". Be concise, professional, and always speak in the third person.`
+      system: ``
     }
   }
 };
