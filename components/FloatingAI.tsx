@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
@@ -57,7 +58,7 @@ function processInlineStyles(text: string) {
 const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, sources?: any[], needsKey?: boolean}[]>([]);
+  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, needsKey?: boolean}[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [githubData, setGithubData] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -96,10 +97,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   }, [messages, isTyping]);
 
   const handleOpenKeySelector = async () => {
-    if (!window.aistudio) {
-      console.warn("AI Studio bridge not available in this environment.");
-      return;
-    }
+    if (!window.aistudio) return;
     try {
       await window.aistudio.openSelectKey();
       setMessages(prev => [...prev.filter(m => m.role !== 'error'), {
@@ -120,18 +118,21 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      // Intentamos obtener la clave de varias fuentes para máxima compatibilidad
-      const apiKey = process.env.API_KEY || (import.meta as any).env?.VITE_API_KEY;
+      // Intentamos obtener la clave de varias fuentes posibles
+      const apiKey = process.env.API_KEY || (import.meta as any).env?.VITE_API_KEY || (import.meta as any).env?.API_KEY;
 
       if (!apiKey) {
-        // Solo llamamos a hasSelectedApiKey si el objeto existe
-        const hasKey = window.aistudio ? await window.aistudio.hasSelectedApiKey() : false;
+        // En desarrollo local/AI Studio, puede que dependamos de la selección del usuario
+        const hasKey = (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') 
+          ? await window.aistudio.hasSelectedApiKey() 
+          : false;
+          
         if (!hasKey) {
           throw new Error("MISSING_ENV_KEY");
         }
       }
 
-      const ai = new GoogleGenAI({ apiKey: apiKey });
+      const ai = new GoogleGenAI({ apiKey: apiKey || process.env.API_KEY! });
       const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recientes: ${githubData.recent}.` : ''}`;
 
       const chat = ai.chats.create({
@@ -144,18 +145,25 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
 
       const result = await chat.sendMessage({ message: userMsg });
       const botResponse = result.text || (lang === 'es' ? "No he podido procesar eso ahora mismo." : "I couldn't process that right now.");
-      const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
       
-      setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
+      setMessages(prev => [...prev, {role: 'bot', text: botResponse}]);
     } catch (error: any) {
-      console.error("AI Assistant Error:", error.message);
+      console.error("AI Assistant Error:", error);
       
-      const isKeyError = error.message === "MISSING_ENV_KEY" || error.message.includes("API key");
+      let friendlyText = lang === 'es' 
+        ? "Lo siento, ha ocurrido un error al conectar con el asistente." 
+        : "Sorry, an error occurred while connecting to the assistant.";
+        
+      if (error.message === "MISSING_ENV_KEY" || error.message.includes("API key") || error.status === 403) {
+        friendlyText = lang === 'es'
+          ? "Falta la clave API. Si has desplegado en Vercel, asegúrate de añadir 'API_KEY' en las variables de entorno del proyecto."
+          : "API Key missing. If deployed on Vercel, ensure you added 'API_KEY' in the project's Environment Variables.";
+      }
       
       setMessages(prev => [...prev, {
         role: 'error', 
-        text: isKeyError ? t.errorDesc : (lang === 'es' ? "Lo siento, ha ocurrido un error inesperado al conectar con mi cerebro digital." : "Sorry, an unexpected error occurred while connecting to my digital brain."),
-        needsKey: isKeyError && !!window.aistudio
+        text: friendlyText,
+        needsKey: !!window.aistudio
       }]);
     } finally {
       setIsTyping(false);
@@ -178,7 +186,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end md:max-lg:portrait:hidden md:portrait:hidden lg:portrait:hidden">
+    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end">
       {isOpen ? (
         <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[600px] max-h-[85vh] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
@@ -225,15 +233,6 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                   ) : (
                     <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'}`}>
                       {m.role === 'bot' ? <MarkdownLite text={m.text} /> : m.text}
-                    </div>
-                  )}
-                  {m.sources && m.sources.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {m.sources.map((chunk, ci) => chunk.web && (
-                        <a key={ci} href={chunk.web.uri} target="_blank" rel="noopener noreferrer" className="text-[9px] bg-white/5 border border-white/10 px-2 py-1 rounded-full text-neutral-400 hover:text-blue-400 transition-all flex items-center gap-1">
-                          <i className="fa-solid fa-link"></i> {chunk.web.title || 'Source'}
-                        </a>
-                      ))}
                     </div>
                   )}
                 </div>

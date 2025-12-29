@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
@@ -49,9 +50,9 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
   };
 
   return (
-    <section className={`min-h-[70vh] md:min-h-[60vh] lg:min-h-[85vh] flex flex-col justify-center relative pt-28 md:pt-24 md:portrait:pt-40 lg:pt-48 overflow-visible transition-all duration-500 ${showCVOptions ? 'pb-60 md:pb-80 lg:pb-80 xl:pb-32' : 'pb-12 md:pb-12 lg:pb-12 xl:pb-32'}`}>
-      {/* Elementos decorativos de fondo (Marca de agua) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden xl:flex flex-col items-end select-none pointer-events-none z-0">
+    <section className={`min-h-[70vh] md:min-h-[60vh] lg:min-h-[85vh] flex flex-col justify-center relative pt-28 md:pt-24 md:portrait:pt-40 lg:pt-48 overflow-visible transition-all duration-500 z-[50] ${showCVOptions ? 'pb-44' : 'pb-12'}`}>
+      {/* Elementos decorativos de fondo (Marca de agua) - Ajustado top-32 para evitar el header */}
+      <div className="absolute right-0 top-32 h-[75vh] hidden xl:flex flex-col justify-center items-end select-none pointer-events-none z-0">
         <span className="font-display font-black text-[400px] leading-[0.7] tracking-tighter text-black/5 dark:text-white/5">
           SMR
         </span>
@@ -100,35 +101,35 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             <div className="relative flex-1 sm:flex-initial" ref={cvRef}>
               <button 
                 onClick={() => setShowCVOptions(!showCVOptions)}
-                className="w-full sm:w-auto group px-8 py-5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
+                className={`w-full sm:w-auto group px-8 py-5 bg-black/5 dark:bg-white/5 border text-neutral-900 dark:text-white text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${showCVOptions ? 'border-blue-500/30 bg-black/10 dark:bg-white/10' : 'border-black/10 dark:border-white/10'}`}
               >
                 <span className="whitespace-nowrap">{t.cv}</span>
                 <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${showCVOptions ? 'rotate-180' : ''}`}></i>
               </button>
               
               {showCVOptions && (
-                <div className="absolute top-full mt-3 left-0 w-60 glass-card rounded-[2rem] border border-black/10 dark:border-white/20 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-4 duration-500 ease-out origin-top-left z-[50]">
-                  <div className="p-3 space-y-2">
-                    <div className="px-4 py-2 text-[8px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.3em]">Idioma / Language</div>
+                <div className="absolute top-full mt-3 left-0 w-60 bg-white dark:bg-neutral-950 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-left z-[100]">
+                  <div className="p-2 space-y-1">
+                    <div className="px-3 py-2 text-[8px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.3em]">Idioma / Language</div>
                     <button 
                       onClick={() => downloadCV('es')}
-                      className="w-full group flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 transition-all duration-300"
+                      className="w-full group flex items-center justify-between px-4 py-3 rounded-xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 transition-all duration-300"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-sm shadow-inner">🇪🇸</div>
-                        <span className="text-[11px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">Español</span>
+                        <span className="text-sm">🇪🇸</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">Español</span>
                       </div>
-                      <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"></i>
+                      <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-30 group-hover:opacity-100 transition-all"></i>
                     </button>
                     <button 
                       onClick={() => downloadCV('en')}
-                      className="w-full group flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 border border-transparent hover:border-blue-500/20 transition-all duration-300"
+                      className="w-full group flex items-center justify-between px-4 py-3 rounded-xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 transition-all duration-300"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-black/5 dark:bg-white/5 flex items-center justify-center text-sm shadow-inner">🇬🇧</div>
-                        <span className="text-[11px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">English</span>
+                        <span className="text-sm">🇬🇧</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">English</span>
                       </div>
-                      <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300"></i>
+                      <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-30 group-hover:opacity-100 transition-all"></i>
                     </button>
                   </div>
                 </div>

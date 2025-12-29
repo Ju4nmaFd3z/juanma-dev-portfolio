@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { translations } from '../translations';
 
@@ -41,7 +40,8 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
       {/* Background decoration */}
       <div className="absolute -right-24 top-0 w-96 h-96 bg-blue-600/5 dark:bg-blue-600/5 rounded-full blur-[100px] pointer-events-none" />
       
-      <div className="flex flex-col gap-12 md:gap-4 xl:gap-12">
+      {/* Ajustado el gap de md:gap-4 a md:gap-8 para igualar la separación de las tarjetas */}
+      <div className="flex flex-col gap-12 md:gap-8 lg:gap-12">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
           <div className="max-w-2xl">
