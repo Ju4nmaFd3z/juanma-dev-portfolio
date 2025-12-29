@@ -36,10 +36,10 @@ export const translations = {
       ],
       skills: 'Hard Skills',
       skillsList: [
-        { name: 'Arquitectura de Sistemas', level: '85%' },
-        { name: 'Desarrollo Java/Backend', level: '70%' },
-        { name: 'Gestión de Redes & SQL', level: '80%' },
-        { name: 'Resolución de Problemas', level: '95%' }
+        { name: 'Montaje y Mantenimiento (Hardware)', level: '95%' },
+        { name: 'Redes Locales (Cisco CCNA)', level: '85%' },
+        { name: 'Troubleshooting IT', level: '90%' },
+        { name: 'Fundamentos de Programación', level: '60%' }
       ],
       quote: '"Para construir algo que perdure, primero hay que saber cómo se sostiene desde abajo."',
       status: 'En formación y abierto a retos'
@@ -174,10 +174,10 @@ export const translations = {
       ],
       skills: 'Hard Skills',
       skillsList: [
-        { name: 'Systems Architecture', level: '85%' },
-        { name: 'Java/Backend Development', level: '70%' },
-        { name: 'Network Mgmt & SQL', level: '80%' },
-        { name: 'Problem Solving', level: '95%' }
+        { name: 'Hardware Setup & Maintenance', level: '95%' },
+        { name: 'Local Networks (Cisco CCNA)', level: '85%' },
+        { name: 'IT Troubleshooting', level: '90%' },
+        { name: 'Programming Fundamentals', level: '60%' }
       ],
       quote: '"To build something that lasts, you must first know how it is supported from below."',
       status: 'In training & open to challenges'
