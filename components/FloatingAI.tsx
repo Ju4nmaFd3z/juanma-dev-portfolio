@@ -3,14 +3,14 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
-// Declaración de tipos para window.aistudio
-// Fix: All declarations of 'aistudio' must have identical modifiers. Adding '?' to match potential environment definitions.
+// Fix for type mismatch error: Define AIStudio interface and use it in Window augmentation
 declare global {
+  interface AIStudio {
+    hasSelectedApiKey: () => Promise<boolean>;
+    openSelectKey: () => Promise<void>;
+  }
   interface Window {
-    aistudio?: {
-      hasSelectedApiKey: () => Promise<boolean>;
-      openSelectKey: () => Promise<void>;
-    };
+    aistudio?: AIStudio;
   }
 }
 
@@ -133,10 +133,9 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     }
     try {
       await window.aistudio.openSelectKey();
-      // Assume key selection was successful after triggering openSelectKey()
       setMessages(prev => [...prev, {
         role: 'bot', 
-        text: lang === 'es' ? "¡Configuración recibida! Por favor, vuelve a intentar tu pregunta." : "Configuration received! Please try your question again."
+        text: lang === 'es' ? "¡Clave configurada! Por favor, intenta de nuevo ahora." : "Key configured! Please try again now."
       }]);
     } catch (e) {
       console.error("Error opening key selector", e);
@@ -147,36 +146,17 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     const userMsg = customInput || input.trim();
     if (!userMsg || isTyping) return;
     
-    // Check if key selection is required before making an API call (if aistudio exists)
-    if (window.aistudio) {
-      const hasKey = await window.aistudio.hasSelectedApiKey();
-      if (!hasKey) {
-        setMessages(prev => [...prev, {
-          role: 'error',
-          text: lang === 'es' 
-            ? "Para continuar, debes seleccionar una clave de API de un proyecto con facturación habilitada." 
-            : "To continue, you must select an API key from a project with billing enabled.",
-          needsKey: true
-        }]);
-        return;
-      }
-    }
-
     setMessages(prev => [...prev, {role: 'user', text: userMsg}]);
     setInput('');
     setIsTyping(true);
 
     try {
-      // Create a new GoogleGenAI instance right before making an API call
+      // Create a new GoogleGenAI instance right before making an API call to ensure it always uses the most up-to-date API key
       const apiKey = process.env.API_KEY;
-      
-      if (!apiKey || apiKey === "undefined" || apiKey.length < 10) {
-        throw new Error("Missing or invalid API key. Please configure a key from a paid project.");
-      }
-
       const ai = new GoogleGenAI({ apiKey: apiKey });
       const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB ACTUALES DE JUANMA: Bio: ${githubData.bio}. Repos públicos: ${githubData.public_repos}. Repos actualizados recientemente: ${githubData.recent}.` : ''}`;
 
+      // Intentamos con búsqueda en Google
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: userMsg,
@@ -198,30 +178,23 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         });
       }
 
-      setMessages(prev => [...prev, {
-        role: 'bot', 
-        text: botText,
-        sources: sources.length > 0 ? sources : undefined
-      }]);
+      setMessages(prev => [...prev, { role: 'bot', text: botText, sources: sources.length > 0 ? sources : undefined }]);
     } catch (error: any) {
-      console.error("AI Assistant Error Details:", error);
-      
+      console.error("AI Assistant Error:", error);
       const errMsg = error.message || "";
-      const isKeyIssue = errMsg.includes("API key") || 
-                         errMsg.includes("403") || 
-                         errMsg.includes("401") || 
-                         errMsg.includes("Requested entity was not found") ||
-                         errMsg.includes("billing");
+      
+      // Si falla por la herramienta de búsqueda o clave no válida
+      const isSearchError = errMsg.includes("googleSearch") || errMsg.includes("tool") || errMsg.includes("403") || errMsg.includes("billing");
 
       setMessages(prev => [...prev, {
         role: 'error', 
-        text: isKeyIssue 
+        text: isSearchError 
           ? (lang === 'es' 
-              ? "Para usar la búsqueda inteligente y obtener información actualizada, se requiere una API Key vinculada a un proyecto de pago." 
-              : "To use smart search and get updated information, an API Key linked to a paid project is required.")
+              ? "La función de búsqueda web requiere una clave de API vinculada a un proyecto de Google Cloud con facturación (incluso si es gratuita)." 
+              : "The web search feature requires an API key linked to a Google Cloud project with billing enabled.")
           : (lang === 'es' 
-              ? "Ha ocurrido un error inesperado al conectar con el servidor. Por favor, intenta configurar tu propia clave o prueba más tarde." 
-              : "An unexpected error occurred while connecting to the server. Please try configuring your own key or try again later."),
+              ? "Ha ocurrido un problema técnico. Pulsa el botón de abajo para vincular una clave de API válida de Google AI Studio." 
+              : "A technical issue occurred. Click the button below to link a valid Google AI Studio API key."),
         needsKey: true
       }]);
     } finally {
@@ -230,18 +203,9 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   };
 
   const quickActions = [
-    { 
-      label: lang === 'es' ? 'Stack de Juanma' : 'Juanma\'s Tech Stack', 
-      prompt: lang === 'es' ? '¿Cuáles son las tecnologías y lenguajes que domina Juanma actualmente?' : 'What are the technologies and languages that Juanma currently masters?' 
-    },
-    { 
-      label: lang === 'es' ? 'Erasmus en Italia' : 'Erasmus in Italy', 
-      prompt: lang === 'es' ? 'Cuéntame sobre la experiencia Erasmus de Juanma en Italia.' : 'Tell me about Juanma\'s Erasmus experience in Italy.' 
-    },
-    { 
-      label: lang === 'es' ? '¿Está disponible?' : 'Is he available?', 
-      prompt: lang === 'es' ? '¿Está Juanma abierto a ofertas de empleo actualmente?' : 'Is Juanma currently open to job offers?' 
-    }
+    { label: lang === 'es' ? 'Stack de Juanma' : 'Juanma\'s Tech Stack', prompt: lang === 'es' ? '¿Cuáles son las tecnologías y lenguajes que domina Juanma actualmente?' : 'What are the technologies and languages that Juanma currently masters?' },
+    { label: lang === 'es' ? 'Erasmus en Italia' : 'Erasmus in Italy', prompt: lang === 'es' ? 'Cuéntame sobre la experiencia Erasmus de Juanma en Italia.' : 'Tell me about Juanma\'s Erasmus experience in Italy.' },
+    { label: lang === 'es' ? '¿Está disponible?' : 'Is he available?', prompt: lang === 'es' ? '¿Está Juanma abierto a ofertas de empleo actualmente?' : 'Is Juanma currently open to job offers?' }
   ];
 
   return (
@@ -286,7 +250,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                           className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 text-red-200 font-black uppercase tracking-widest text-[9px] rounded-xl transition-all border border-red-500/30 flex items-center justify-center gap-2"
                         >
                           <i className="fa-solid fa-key"></i>
-                          {lang === 'es' ? 'CONFIGURAR MI PROPIA CLAVE' : 'SETUP MY OWN KEY'}
+                          {lang === 'es' ? 'VINCULAR CLAVE (GOOGLE CLOUD)' : 'LINK KEY (GOOGLE CLOUD)'}
                         </button>
                       )}
                     </div>
