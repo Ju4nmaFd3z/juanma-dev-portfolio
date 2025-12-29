@@ -3,17 +3,28 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
-// Declaración de tipos para window.aistudio
+// Fix: Use the global AIStudio interface and ensure it is declared correctly on Window
 declare global {
   interface AIStudio {
     hasSelectedApiKey: () => Promise<boolean>;
     openSelectKey: () => Promise<void>;
   }
+
+  interface Window {
+    aistudio: AIStudio;
+  }
+}
+
+interface Message {
+  role: 'user' | 'bot' | 'error';
+  text: string;
+  sources?: { uri: string; title: string }[];
+  needsKey?: boolean;
 }
 
 interface FloatingAIProps { lang: 'es' | 'en'; }
 
-const MarkdownLite = ({ text }: { text: string }) => {
+const MarkdownLite = ({ text, sources }: { text: string, sources?: { uri: string, title: string }[] }) => {
   const lines = text.split('\n');
   return (
     <div className="space-y-2">
@@ -42,6 +53,26 @@ const MarkdownLite = ({ text }: { text: string }) => {
           </div>
         );
       })}
+      
+      {sources && sources.length > 0 && (
+        <div className="mt-4 pt-3 border-t border-white/10">
+          <span className="text-[10px] font-black uppercase tracking-widest text-neutral-500 mb-2 block">Fuentes consultadas:</span>
+          <div className="flex flex-wrap gap-2">
+            {sources.map((source, idx) => (
+              <a 
+                key={idx} 
+                href={source.uri} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-2 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-md text-[10px] text-blue-400 transition-colors"
+              >
+                <i className="fa-solid fa-link text-[8px]"></i>
+                <span className="truncate max-w-[150px]">{source.title || 'Sitio Web'}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -58,7 +89,7 @@ function processInlineStyles(text: string) {
 const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, needsKey?: boolean}[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [githubData, setGithubData] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -88,7 +119,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   useEffect(() => {
     const randomGreeting = t.greetings[Math.floor(Math.random() * t.greetings.length)];
     setMessages([{role: 'bot', text: randomGreeting}]);
-  }, [lang]);
+  }, [lang, t.greetings]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -97,12 +128,16 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   }, [messages, isTyping]);
 
   const handleOpenKeySelector = async () => {
-    if (!window.aistudio) return;
+    if (!window.aistudio) {
+      window.open('https://ai.google.dev/gemini-api/docs/billing', '_blank');
+      return;
+    }
     try {
       await window.aistudio.openSelectKey();
-      setMessages(prev => [...prev.filter(m => m.role !== 'error'), {
+      // Procedemos inmediatamente asumiendo éxito
+      setMessages(prev => [...prev, {
         role: 'bot', 
-        text: lang === 'es' ? "¡Configuración actualizada! Prueba a preguntarme de nuevo." : "Configuration updated! Try asking me again."
+        text: lang === 'es' ? "¡Entendido! Inténtalo de nuevo ahora que has configurado tu clave." : "Got it! Try again now that you've set up your key."
       }]);
     } catch (e) {
       console.error("Error opening key selector", e);
@@ -118,21 +153,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      // Acceso directo a la variable inyectada.
-      const apiKey = process.env.API_KEY;
-
-      if (!apiKey) {
-        // Verificación para entorno de desarrollo/AI Studio
-        const hasKey = (window.aistudio && typeof window.aistudio.hasSelectedApiKey === 'function') 
-          ? await window.aistudio.hasSelectedApiKey() 
-          : false;
-          
-        if (!hasKey) {
-          throw new Error("MISSING_KEY");
-        }
-      }
-
-      // Inicialización instanciada justo antes del uso para asegurar la clave más reciente
+      // Re-instanciar GoogleGenAI justo antes de la llamada para asegurar la clave más reciente
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB ACTUALES DE JUANMA: Bio: ${githubData.bio}. Repos públicos: ${githubData.public_repos}. Repos actualizados recientemente: ${githubData.recent}.` : ''}`;
 
@@ -145,27 +166,47 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         }
       });
 
-      const botResponse = response.text || (lang === 'es' ? "No he podido obtener una respuesta clara. ¿Puedes intentarlo de nuevo?" : "I couldn't get a clear response. Can you try again?");
+      const botText = response.text || "";
       
-      setMessages(prev => [...prev, {role: 'bot', text: botResponse}]);
+      // Extraer URLs de búsqueda si existen (Grounding Chunks)
+      const sources: {uri: string, title: string}[] = [];
+      const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+      if (groundingChunks) {
+        groundingChunks.forEach((chunk: any) => {
+          if (chunk.web && chunk.web.uri) {
+            sources.push({ uri: chunk.web.uri, title: chunk.web.title });
+          }
+        });
+      }
+
+      setMessages(prev => [...prev, {
+        role: 'bot', 
+        text: botText || (lang === 'es' ? "Lo siento, no he podido procesar esa información." : "Sorry, I couldn't process that information."),
+        sources: sources.length > 0 ? sources : undefined
+      }]);
     } catch (error: any) {
       console.error("AI Assistant Error:", error);
       
-      let friendlyText = lang === 'es' 
-        ? "Ha ocurrido un error inesperado al conectar con el servidor de IA." 
-        : "An unexpected error occurred while connecting to the AI server.";
-        
-      if (error.message === "MISSING_KEY" || error.status === 403 || error.message.includes("API key")) {
-        friendlyText = lang === 'es'
-          ? "Error de autenticación. Verifica que 'API_KEY' esté correctamente configurada en las variables de entorno de Vercel y que el despliegue esté actualizado."
-          : "Authentication error. Verify that 'API_KEY' is correctly configured in Vercel environment variables and the deployment is up to date.";
+      const errorMessage = error.message || "";
+      const isAuthError = errorMessage.includes("API key") || errorMessage.includes("403") || errorMessage.includes("401");
+      const isNotFoundError = errorMessage.includes("Requested entity was not found");
+
+      if (isNotFoundError || isAuthError) {
+        setMessages(prev => [...prev, {
+          role: 'error', 
+          text: lang === 'es' 
+            ? "Parece que hay un problema con la clave de acceso (API_KEY). Por favor, asegúrate de estar usando una clave válida de un proyecto con facturación habilitada."
+            : "There seems to be an issue with the access key (API_KEY). Please ensure you are using a valid key from a project with billing enabled.",
+          needsKey: true
+        }]);
+      } else {
+        setMessages(prev => [...prev, {
+          role: 'error', 
+          text: lang === 'es' 
+            ? "Ha ocurrido un error inesperado. Por favor, inténtalo de nuevo en unos momentos." 
+            : "An unexpected error occurred. Please try again in a few moments."
+        }]);
       }
-      
-      setMessages(prev => [...prev, {
-        role: 'error', 
-        text: friendlyText,
-        needsKey: !!window.aistudio
-      }]);
     } finally {
       setIsTyping(false);
     }
@@ -225,15 +266,16 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                       {m.needsKey && (
                         <button 
                           onClick={handleOpenKeySelector}
-                          className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 text-red-200 font-black uppercase tracking-widest text-[9px] rounded-xl transition-all border border-red-500/30"
+                          className="w-full py-3 bg-red-600/20 hover:bg-red-600/40 text-red-200 font-black uppercase tracking-widest text-[9px] rounded-xl transition-all border border-red-500/30 flex items-center justify-center gap-2"
                         >
+                          <i className="fa-solid fa-key"></i>
                           {lang === 'es' ? 'CONFIGURAR CLAVE' : 'SETUP KEY'}
                         </button>
                       )}
                     </div>
                   ) : (
                     <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm ${m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'}`}>
-                      {m.role === 'bot' ? <MarkdownLite text={m.text} /> : m.text}
+                      {m.role === 'bot' ? <MarkdownLite text={m.text} sources={m.sources} /> : m.text}
                     </div>
                   )}
                 </div>
