@@ -1,24 +1,30 @@
 
 export interface Project {
-  id: string;
   title: string;
-  description: string;
+  desc: string;
+  category: 'software' | 'systems';
   tech: string[];
-  link?: string;
+  icon: string;
+  gradient: string;
+  image: string;
+  url: string;
 }
 
 export interface Experience {
-  id: string;
   role: string;
+  type: string;
   company: string;
+  location: string;
   period: string;
-  description: string;
+  points: string[];
+  tags: string[];
 }
 
 export interface Education {
-  id: string;
   degree: string;
   school: string;
   period: string;
-  details?: string;
+  status: string;
+  desc: string;
+  highlights?: string[];
 }

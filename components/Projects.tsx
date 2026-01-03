@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { translations } from '../translations';
 
@@ -16,13 +17,22 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     {
       ...t.items[0],
       category: 'software',
+      icon: 'fa-solid fa-dna',
+      gradient: 'from-indigo-600/30 to-blue-600/30',
+      image: 'https://images.unsplash.com/photo-1614935151651-0bea6508db6b?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://genetix-xi.vercel.app/',
+      repo: 'https://github.com/Ju4nmaFd3z/Genetix.git'
+    },
+    {
+      ...t.items[1],
+      category: 'software',
       icon: 'fa-solid fa-code-branch',
       gradient: 'from-blue-600/20 to-purple-600/20',
       image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200',
       url: 'https://github.com/Ju4nmaFd3z'
     },
     {
-      ...t.items[1],
+      ...t.items[2],
       category: 'systems',
       icon: 'fa-solid fa-server',
       gradient: 'from-emerald-600/20 to-blue-600/20',
@@ -40,7 +50,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
       {/* Background decoration */}
       <div className="absolute -right-24 top-0 w-96 h-96 bg-blue-600/5 dark:bg-blue-600/5 rounded-full blur-[100px] pointer-events-none" />
       
-      {/* Ajustado el gap de md:gap-4 a md:gap-8 para igualar la separación de las tarjetas */}
       <div className="flex flex-col gap-12 md:gap-8 lg:gap-12">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-8">
@@ -137,18 +146,32 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                 </div>
 
                 <div className="flex items-center justify-between pt-8 border-t border-black/5 dark:border-white/5">
-                  <a 
-                    href={p.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="cursor-safe flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all duration-700 hover:text-blue-500 dark:hover:text-blue-400"
-                  >
-                    {lang === 'es' ? 'Explorar proyecto' : 'Explore project'}
-                    <i className="fa-solid fa-arrow-right-long ml-2"></i>
-                  </a>
+                  <div className="flex gap-4">
+                    <a 
+                      href={p.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="cursor-safe flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300"
+                    >
+                      {p.title === 'Genetix' ? 'Demo Live' : (lang === 'es' ? 'Explorar' : 'Explore')}
+                      <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                    </a>
+                    
+                    {p.repo && (
+                      <a 
+                        href={p.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="cursor-safe flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500 hover:text-black dark:hover:text-white transition-all duration-300"
+                      >
+                        GitHub
+                        <i className="fa-brands fa-github text-[11px]"></i>
+                      </a>
+                    )}
+                  </div>
                   
-                  <div className="text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">
-                    {p.category === 'software' ? 'GitHub' : 'Cisco NetAcad'}
+                  <div className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">
+                    {p.category === 'software' ? (p.title === 'Genetix' ? 'Vercel / GitHub' : 'GitHub') : 'Cisco NetAcad'}
                   </div>
                 </div>
               </div>

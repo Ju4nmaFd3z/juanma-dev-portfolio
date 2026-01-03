@@ -50,6 +50,11 @@ export const translations = {
       github: 'Ver GitHub',
       items: [
         {
+          title: "Genetix",
+          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React [VibeCoding] y Java. Aplica conceptos de evolución biológica como selección, cruce, mutación y elitismo como proyecto de ampliación de Programación.",
+          tech: ["React", "Java", "Tailwind CSS", "Genética"]
+        },
+        {
           title: "Próximamente...",
           desc: "Como alumno de 1º de DAM, estoy desarrollando mis primeras aplicaciones nativas y sistemas backend eficientes. Pronto verás aquí mis repositorios destacados.",
           tech: ["Java", "SQL", "Docker"]
@@ -126,16 +131,25 @@ export const translations = {
     },
     ai: {
       label: 'Asistente Virtual',
-      status: 'Fuera de servicio',
-      placeholder: 'Temporalmente deshabilitado...',
+      status: 'En línea',
+      maintenanceStatus: 'En mantenimiento',
+      maintenanceMsg: '¡Hola! Actualmente estoy recibiendo algunas mejoras técnicas en mi cerebro digital para poder ayudarte mejor. Estaré disponible de nuevo muy pronto. ¡Gracias por tu paciencia!',
+      placeholder: 'Pregunta sobre Juanma...',
+      placeholderMaintenance: 'Asistente temporalmente inactivo...',
       prompt: 'Potenciado por Gemini AI',
-      tooltip: 'Asistente en mantenimiento',
-      errorTitle: 'Mantenimiento Técnico',
-      errorDesc: 'Estamos configurando los servicios de búsqueda inteligente. El asistente volverá a estar operativo pronto.',
+      tooltip: '¿Alguna duda? Pregúntame',
+      errorTitle: 'Asistente fuera de servicio',
+      errorDesc: 'Parece que hay un problema con la configuración de la IA. Por favor, revisa la API Key en el panel de control o inténtalo más tarde.',
       greetings: [
-        "¡Hola! Actualmente el asistente se encuentra en mantenimiento técnico para mejorar su integración con los servicios de búsqueda. Disculpa las molestias."
+        "¡Hola! Soy el asistente virtual de Juanma. Estoy aquí para ayudarte a conocer mejor su perfil profesional. ¿Qué te gustaría saber sobre él?",
+        "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos, habilidades o formación. ¿Hablamos?",
+        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas sobre su trabajo. ¿En qué puedo ayudarte hoy?"
       ],
-      system: ``
+      system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
+      REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él. Usa expresiones como "Juanma es...", "Él domina...", "El autor de este portfolio...". Tu identidad es la de un asistente externo.
+      CONTEXTO DINÁMICO: Tienes acceso a la herramienta googleSearch para buscar información actualizada en su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
+      PERFIL PRINCIPAL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
+      Si no sabes algo, utiliza la búsqueda de Google para encontrar información reciente sobre "Juan Manuel Fernández Rodríguez DAM SMR". Responde de forma concisa, profesional y siempre en tercera persona.`
     }
   },
   en: {
@@ -158,7 +172,7 @@ export const translations = {
     },
     about: {
       badge: 'Where it all started',
-      title1: 'PASSION FOR',
+      title1: 'PASIÓN FOR',
       title2: 'TINKERING.',
       desc1: '{span1} is what I\'ve loved {span2}. What started as opening computers out of curiosity is now the foundation of my {span3}.',
       desc1Span1: 'Tinkering',
@@ -187,6 +201,11 @@ export const translations = {
       subtitle: 'My professional development log',
       github: 'View GitHub',
       items: [
+        {
+          title: "Genetix",
+          desc: "Visual genetic algorithm simulator built entirely in React [VibeCoding] and Java. Implements biological evolution concepts such as selection, crossover, mutation, and elitism as a Programming extension project.",
+          tech: ["React", "Java", "Tailwind CSS", "Genetics"]
+        },
         {
           title: "Coming Soon...",
           desc: "As a 1st year DAM student, I am developing my first native applications and efficient backend systems. Soon you will see my featured repositories here.",
@@ -264,16 +283,25 @@ export const translations = {
     },
     ai: {
       label: 'Virtual Assistant',
-      status: 'Out of service',
-      placeholder: 'Temporarily disabled...',
+      status: 'Online',
+      maintenanceStatus: 'Under maintenance',
+      maintenanceMsg: 'Hi! I am currently receiving some technical improvements to my digital brain so I can help you better. I will be available again very soon. Thank you for your patience!',
+      placeholder: 'Ask about Juanma...',
+      placeholderMaintenance: 'Assistant temporarily inactive...',
       prompt: 'Powered by Gemini AI',
-      tooltip: 'Assistant under maintenance',
-      errorTitle: 'Technical Maintenance',
-      errorDesc: 'We are configuring the smart search services. The assistant will be back online soon.',
+      tooltip: 'Any questions? Ask me',
+      errorTitle: 'Assistant offline',
+      errorDesc: 'There seems to be an issue with the AI configuration. Please check the API Key or try again later.',
       greetings: [
-        "Hi! The assistant is currently under technical maintenance to improve its integration with search services. Sorry for the inconvenience."
+        "Hi! I'm Juanma's virtual assistant. I'm here to help you explore his professional profile. What would you like to know about him?",
+        "Hello! As Juanma's assistant, I can provide information about his projects, skills, or education. Shall we talk?",
+        "Hi there! I have access to Juanma's career path to answer any questions you might have. How can I assist you today?"
       ],
-      system: ``
+      system: `You are Juan Manuel Fernández Rodríguez's Virtual Assistant. Always respond in ENGLISH.
+      CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him. Use expressions like "Juanma is...", "He masters...", "The author of this portfolio...". Your identity is that of an external assistant.
+      DYNAMIC CONTEXT: You have access to googleSearch to find updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
+      CORE PROFILE: Software student, IT tech (9.2 GPA), CCNA certified. 
+      If you don't know something, use Google Search to find recent info about "Juan Manuel Fernández Rodríguez DAM SMR". Be concise, professional, and always speak in the third person.`
     }
   }
 };
