@@ -156,7 +156,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             {/* FOTO PRINCIPAL: Efecto PNG puro - TRANSFORMACIONES AGRESIVAS */}
             <div className="relative animate-in slide-in-from-bottom-12 fade-in duration-1000 ease-out overflow-visible flex items-end">
               <img 
-                src="https://static.vecteezy.com/system/resources/thumbnails/071/080/381/small/a-handsome-young-man-isolated-on-transparent-background-is-smiling-and-looking-up-with-a-happy-and-carefree-expression-on-his-face-free-png.png" 
+                src="/images/me.png" 
                 alt="Juanma Fernández" 
                 className="w-full h-auto object-contain filter dark:brightness-[0.9] contrast-[1.05] transition-all duration-700 select-none pointer-events-none z-10 
                            origin-bottom
