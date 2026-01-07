@@ -146,28 +146,33 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
           </div>
         </div>
 
-        {/* LADO DERECHO: COMPOSICIÓN PROFESIONAL DINÁMICA (EFECTO FLOTANTE PURO) */}
+        {/* LADO DERECHO: COMPOSICIÓN PROFESIONAL DINÁMICA - ESCALADO AGRESIVO */}
         <div className="lg:col-span-5 relative">
           <div className="relative flex justify-center items-end group perspective-1000">
             
-            {/* ELEMENTOS TRASEROS: Luces ambientales para dar profundidad sin marcos */}
+            {/* ELEMENTOS TRASEROS: Luces ambientales */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-[120px] group-hover:bg-purple-500/15 transition-all duration-1000 ease-in-out -z-10"></div>
-            <div className="absolute top-1/3 left-1/4 w-40 h-40 bg-indigo-500/20 rounded-full blur-[80px] animate-pulse -z-10"></div>
             
-            {/* FOTO PRINCIPAL: Efecto PNG puro sin sombras rectangulares - AGRANDADA Y DESPLAZADA EN PANTALLAS MUY GRANDES */}
+            {/* FOTO PRINCIPAL: Efecto PNG puro - TRANSFORMACIONES AGRESIVAS */}
             <div className="relative animate-in slide-in-from-bottom-12 fade-in duration-1000 ease-out overflow-visible flex items-end">
               <img 
-                src="/images/me.png" 
+                src="https://static.vecteezy.com/system/resources/thumbnails/071/080/381/small/a-handsome-young-man-isolated-on-transparent-background-is-smiling-and-looking-up-with-a-happy-and-carefree-expression-on-his-face-free-png.png" 
                 alt="Juanma Fernández" 
-                className="w-full max-w-[550px] lg:max-w-[950px] xl:max-w-[1300px] 2xl:max-w-[1450px] h-auto object-contain filter dark:brightness-[0.9] contrast-[1.05] transition-all duration-700 select-none pointer-events-none z-10 translate-y-0 xl:translate-y-16 2xl:translate-y-24 group-hover:-translate-y-2 xl:group-hover:translate-y-14 2xl:group-hover:translate-y-20"
+                className="w-full h-auto object-contain filter dark:brightness-[0.9] contrast-[1.05] transition-all duration-700 select-none pointer-events-none z-10 
+                           origin-bottom
+                           max-w-[450px]
+                           lg:max-w-[800px] lg:scale-110 lg:translate-y-12
+                           xl:max-w-[1000px] xl:scale-[1.5] xl:translate-y-40
+                           2xl:max-w-[1200px] 2xl:scale-[1.7] 2xl:translate-y-56
+                           group-hover:-translate-y-2 lg:group-hover:translate-y-10 xl:group-hover:translate-y-36 2xl:group-hover:translate-y-52"
                 style={{ 
-                  maskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)', 
-                  WebkitMaskImage: 'linear-gradient(to bottom, black 80%, transparent 100%)' 
+                  maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)', 
+                  WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' 
                 }}
               />
             </div>
 
-            {/* ELEMENTOS DELANTEROS: Floating Status Card - HIDDEN ON MOBILE/TABLET */}
+            {/* ELEMENTOS DELANTEROS: Floating Status Card */}
             <div className="hidden lg:block absolute bottom-16 -left-8 sm:bottom-24 sm:-left-16 glass-card p-5 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-bounce-slow transform hover:scale-110 transition-transform duration-500 cursor-default z-20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
@@ -186,7 +191,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
         </div>
       </div>
 
-      {/* Texto Vertical Decorativo - Ajustado a una altura equilibrada */}
+      {/* Texto Vertical Decorativo */}
       <div className="absolute -right-16 top-[55%] -translate-y-1/2 rotate-90 hidden xl:block">
         <span className="text-[10px] font-black uppercase tracking-[1em] text-neutral-300 dark:text-neutral-800 whitespace-nowrap">
           EST. 2007 // MÁLAGA ES

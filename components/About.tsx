@@ -20,11 +20,12 @@ const About: React.FC<AboutProps> = ({ lang }) => {
 
   // =========================================================================================
   // CONFIGURACIÓN DE GALERÍA DE INFANCIA
+  // Sustituye las URLs de abajo por las rutas de tus fotos finales (ej: "/fotos/foto1.jpg")
   // =========================================================================================
   const childhoodPhotos = [
-    "/images/littleme1.jpg",
-    "/images/littleme2.jpg",
-    "/images/littleme3.jpg"
+    "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&q=80&w=800", // <-- SUSTITUIR POR TU FOTO 1 (La principal)
+    "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&q=80&w=800", // <-- SUSTITUIR POR TU FOTO 2
+    "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&q=80&w=800"  // <-- SUSTITUIR POR TU FOTO 3
   ];
   // =========================================================================================
 
