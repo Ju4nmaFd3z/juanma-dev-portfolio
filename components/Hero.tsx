@@ -173,7 +173,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </div>
 
             {/* ELEMENTOS DELANTEROS: Floating Status Card */}
-            <div className="hidden lg:block absolute bottom-16 -left-8 sm:bottom-10 sm:-left-16 glass-card p-5 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-bounce-slow transform hover:scale-110 transition-transform duration-500 cursor-default z-20">
+            <div className="hidden lg:block absolute bottom-16 -left-8 sm:bottom-1 sm:-left-16 glass-card p-5 rounded-3xl border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-bounce-slow transform hover:scale-110 transition-transform duration-500 cursor-default z-20">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
                   <i className="fa-solid fa-code text-lg"></i>
