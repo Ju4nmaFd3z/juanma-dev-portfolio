@@ -8,6 +8,7 @@ export interface Project {
   gradient: string;
   image: string;
   url: string;
+  repo?: string;
 }
 
 export interface Experience {

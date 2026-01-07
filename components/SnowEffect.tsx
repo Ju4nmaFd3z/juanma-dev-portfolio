@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 
 interface SnowEffectProps {
@@ -24,15 +25,19 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
 
     const init = () => {
       particles = [];
+      // Densidad equilibrada: ni mucha para saturar, ni poca para desaparecer
       const density = (window.innerWidth * window.innerHeight) / 8000;
       for (let i = 0; i < density; i++) {
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          radius: Math.random() * 1.2 + 0.3, 
-          speed: Math.random() * 0.25 + 0.08, 
-          opacity: Math.random() * 0.35 + 0.05,
-          wind: Math.random() * 0.1 - 0.05
+          // Tamaño sutil tipo "polvo de estrellas"
+          radius: Math.random() * 1.1 + 0.5, 
+          // Caída muy pausada y elegante
+          speed: Math.random() * 0.15 + 0.05, 
+          // Opacidad mínima garantizada para que se vea
+          opacity: Math.random() * 0.25 + 0.15,
+          wind: Math.random() * 0.05 - 0.025
         });
       }
     };
@@ -40,16 +45,17 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       particles.forEach(p => {
-        // Color adaptativo: blanco en oscuro, azul-acero suave en claro
-        const color = theme === 'dark' ? `255, 255, 255` : `100, 149, 237`;
+        // Color blanco para dark, azulado suave para light
+        const color = theme === 'dark' ? `255, 255, 255` : `147, 197, 253`;
         ctx.fillStyle = `rgba(${color}, ${p.opacity})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
 
         p.y += p.speed;
-        p.x += p.wind + Math.sin(p.y / 100) * 0.1;
+        p.x += p.wind + Math.sin(p.y / 200) * 0.05;
 
+        // Reposicionar cuando sale de pantalla
         if (p.y > canvas.height) {
           p.y = -5;
           p.x = Math.random() * canvas.width;
@@ -68,12 +74,13 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
       window.removeEventListener('resize', resize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [theme]); // Re-dibujar cuando cambie el tema
+  }, [theme]);
 
   return (
     <canvas 
       ref={canvasRef} 
-      className={`fixed inset-0 pointer-events-none -z-5 ${theme === 'dark' ? 'opacity-40' : 'opacity-20'}`} 
+      // z-0 para estar sobre el fondo del body pero bajo el contenido (z-10)
+      className="fixed inset-0 pointer-events-none z-0" 
     />
   );
 };

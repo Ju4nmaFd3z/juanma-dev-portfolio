@@ -10,11 +10,15 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingAI from './components/FloatingAI';
 import SnowEffect from './components/SnowEffect';
+import Terminal from './components/Terminal';
+import Preloader from './components/Preloader';
 import { translations } from './translations';
 
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [lang, setLang] = useState<'es' | 'en'>('es');
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -27,13 +31,31 @@ const App: React.FC = () => {
   const t = translations[lang];
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && !isTerminalOpen) {
+        e.preventDefault();
+        setIsTerminalOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setIsTerminalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isTerminalOpen]);
+
+  useEffect(() => {
     const root = window.document.documentElement;
+    const themeMeta = document.getElementById('theme-meta');
+    
     if (theme === 'dark') {
       root.classList.add('dark');
       root.style.colorScheme = 'dark';
+      if (themeMeta) themeMeta.setAttribute('content', '#050505');
     } else {
       root.classList.remove('dark');
       root.style.colorScheme = 'light';
+      if (themeMeta) themeMeta.setAttribute('content', '#fafafa');
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
@@ -72,45 +94,57 @@ const App: React.FC = () => {
   const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
   return (
-    <div className="min-h-screen relative bg-gray-100 dark:bg-[#050505] selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-colors duration-700">
-      <SnowEffect theme={theme} />
+    <>
+      {isLoading && <Preloader onLoadingComplete={() => setIsLoading(false)} />}
       
-      {/* Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-purple-600/5 dark:bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* Elementos de fondo y UI fija fuera del contenedor escalado */}
+      <SnowEffect theme={theme} />
+
+      <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+        <Navbar 
+          activeSection={activeSection} 
+          lang={lang} 
+          setLang={setLang} 
+          theme={theme} 
+          toggleTheme={toggleTheme}
+          onOpenTerminal={() => setIsTerminalOpen(true)}
+        />
+        <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} lang={lang} />
       </div>
 
-      <Navbar activeSection={activeSection} lang={lang} setLang={setLang} theme={theme} toggleTheme={toggleTheme} />
-      
-      <main className="container mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
-        <section id="home">
-          <Hero lang={lang} />
-        </section>
+      {/* Contenedor principal con la animación de escala */}
+      <div className={`min-h-screen relative selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-all duration-1000 ${isLoading ? 'opacity-0 scale-95 overflow-hidden h-screen' : 'opacity-100 scale-100'}`}>
         
-        <section id="about" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
-          <About lang={lang} />
-        </section>
-        
-        <section id="projects" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
-          <Projects lang={lang} />
-        </section>
-        
-        <section id="experience-education" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-            <Experience lang={lang} />
-            <Education lang={lang} />
-          </div>
-        </section>
+        <main className="container mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
+          <section id="home">
+            <Hero lang={lang} />
+          </section>
+          
+          <section id="about" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+            <About lang={lang} />
+          </section>
+          
+          <section id="projects" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+            <Projects lang={lang} />
+          </section>
+          
+          <section id="experience-education" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+              <Experience lang={lang} />
+              <Education lang={lang} />
+            </div>
+          </section>
 
-        <section id="contact" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
-          <Contact lang={lang} />
-        </section>
-      </main>
+          <section id="contact" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+            <Contact lang={lang} />
+          </section>
+        </main>
 
-      <Footer lang={lang} />
-      <FloatingAI lang={lang} />
-    </div>
+        <Footer lang={lang} />
+      </div>
+
+      {!isLoading && <FloatingAI lang={lang} />}
+    </>
   );
 };
 

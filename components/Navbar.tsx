@@ -8,9 +8,10 @@ interface NavbarProps {
   setLang: (lang: 'es' | 'en') => void;
   theme: 'dark' | 'light';
   toggleTheme: () => void;
+  onOpenTerminal: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, toggleTheme }) => {
+const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, toggleTheme, onOpenTerminal }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showCVMenu, setShowCVMenu] = useState(false);
@@ -97,7 +98,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
     <header className={`fixed top-0 left-0 right-0 z-[1000] flex justify-center transition-all duration-500 px-4 sm:px-6 ${isScrolled ? 'pt-2 sm:pt-4' : 'pt-4 sm:pt-8'}`}>
       <nav className={`w-full max-w-5xl rounded-2xl h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 border transition-all duration-500 ${
         isScrolled 
-        ? 'bg-white/95 dark:bg-black/90 backdrop-blur-2xl border-black/10 dark:border-white/10 shadow-xl' 
+        ? 'bg-white/30 dark:bg-black/30 backdrop-blur-3xl border-black/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)]' 
         : 'bg-black/5 dark:bg-white/5 backdrop-blur-md border-black/5 dark:border-white/5'
       }`}>
         
@@ -117,7 +118,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
               key={link.id}
               onClick={() => handleNavClick(link.id)}
               className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                activeSection === link.id ? 'text-black dark:text-white bg-white dark:bg-white/10 shadow-sm' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300'
+                activeSection === link.id ? 'text-black dark:text-white bg-white/60 dark:bg-white/10 shadow-sm backdrop-blur-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300'
               }`}
             >
               {link.name}
@@ -127,6 +128,15 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
 
         <div className="flex items-center gap-2 sm:gap-3">
           
+          {/* Terminal Button */}
+          <button 
+            onClick={onOpenTerminal}
+            className="w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
+            title="Open Terminal (/)"
+          >
+            <i className="fa-solid fa-terminal text-[10px] text-emerald-500 group-hover:scale-110 transition-transform"></i>
+          </button>
+
           {/* Preferences Dropdown */}
           <div className="relative" ref={prefsMenuRef}>
             <button 
@@ -138,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
             </button>
 
             {showPrefsMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
+              <div className="absolute top-full right-0 mt-3 w-52 bg-white/60 dark:bg-neutral-950/60 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2 text-[8px] font-black text-neutral-400 uppercase tracking-widest">{lang === 'es' ? 'Preferencias' : 'Preferences'}</div>
                   
@@ -146,13 +156,13 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
                   <div className="flex bg-black/[0.05] dark:bg-white/[0.05] rounded-xl p-1 mb-2">
                     <button 
                       onClick={() => setLang('es')}
-                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'es' ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
+                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'es' ? 'bg-white/60 dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
                     >
                       ESPAÑOL
                     </button>
                     <button 
                       onClick={() => setLang('en')}
-                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'en' ? 'bg-white dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
+                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'en' ? 'bg-white/60 dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
                     >
                       ENGLISH
                     </button>
@@ -184,7 +194,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
             </button>
 
             {showCVMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right">
+              <div className="absolute top-full right-0 mt-3 w-52 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right">
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2 text-[8px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em]">{lang === 'es' ? 'Seleccionar Idioma' : 'Select Language'}</div>
                   <button 
@@ -213,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
 
         {/* Mobile Menu */}
         <div className={`absolute top-full left-0 right-0 mt-3 overflow-hidden transition-all duration-500 lg:hidden ${isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-          <div className={`bg-white/95 dark:bg-black/90 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
+          <div className={`bg-white/60 dark:bg-black/40 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -227,6 +237,14 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
               </button>
             ))}
             
+            <button 
+              onClick={() => { setIsMenuOpen(false); onOpenTerminal(); }}
+              className="w-full text-left p-4 rounded-xl font-bold uppercase tracking-widest text-[10px] flex justify-between items-center transition-all text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10"
+            >
+              Terminal (Shell)
+              <i className="fa-solid fa-terminal"></i>
+            </button>
+
             <div className="h-px bg-black/5 dark:bg-white/5 my-2 mx-4"></div>
 
             <div className="grid grid-cols-2 gap-2 p-2">

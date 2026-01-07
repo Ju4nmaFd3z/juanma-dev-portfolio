@@ -192,7 +192,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end md:max-lg:portrait:hidden md:portrait:hidden lg:portrait:hidden">
+    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end">
       {isOpen ? (
         <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[600px] max-h-[85vh] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
@@ -226,6 +226,30 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                     'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'
                   }`}>
                     {m.role === 'bot' ? <MarkdownLite text={m.text} /> : m.text}
+                    {/* Rendering grounding sources as required by Google Search tool guidelines */}
+                    {m.sources && m.sources.length > 0 && (
+                      <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-blue-400/70">
+                          {lang === 'es' ? 'Fuentes consultadas:' : 'Consulted sources:'}
+                        </span>
+                        <div className="flex flex-col gap-1.5">
+                          {m.sources.map((source, si) => (
+                            source.web && (
+                              <a 
+                                key={si} 
+                                href={source.web.uri} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-[10px] text-neutral-400 hover:text-blue-400 transition-colors flex items-center gap-2 truncate no-cursor-effect"
+                              >
+                                <i className="fa-solid fa-link text-[8px]"></i>
+                                <span className="truncate">{source.web.title || source.web.uri}</span>
+                              </a>
+                            )
+                          ))}
+                        </div>
+                      </div>
+                    )}
                     {m.needsKey && (
                       <button onClick={handleOpenKeySelector} className="mt-4 w-full py-2 bg-red-600/20 hover:bg-red-600/40 text-red-200 font-black uppercase tracking-widest text-[9px] rounded-xl transition-all border border-red-500/30">
                         CONFIGURAR CLAVE

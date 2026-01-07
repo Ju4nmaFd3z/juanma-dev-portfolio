@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { translations } from '../translations';
+import { Project } from '../types';
 
 interface ProjectsProps { lang: 'es' | 'en'; }
 
@@ -14,7 +15,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     en: { all: 'All', software: 'Software', systems: 'Systems' }
   };
 
-  const projectData = [
+  const projectData: Project[] = [
     {
       ...t.items[0],
       category: 'software',
@@ -46,7 +47,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     ? projectData 
     : projectData.filter(p => p.category === filter);
 
-  // Reset index when filter changes
   useEffect(() => {
     setActiveIndex(0);
   }, [filter]);
@@ -62,7 +62,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
   const getCardStyles = (index: number) => {
     const diff = index - activeIndex;
     
-    // Lógica para que el carrusel sea infinito visualmente en el cálculo de distancias
     let displayDiff = diff;
     if (diff > 1) displayDiff = diff - filteredProjects.length;
     if (diff < -1) displayDiff = diff + filteredProjects.length;
@@ -70,9 +69,9 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     if (displayDiff === 0) {
       return "z-30 opacity-100 scale-100 translate-x-0 blur-0 shadow-2xl";
     } else if (displayDiff === 1 || (activeIndex === filteredProjects.length - 1 && index === 0)) {
-      return "z-10 opacity-40 scale-75 translate-x-[40%] sm:translate-x-[60%] blur-sm pointer-events-none rotate-y-[-10deg]";
+      return "z-10 opacity-40 scale-75 translate-x-[35%] sm:translate-x-[45%] lg:translate-x-[55%] xl:translate-x-[65%] blur-sm pointer-events-none rotate-y-[-10deg]";
     } else if (displayDiff === -1 || (activeIndex === 0 && index === filteredProjects.length - 1)) {
-      return "z-10 opacity-40 scale-75 translate-x-[-40%] sm:translate-x-[-60%] blur-sm pointer-events-none rotate-y-[10deg]";
+      return "z-10 opacity-40 scale-75 translate-x-[-35%] sm:translate-x-[-45%] lg:translate-x-[-55%] xl:translate-x-[-65%] blur-sm pointer-events-none rotate-y-[10deg]";
     } else {
       return "z-0 opacity-0 scale-50 translate-x-0 blur-xl pointer-events-none";
     }
@@ -80,11 +79,9 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
 
   return (
     <div className="relative overflow-visible">
-      {/* Background decoration */}
       <div className="absolute -right-24 top-0 w-96 h-96 bg-blue-600/5 dark:bg-blue-600/5 rounded-full blur-[100px] pointer-events-none" />
       
       <div className="flex flex-col gap-8 md:gap-6 lg:gap-8">
-        {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-3">
@@ -127,36 +124,33 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
           </div>
         </div>
 
-        {/* Carousel Area - Margenes refinados para añadir aire sutil */}
         <div className="relative py-12 lg:py-16 px-4 sm:px-0">
-          {/* Navigation Arrows */}
-          <div className="absolute top-1/2 -translate-y-1/2 left-2 sm:left-[-2rem] lg:left-[-4rem] z-50">
+          {/* Side Arrows - Only visible on XL screens (1280px+) to avoid overlaps on landscape tablets */}
+          <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 left-[-5rem] z-50">
             <button 
               onClick={prevProject}
-              className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
+              className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
             >
               <i className="fa-solid fa-chevron-left text-neutral-400 group-hover:text-blue-600 transition-colors"></i>
             </button>
           </div>
           
-          <div className="absolute top-1/2 -translate-y-1/2 right-2 sm:right-[-2rem] lg:right-[-4rem] z-50">
+          <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 right-[-5rem] z-50">
             <button 
               onClick={nextProject}
-              className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
+              className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
             >
               <i className="fa-solid fa-chevron-right text-neutral-400 group-hover:text-blue-600 transition-colors"></i>
             </button>
           </div>
 
-          {/* Cards Container */}
           <div className="relative h-[550px] sm:h-[600px] w-full perspective-1000">
             {filteredProjects.map((p, i) => (
               <div 
                 key={i} 
-                className={`absolute inset-0 m-auto w-full max-w-[350px] sm:max-w-[500px] lg:max-w-[650px] h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${getCardStyles(i)}`}
+                className={`absolute inset-0 m-auto w-full max-w-[310px] sm:max-w-[460px] lg:max-w-[620px] xl:max-w-[750px] h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${getCardStyles(i)}`}
               >
                 <div className="group relative flex flex-col glass-card rounded-[2.5rem] overflow-hidden border-black/5 dark:border-white/5 hover:border-blue-600/30 dark:hover:border-blue-500/30 transition-all duration-700 h-full shadow-sm dark:shadow-none">
-                  {/* Image Container */}
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <div className={`absolute inset-0 bg-gradient-to-t from-neutral-900 dark:from-[#050505] via-transparent to-transparent z-10 opacity-80 transition-opacity duration-700`} />
                     <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient} z-10 mix-blend-overlay`} />
@@ -167,12 +161,10 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                       className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-1000 ease-out" 
                     />
                     
-                    {/* Category Icon */}
                     <div className="absolute top-8 left-8 z-20 w-12 h-12 rounded-2xl bg-white/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 flex items-center justify-center text-white text-lg shadow-xl">
                       <i className={p.icon}></i>
                     </div>
 
-                    {/* Status Indicator */}
                     <div className="absolute top-8 right-8 z-20 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-lg flex items-center justify-center">
                       <span className="text-[8px] font-black uppercase tracking-[0.2em] text-blue-400">
                         {p.category === 'software' ? (lang === 'es' ? 'Desarrollo' : 'Dev') : (lang === 'es' ? 'Infraestructura' : 'Infra')}
@@ -180,7 +172,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  {/* Content Section */}
                   <div className="p-8 sm:p-10 flex flex-col flex-1">
                     <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                       {p.tech.map((tech, ti) => (
@@ -230,19 +221,40 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
             ))}
           </div>
 
-          {/* Carousel Indicators - Ajustado margen superior e inferior */}
-          <div className="flex justify-center gap-3 mt-10 mb-2">
-            {filteredProjects.map((_, i) => (
-              <button 
-                key={i}
-                onClick={() => setActiveIndex(i)}
-                className={`h-1.5 transition-all duration-500 rounded-full ${activeIndex === i ? 'w-8 bg-blue-600' : 'w-2 bg-neutral-300 dark:bg-neutral-800'}`}
-              />
-            ))}
+          {/* Navigation & Indicators - Visible on all screens up to XL (1280px) to prevent side overlaps */}
+          <div className="flex items-center justify-center gap-6 mt-10 mb-2">
+            {/* Nav arrow for non-desktop screens */}
+            <button 
+              onClick={prevProject}
+              className="xl:hidden w-12 h-12 rounded-xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 active:scale-90 shadow-sm"
+              aria-label="Previous Project"
+            >
+              <i className="fa-solid fa-chevron-left text-neutral-500 text-sm"></i>
+            </button>
+
+            {/* Dots */}
+            <div className="flex gap-3">
+              {filteredProjects.map((_, i) => (
+                <button 
+                  key={i}
+                  onClick={() => setActiveIndex(i)}
+                  className={`h-1.5 transition-all duration-500 rounded-full ${activeIndex === i ? 'w-8 bg-blue-600' : 'w-2 bg-neutral-300 dark:bg-neutral-800'}`}
+                  aria-label={`Go to project ${i + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Nav arrow for non-desktop screens */}
+            <button 
+              onClick={nextProject}
+              className="xl:hidden w-12 h-12 rounded-xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 active:scale-90 shadow-sm"
+              aria-label="Next Project"
+            >
+              <i className="fa-solid fa-chevron-right text-neutral-500 text-sm"></i>
+            </button>
           </div>
         </div>
 
-        {/* Learning Phase CTA */}
         <div className="glass-card rounded-[2rem] p-10 lg:p-12 border border-blue-500/10 bg-gradient-to-r from-blue-500/[0.05] dark:from-blue-500/[0.02] to-transparent text-center shadow-sm dark:shadow-none">
           <div className="max-w-2xl mx-auto">
             <h4 className="text-xl font-display font-bold text-neutral-900 dark:text-white mb-4">
