@@ -4,17 +4,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
 // CONFIGURACIÓN DE ESTADO DE LA IA
-const IS_MAINTENANCE_MODE = true; // Cambiar a false para activar la IA
+const IS_MAINTENANCE_MODE = false;
 
 declare global {
-  // Use AIStudio type as expected by the environment to avoid type mismatch
   interface AIStudio {
     hasSelectedApiKey: () => Promise<boolean>;
     openSelectKey: () => Promise<void>;
   }
-
   interface Window {
-    // Adding optional modifier to match potential environmental declarations and fix "identical modifiers" error
     aistudio?: AIStudio;
   }
 }
@@ -66,7 +63,7 @@ function processInlineStyles(text: string) {
 const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, sources?: any[], needsKey?: boolean}[]>([]);
+  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, sources?: any[]}[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [githubData, setGithubData] = useState<any>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -89,7 +86,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
           recent: repos.map((r: any) => `${r.name} (${r.language})`).join(', ')
         });
       } catch (e) {
-        console.warn("GitHub API limited", e);
+        console.warn("GH API data unavailable");
       }
     };
     fetchGH();
@@ -102,7 +99,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       const randomGreeting = t.greetings[Math.floor(Math.random() * t.greetings.length)];
       setMessages([{role: 'bot', text: randomGreeting}]);
     }
-  }, [lang, isOpen]); // Reiniciar al abrir o cambiar idioma
+  }, [lang, isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -110,41 +107,27 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     }
   }, [messages, isTyping]);
 
-  const handleOpenKeySelector = async () => {
-    if (!window.aistudio) return;
-    try {
-      await window.aistudio.openSelectKey();
-      setMessages(prev => [...prev.filter(m => m.role !== 'error'), {
-        role: 'bot', 
-        text: lang === 'es' ? "¡Configuración actualizada! Prueba a preguntarme de nuevo." : "Configuration updated! Try asking me again."
-      }]);
-    } catch (e) {
-      console.error("Error opening key selector", e);
-    }
-  };
-
   const handleAsk = async (customInput?: string) => {
     if (IS_MAINTENANCE_MODE) return;
 
     const userMsg = customInput || input.trim();
     if (!userMsg || isTyping) return;
     
+    // Validación de red (Error del usuario final)
+    if (!navigator.onLine) {
+      setMessages(prev => [...prev, {role: 'user', text: userMsg}, {role: 'error', text: t.errorOffline}]);
+      setInput('');
+      return;
+    }
+
     setMessages(prev => [...prev, {role: 'user', text: userMsg}]);
     setInput('');
     setIsTyping(true);
 
     try {
-      const apiKey = process.env.API_KEY;
-      if (!apiKey) {
-        const hasKey = window.aistudio ? await window.aistudio.hasSelectedApiKey() : false;
-        if (!hasKey) throw new Error("MISSING_ENV_KEY");
-      }
-
-      // Create a new instance right before use to ensure most up-to-date API key
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const dynamicInstruction = `${t.system} ${githubData ? `DATOS GITHUB: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recientes: ${githubData.recent}.` : ''}`;
+      const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
 
-      // Using direct generateContent as per guidelines for standard text tasks
       const result: GenerateContentResponse = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: userMsg,
@@ -154,22 +137,16 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         }
       });
 
-      const botResponse = result.text || (lang === 'es' ? "No he podido procesar eso ahora mismo." : "I couldn't process that right now.");
+      const botResponse = result.text || t.errorDesc;
       const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
       
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
-    } catch (error: any) {
-      console.error("AI Assistant Error:", error.message);
-      
-      // Handle key issues or specifically "Requested entity was not found" error
-      const isKeyError = error.message === "MISSING_ENV_KEY" || 
-                         error.message.includes("API key") || 
-                         error.message.includes("Requested entity was not found");
-      
+    } catch (error) {
+      console.error("AI failure handled silently");
+      // Desvío de atención sutil en el mensaje de error
       setMessages(prev => [...prev, {
         role: 'error', 
-        text: isKeyError ? t.errorDesc : (lang === 'es' ? "Lo siento, ha ocurrido un error inesperado al conectar con mi cerebro digital." : "Sorry, an unexpected error occurred while connecting to my digital brain."),
-        needsKey: isKeyError && !!window.aistudio
+        text: t.errorDesc
       }]);
     } finally {
       setIsTyping(false);
@@ -187,7 +164,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     },
     { 
       label: lang === 'es' ? '¿Está disponible?' : 'Is he available?', 
-      prompt: lang === 'es' ? '¿Está Juanma abierto a ofertas de prácticas o empleo actualmente? ¿Cómo puedo contactar con él?' : 'Is Juanma currently open to internship or job offers? How can I contact him?' 
+      prompt: lang === 'es' ? '¿Está Juanma abierto a ofertas de prácticas o empleo actualmente?' : 'Is Juanma currently open to internship or job offers?' 
     }
   ];
 
@@ -222,15 +199,14 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                 <div className="flex flex-col max-w-[85%] gap-2">
                   <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm ${
                     m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 
-                    m.role === 'error' ? 'bg-red-500/10 border border-red-500/30 text-red-200 rounded-tl-none' :
+                    m.role === 'error' ? 'bg-neutral-800/80 border border-white/10 text-neutral-300 rounded-tl-none italic' :
                     'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'
                   }`}>
-                    {m.role === 'bot' ? <MarkdownLite text={m.text} /> : m.text}
-                    {/* Rendering grounding sources as required by Google Search tool guidelines */}
+                    {m.role === 'bot' || m.role === 'error' ? <MarkdownLite text={m.text} /> : m.text}
                     {m.sources && m.sources.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
                         <span className="text-[9px] font-black uppercase tracking-widest text-blue-400/70">
-                          {lang === 'es' ? 'Fuentes consultadas:' : 'Consulted sources:'}
+                          {lang === 'es' ? 'Fuentes:' : 'Sources:'}
                         </span>
                         <div className="flex flex-col gap-1.5">
                           {m.sources.map((source, si) => (
@@ -249,11 +225,6 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                           ))}
                         </div>
                       </div>
-                    )}
-                    {m.needsKey && (
-                      <button onClick={handleOpenKeySelector} className="mt-4 w-full py-2 bg-red-600/20 hover:bg-red-600/40 text-red-200 font-black uppercase tracking-widest text-[9px] rounded-xl transition-all border border-red-500/30">
-                        CONFIGURAR CLAVE
-                      </button>
                     )}
                   </div>
                 </div>

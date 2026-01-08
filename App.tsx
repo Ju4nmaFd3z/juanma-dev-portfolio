@@ -120,7 +120,7 @@ const App: React.FC = () => {
             <Hero lang={lang} />
           </section>
           
-          <section id="about" className="py-10 lg:py-24">
+          <section id="about" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
             <About lang={lang} />
           </section>
           

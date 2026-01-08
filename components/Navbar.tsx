@@ -148,7 +148,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
             </button>
 
             {showPrefsMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/60 dark:bg-neutral-950/60 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
+              <div className="absolute top-full right-0 mt-3 w-52 bg-white/85 dark:bg-neutral-950/85 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2 text-[8px] font-black text-neutral-400 uppercase tracking-widest">{lang === 'es' ? 'Preferencias' : 'Preferences'}</div>
                   
@@ -194,7 +194,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
             </button>
 
             {showCVMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right">
+              <div className="absolute top-full right-0 mt-3 w-52 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right">
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2 text-[8px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em]">{lang === 'es' ? 'Seleccionar Idioma' : 'Select Language'}</div>
                   <button 
@@ -223,7 +223,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
 
         {/* Mobile Menu */}
         <div className={`absolute top-full left-0 right-0 mt-3 overflow-hidden transition-all duration-500 lg:hidden ${isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-          <div className={`bg-white/60 dark:bg-black/40 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
+          <div className={`bg-white/90 dark:bg-black/80 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
             {navLinks.map((link) => (
               <button
                 key={link.id}

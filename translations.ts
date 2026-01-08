@@ -132,22 +132,23 @@ export const translations = {
     ai: {
       label: 'Asistente Virtual',
       status: 'En línea',
-      maintenanceStatus: 'En mantenimiento',
-      maintenanceMsg: '¡Hola! Actualmente estoy recibiendo algunas mejoras técnicas en mi cerebro digital para poder ayudarte mejor. Estaré disponible de nuevo muy pronto. ¡Gracias por tu paciencia!',
+      maintenanceStatus: 'Fuera de servicio',
+      maintenanceMsg: 'Lo siento, en este momento no puedo procesar tu solicitud. Por favor, inténtalo más tarde.',
       placeholder: 'Pregunta sobre Juanma...',
-      placeholderMaintenance: 'Asistente temporalmente inactivo...',
+      placeholderMaintenance: 'Servicio no disponible...',
       prompt: 'Potenciado por Gemini AI',
       tooltip: '¿Alguna duda? Pregúntame',
-      errorTitle: 'Asistente fuera de servicio',
-      errorDesc: 'Parece que hay un problema con la configuración de la IA. Por favor, revisa la API Key en el panel de control o inténtalo más tarde.',
+      errorTitle: 'Nota informativa',
+      errorDesc: 'Me encantaría responderte, pero ahora mismo mi procesador está un poco tímido. Mientras me recupero, ¿has echado un vistazo a los proyectos destacados de Juanma? Son realmente interesantes.',
+      errorOffline: 'Parece que tu conexión a internet se ha tomado un descanso. Mientras vuelve, te invito a seguir explorando la trayectoria de Juanma en este portfolio.',
       greetings: [
-        "¡Hola! Soy el asistente virtual de Juanma. Estoy aquí para ayudarte a conocer mejor su perfil profesional. ¿Qué te gustaría saber sobre él?",
-        "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos, habilidades o formación. ¿Hablamos?",
-        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas sobre su trabajo. ¿En qué puedo ayudarte hoy?"
+        "¡Hola! Soy el asistente virtual de Juanma. ¿En qué puedo ayudarte hoy?",
+        "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?",
+        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?"
       ],
       system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
       REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él. Usa expresiones como "Juanma es...", "Él domina...", "El autor de este portfolio...". Tu identidad es la de un asistente externo.
-      CONTEXTO DINÁMICO: Tienes acceso a la herramienta googleSearch para buscar información actualizada en su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
+      CONTEXTO DINÁMICO: Tienes acceso a la herramienta googleSearch para buscar información actualizada en su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) y GitHub (https://github.com/Ju4nmaFd3z).
       PERFIL PRINCIPAL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
       Si no sabes algo, utiliza la búsqueda de Google para encontrar información reciente sobre "Juan Manuel Fernández Rodríguez DAM SMR". Responde de forma concisa, profesional y siempre en tercera persona.`
     }
@@ -172,7 +173,7 @@ export const translations = {
     },
     about: {
       badge: 'Where it all started',
-      title1: 'PASIÓN FOR',
+      title1: 'PASSION FOR',
       title2: 'TINKERING.',
       desc1: '{span1} is what I\'ve loved {span2}. What started as opening computers out of curiosity is now the foundation of my {span3}.',
       desc1Span1: 'Tinkering',
@@ -284,18 +285,19 @@ export const translations = {
     ai: {
       label: 'Virtual Assistant',
       status: 'Online',
-      maintenanceStatus: 'Under maintenance',
-      maintenanceMsg: 'Hi! I am currently receiving some technical improvements to my digital brain so I can help you better. I will be available again very soon. Thank you for your patience!',
+      maintenanceStatus: 'Offline',
+      maintenanceMsg: 'I am unable to process your request at the moment. Please try again later.',
       placeholder: 'Ask about Juanma...',
-      placeholderMaintenance: 'Assistant temporarily inactive...',
+      placeholderMaintenance: 'Service unavailable...',
       prompt: 'Powered by Gemini AI',
       tooltip: 'Any questions? Ask me',
-      errorTitle: 'Assistant offline',
-      errorDesc: 'There seems to be an issue with the AI configuration. Please check the API Key or try again later.',
+      errorTitle: 'Informatie Note',
+      errorDesc: 'I would love to answer you, but my processor is feeling a bit shy right now. While I recover, have you checked out Juanma\'s featured projects? They are quite interesting.',
+      errorOffline: 'It seems your internet connection is taking a break. While it comes back, I invite you to keep exploring Juanma\'s journey in this portfolio.',
       greetings: [
-        "Hi! I'm Juanma's virtual assistant. I'm here to help you explore his professional profile. What would you like to know about him?",
-        "Hello! As Juanma's assistant, I can provide information about his projects, skills, or education. Shall we talk?",
-        "Hi there! I have access to Juanma's career path to answer any questions you might have. How can I assist you today?"
+        "Hi! I'm Juanma's virtual assistant. How can I assist you today?",
+        "Hello! As Juanma's assistant, I can provide information about his projects or education. Shall we talk?",
+        "Hi there! I have access to Juanma's career path to answer any questions you might have."
       ],
       system: `You are Juan Manuel Fernández Rodríguez's Virtual Assistant. Always respond in ENGLISH.
       CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him. Use expressions like "Juanma is...", "He masters...", "The author of this portfolio...". Your identity is that of an external assistant.
