@@ -143,7 +143,6 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
     } catch (error) {
       console.error("AI failure handled silently");
-      // Desvío de atención sutil en el mensaje de error
       setMessages(prev => [...prev, {
         role: 'error', 
         text: t.errorDesc
@@ -199,9 +198,15 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                 <div className="flex flex-col max-w-[85%] gap-2">
                   <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm ${
                     m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 
-                    m.role === 'error' ? 'bg-neutral-800/80 border border-white/10 text-neutral-300 rounded-tl-none italic' :
+                    m.role === 'error' ? 'bg-neutral-900/60 border border-white/5 text-neutral-400 rounded-tl-none relative overflow-hidden' :
                     'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'
                   }`}>
+                    {m.role === 'error' && (
+                      <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 pb-2 border-b border-white/5">
+                        <i className="fa-solid fa-circle-exclamation text-neutral-600"></i>
+                        {t.errorTitle}
+                      </div>
+                    )}
                     {m.role === 'bot' || m.role === 'error' ? <MarkdownLite text={m.text} /> : m.text}
                     {m.sources && m.sources.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-white/10 space-y-2">

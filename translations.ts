@@ -51,7 +51,7 @@ export const translations = {
       items: [
         {
           title: "Genetix",
-          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React [VibeCoding] y Java. Aplica conceptos de evolución biológica como selección, cruce, mutación y elitismo como proyecto de ampliación de Programación.",
+          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React [VibeCoding] and Java. Aplica conceptos de evolución biológica como selección, cruce, mutación y elitismo como proyecto de ampliación de Programación.",
           tech: ["React", "Java", "Tailwind CSS", "Genética"]
         },
         {
@@ -138,9 +138,9 @@ export const translations = {
       placeholderMaintenance: 'Servicio no disponible...',
       prompt: 'Potenciado por Gemini AI',
       tooltip: '¿Alguna duda? Pregúntame',
-      errorTitle: 'Nota informativa',
-      errorDesc: 'Me encantaría responderte, pero ahora mismo mi procesador está un poco tímido. Mientras me recupero, ¿has echado un vistazo a los proyectos destacados de Juanma? Son realmente interesantes.',
-      errorOffline: 'Parece que tu conexión a internet se ha tomado un descanso. Mientras vuelve, te invito a seguir explorando la trayectoria de Juanma en este portfolio.',
+      errorTitle: 'Estado del servicio',
+      errorDesc: 'Actualmente, el asistente está experimentando una pausa técnica. Para garantizar la mejor experiencia, te invitamos a explorar la trayectoria detallada y proyectos de Juanma mientras restauramos la conexión.',
+      errorOffline: 'No se detecta conexión activa. Te animo a verificar tu red para retomar nuestra charla, o a seguir descubriendo el portfolio de Juanma a tu ritmo.',
       greetings: [
         "¡Hola! Soy el asistente virtual de Juanma. ¿En qué puedo ayudarte hoy?",
         "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?",
@@ -291,9 +291,9 @@ export const translations = {
       placeholderMaintenance: 'Service unavailable...',
       prompt: 'Powered by Gemini AI',
       tooltip: 'Any questions? Ask me',
-      errorTitle: 'Informatie Note',
-      errorDesc: 'I would love to answer you, but my processor is feeling a bit shy right now. While I recover, have you checked out Juanma\'s featured projects? They are quite interesting.',
-      errorOffline: 'It seems your internet connection is taking a break. While it comes back, I invite you to keep exploring Juanma\'s journey in this portfolio.',
+      errorTitle: 'Service Note',
+      errorDesc: 'The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma\'s detailed background and projects while we restore connection.',
+      errorOffline: 'No active connection detected. Please verify your network to resume our chat, or continue discovering Juanma\'s portfolio at your own pace.',
       greetings: [
         "Hi! I'm Juanma's virtual assistant. How can I assist you today?",
         "Hello! As Juanma's assistant, I can provide information about his projects or education. Shall we talk?",
