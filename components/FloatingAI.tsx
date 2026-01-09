@@ -3,14 +3,11 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
-// Verificación de entorno estricta: Solo Vercel o Localhost. 
-// Bloquea explícitamente entornos de Google AI Studio o previsualizaciones externas.
+// Verificación de entorno: Solo Vercel o Localhost.
 const IS_VERCEL_ENV = typeof window !== 'undefined' && 
-  (window.location.hostname.includes('vercel.app') || 
+  (window.location.hostname.endsWith('vercel.app') || 
    window.location.hostname === 'localhost' || 
-   window.location.hostname === '127.0.0.1') &&
-  !window.location.hostname.includes('google.com') &&
-  !window.location.hostname.includes('aistudio');
+   window.location.hostname === '127.0.0.1');
 
 declare global {
   interface AIStudio {
@@ -77,7 +74,6 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const t = translations[lang].ai;
 
   useEffect(() => {
-    // Si no estamos en Vercel, el servicio se marca como restringido permanentemente
     if (!IS_VERCEL_ENV) {
       setServiceRestricted(true);
       return;
@@ -97,7 +93,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
           recent: repos.map((r: any) => `${r.name} (${r.language})`).join(', ')
         });
       } catch (e) {
-        console.warn("GH API data fallback");
+        console.warn("GitHub API fallback active");
       }
     };
     fetchGH();
@@ -135,26 +131,39 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      // Instanciamos la API justo antes del uso para máxima seguridad
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
 
-      const response: GenerateContentResponse = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: userMsg,
-        config: {
-          systemInstruction: dynamicInstruction,
-          tools: [{ googleSearch: {} }]
-        }
-      });
+      let response: GenerateContentResponse;
+
+      try {
+        // Intento 1: Con herramientas de búsqueda (puede fallar en claves gratuitas)
+        response = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: userMsg,
+          config: {
+            systemInstruction: dynamicInstruction,
+            tools: [{ googleSearch: {} }]
+          }
+        });
+      } catch (searchError) {
+        console.warn("Search tool restricted for this key, falling back to standard generation...");
+        // Intento 2: Generación estándar sin herramientas
+        response = await ai.models.generateContent({
+          model: 'gemini-3-flash-preview',
+          contents: userMsg,
+          config: {
+            systemInstruction: dynamicInstruction
+          }
+        });
+      }
 
       const botResponse = response.text || t.errorDesc;
       const sources = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
       
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
     } catch (error: any) {
-      // Manejo elegante de cuota o errores de API sin romper la estética
-      console.error("AI Assistant Pause");
+      console.error("Gemini API Final Error:", error);
       setMessages(prev => [...prev, { role: 'error', text: t.errorDesc }]);
     } finally {
       setIsTyping(false);
