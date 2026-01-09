@@ -132,19 +132,19 @@ export const translations = {
     ai: {
       label: 'Asistente Virtual',
       status: 'En línea',
-      maintenanceStatus: 'Fuera de servicio',
-      maintenanceMsg: 'Lo siento, en este momento no puedo procesar tu solicitud. Por favor, inténtalo más tarde.',
+      maintenanceStatus: 'Restringido',
+      maintenanceMsg: '### Protocolo de Seguridad Activo\nPor políticas de despliegue, el servicio de IA solo está disponible en el entorno de producción oficial. Por favor, visita el dominio oficial de Juanma para interactuar con el asistente.',
       placeholder: 'Pregunta sobre Juanma...',
-      placeholderMaintenance: 'Servicio no disponible...',
+      placeholderMaintenance: 'Acceso restringido...',
       prompt: 'Potenciado por Gemini AI',
       tooltip: '¿Alguna duda? Pregúntame',
-      errorTitle: 'Estado del servicio',
-      errorDesc: 'Actualmente, el asistente está experimentando una pausa técnica. Para garantizar la mejor experiencia, te invitamos a explorar la trayectoria detallada y proyectos de Juanma mientras restauramos la conexión.',
+      errorTitle: 'Nota Informativa',
+      errorDesc: 'Actualmente, el asistente está experimentando una pausa técnica. Para garantizar la mejor experiencia, te invitamos a explorar la trayectoria detallada y proyectos de Juanma mientras restauramos el servicio.',
       errorOffline: 'No se detecta conexión activa. Te animo a verificar tu red para retomar nuestra charla, o a seguir descubriendo el portfolio de Juanma a tu ritmo.',
       greetings: [
         "¡Hola! Soy el asistente virtual de Juanma. ¿En qué puedo ayudarte hoy?",
         "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?",
-        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?"
+        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas."
       ],
       system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
       REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él. Usa expresiones como "Juanma es...", "Él domina...", "El autor de este portfolio...". Tu identidad es la de un asistente externo.
@@ -285,18 +285,18 @@ export const translations = {
     ai: {
       label: 'Virtual Assistant',
       status: 'Online',
-      maintenanceStatus: 'Offline',
-      maintenanceMsg: 'I am unable to process your request at the moment. Please try again later.',
+      maintenanceStatus: 'Restricted',
+      maintenanceMsg: '### Security Protocol Active\nFor deployment policies, the AI service is only available in the official production environment. Please visit Juanma\'s official domain to interact with the assistant.',
       placeholder: 'Ask about Juanma...',
-      placeholderMaintenance: 'Service unavailable...',
+      placeholderMaintenance: 'Restricted access...',
       prompt: 'Powered by Gemini AI',
       tooltip: 'Any questions? Ask me',
-      errorTitle: 'Service Note',
-      errorDesc: 'The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma\'s detailed background and projects while we restore connection.',
+      errorTitle: 'Informatie Note',
+      errorDesc: 'The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma\'s detailed background and projects while we restore service.',
       errorOffline: 'No active connection detected. Please verify your network to resume our chat, or continue discovering Juanma\'s portfolio at your own pace.',
       greetings: [
         "Hi! I'm Juanma's virtual assistant. How can I assist you today?",
-        "Hello! As Juanma's assistant, I can provide information about his projects or education. Shall we talk?",
+        "Hello! As Juanma's assistant, I can provide information about his projects or education.",
         "Hi there! I have access to Juanma's career path to answer any questions you might have."
       ],
       system: `You are Juan Manuel Fernández Rodríguez's Virtual Assistant. Always respond in ENGLISH.
