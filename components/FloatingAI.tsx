@@ -3,11 +3,8 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
-// Verificación de entorno: Solo Vercel o Localhost.
-const IS_VERCEL_ENV = typeof window !== 'undefined' && 
-  (window.location.hostname.endsWith('vercel.app') || 
-   window.location.hostname === 'localhost' || 
-   window.location.hostname === '127.0.0.1');
+// CONFIGURACIÓN DE ESTADO DE LA IA
+const IS_MAINTENANCE_MODE = false;
 
 declare global {
   interface AIStudio {
@@ -69,15 +66,11 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, sources?: any[]}[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [githubData, setGithubData] = useState<any>(null);
-  const [serviceRestricted, setServiceRestricted] = useState(!IS_VERCEL_ENV);
   const scrollRef = useRef<HTMLDivElement>(null);
   const t = translations[lang].ai;
 
   useEffect(() => {
-    if (!IS_VERCEL_ENV) {
-      setServiceRestricted(true);
-      return;
-    }
+    if (IS_MAINTENANCE_MODE) return;
 
     const fetchGH = async () => {
       try {
@@ -93,20 +86,20 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
           recent: repos.map((r: any) => `${r.name} (${r.language})`).join(', ')
         });
       } catch (e) {
-        console.warn("GitHub API fallback active");
+        console.warn("GH API data unavailable");
       }
     };
     fetchGH();
   }, []);
 
   useEffect(() => {
-    if (serviceRestricted) {
-      setMessages([{role: 'error', text: t.maintenanceMsg}]);
-    } else if (isOpen && messages.length <= 1) {
+    if (IS_MAINTENANCE_MODE) {
+      setMessages([{role: 'bot', text: t.maintenanceMsg}]);
+    } else {
       const randomGreeting = t.greetings[Math.floor(Math.random() * t.greetings.length)];
       setMessages([{role: 'bot', text: randomGreeting}]);
     }
-  }, [lang, isOpen, serviceRestricted]);
+  }, [lang, isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -115,11 +108,12 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   }, [messages, isTyping]);
 
   const handleAsk = async (customInput?: string) => {
-    if (serviceRestricted || isTyping) return;
+    if (IS_MAINTENANCE_MODE) return;
 
     const userMsg = customInput || input.trim();
-    if (!userMsg) return;
+    if (!userMsg || isTyping) return;
     
+    // Validación de red (Error del usuario final)
     if (!navigator.onLine) {
       setMessages(prev => [...prev, {role: 'user', text: userMsg}, {role: 'error', text: t.errorOffline}]);
       setInput('');
@@ -134,45 +128,43 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
 
-      let response: GenerateContentResponse;
+      const result: GenerateContentResponse = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: userMsg,
+        config: {
+          systemInstruction: dynamicInstruction,
+          tools: [{ googleSearch: {} }]
+        }
+      });
 
-      try {
-        // Intento 1: Con herramientas de búsqueda (puede fallar en claves gratuitas)
-        response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: userMsg,
-          config: {
-            systemInstruction: dynamicInstruction,
-            tools: [{ googleSearch: {} }]
-          }
-        });
-      } catch (searchError) {
-        console.warn("Search tool restricted for this key, falling back to standard generation...");
-        // Intento 2: Generación estándar sin herramientas
-        response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: userMsg,
-          config: {
-            systemInstruction: dynamicInstruction
-          }
-        });
-      }
-
-      const botResponse = response.text || t.errorDesc;
-      const sources = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+      const botResponse = result.text || t.errorDesc;
+      const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
       
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
-    } catch (error: any) {
-      console.error("Gemini API Final Error:", error);
-      setMessages(prev => [...prev, { role: 'error', text: t.errorDesc }]);
+    } catch (error) {
+      console.error("AI failure handled silently");
+      setMessages(prev => [...prev, {
+        role: 'error', 
+        text: t.errorDesc
+      }]);
     } finally {
       setIsTyping(false);
     }
   };
 
   const quickActions = [
-    { label: lang === 'es' ? 'Sobre Juanma' : 'About Juanma', prompt: lang === 'es' ? 'Hazme un resumen profesional de Juanma.' : 'Give me a professional summary of Juanma.' },
-    { label: lang === 'es' ? 'Stack Técnico' : 'Tech Stack', prompt: lang === 'es' ? '¿Cuáles son las hard skills de Juanma?' : 'What are Juanma\'s hard skills?' }
+    { 
+      label: lang === 'es' ? 'Stack de Juanma' : 'Juanma\'s Tech Stack', 
+      prompt: lang === 'es' ? '¿Cuáles son las tecnologías y lenguajes que domina Juanma actualmente?' : 'What are the technologies and languages that Juanma currently masters?' 
+    },
+    { 
+      label: lang === 'es' ? 'Erasmus en Italia' : 'Erasmus in Italy', 
+      prompt: lang === 'es' ? 'Cuéntame sobre la experiencia Erasmus de Juanma en Italia. ¿Qué tareas realizó?' : 'Tell me about Juanma\'s Erasmus experience in Italy. What tasks did he perform?' 
+    },
+    { 
+      label: lang === 'es' ? '¿Está disponible?' : 'Is he available?', 
+      prompt: lang === 'es' ? '¿Está Juanma abierto a ofertas de prácticas o empleo actualmente?' : 'Is Juanma currently open to internship or job offers?' 
+    }
   ];
 
   return (
@@ -181,17 +173,17 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[600px] max-h-[85vh] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
             <div className="flex items-center gap-4">
-              <div className={`w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg ${serviceRestricted ? 'grayscale' : ''}`}>
+              <div className={`w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg ${IS_MAINTENANCE_MODE ? 'grayscale-[0.5]' : ''}`}>
                 <i className="fa-solid fa-robot text-lg"></i>
               </div>
               <div className="flex flex-col">
                 <span className="text-[11px] font-black uppercase tracking-widest text-white leading-none">{t.label}</span>
-                <span className={`flex items-center gap-2 text-[8px] font-black uppercase mt-2 ${serviceRestricted ? 'text-amber-500' : 'text-emerald-500'}`}>
+                <span className={`flex items-center gap-2 text-[8px] font-black uppercase mt-2 ${IS_MAINTENANCE_MODE ? 'text-amber-500' : 'text-emerald-500'}`}>
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${serviceRestricted ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
-                    <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${serviceRestricted ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${IS_MAINTENANCE_MODE ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+                    <span className={`relative inline-flex rounded-full h-1.5 w-1.5 ${IS_MAINTENANCE_MODE ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
                   </span>
-                  {serviceRestricted ? t.maintenanceStatus : t.status}
+                  {IS_MAINTENANCE_MODE ? t.maintenanceStatus : t.status}
                 </span>
               </div>
             </div>
@@ -203,29 +195,32 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-black/20">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-500`}>
-                <div className={`${m.role === 'error' ? 'w-full' : 'max-w-[85%]'}`}>
-                  <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm transition-all duration-500 ${
+                <div className="flex flex-col max-w-[85%] gap-2">
+                  <div className={`px-5 py-4 rounded-2xl text-[13px] leading-relaxed shadow-sm ${
                     m.role === 'user' ? 'bg-blue-600 text-white rounded-tr-none' : 
-                    m.role === 'error' ? 'bg-neutral-900/40 border border-white/5 text-neutral-400 rounded-xl relative overflow-hidden backdrop-blur-sm' :
+                    m.role === 'error' ? 'bg-neutral-900/60 border border-white/5 text-neutral-400 rounded-tl-none relative overflow-hidden' :
                     'bg-white/5 border border-white/10 text-neutral-200 rounded-tl-none'
                   }`}>
                     {m.role === 'error' && (
-                      <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-neutral-500 mb-3 pb-2 border-b border-white/5">
-                        <i className="fa-solid fa-shield-halved text-neutral-600"></i>
+                      <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500 pb-2 border-b border-white/5">
+                        <i className="fa-solid fa-circle-exclamation text-neutral-600"></i>
                         {t.errorTitle}
                       </div>
                     )}
-                    <MarkdownLite text={m.text} />
+                    {m.role === 'bot' || m.role === 'error' ? <MarkdownLite text={m.text} /> : m.text}
                     {m.sources && m.sources.length > 0 && (
-                      <div className="mt-4 pt-3 border-t border-white/10">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-blue-400/70 mb-2 block">
+                      <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-blue-400/70">
                           {lang === 'es' ? 'Fuentes:' : 'Sources:'}
                         </span>
                         <div className="flex flex-col gap-1.5">
                           {m.sources.map((source, si) => (
                             source.web && (
                               <a 
-                                key={si} href={source.web.uri} target="_blank" rel="noopener noreferrer"
+                                key={si} 
+                                href={source.web.uri} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
                                 className="text-[10px] text-neutral-400 hover:text-blue-400 transition-colors flex items-center gap-2 truncate no-cursor-effect"
                               >
                                 <i className="fa-solid fa-link text-[8px]"></i>
@@ -253,13 +248,15 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
             )}
           </div>
 
-          <div className="p-6 bg-black/60 border-t border-white/10 space-y-4">
-            {!serviceRestricted && (
-              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+          <div className={`p-6 bg-black/60 border-t border-white/10 space-y-4 ${IS_MAINTENANCE_MODE ? 'opacity-95 pointer-events-none' : ''}`}>
+            {!IS_MAINTENANCE_MODE && (
+              <div className="grid grid-cols-2 sm:flex sm:justify-between gap-2 sm:gap-1 sm:overflow-hidden pb-1 no-scrollbar">
                 {quickActions.map((qa, i) => (
                   <button 
-                    key={i} onClick={() => handleAsk(qa.prompt)}
-                    className="cursor-hide whitespace-nowrap px-4 py-2 glass-card rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-900 hover:text-white transition-all border-blue-500/20"
+                    key={i} 
+                    onClick={() => handleAsk(qa.prompt)}
+                    disabled={isTyping}
+                    className={`${i === 2 ? 'col-span-2 sm:flex-1' : 'col-span-1 sm:flex-1'} cursor-hide whitespace-nowrap px-3 py-2 sm:px-1 glass-card rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-tight sm:tracking-tighter text-blue-400 hover:bg-blue-900 hover:text-white transition-all border-blue-500/20 active:scale-95 disabled:opacity-50`}
                   >
                     {qa.label}
                   </button>
@@ -271,15 +268,15 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                 type="text" value={input} 
                 onChange={(e) => setInput(e.target.value)} 
                 onKeyDown={(e) => e.key === 'Enter' && handleAsk()} 
-                placeholder={serviceRestricted ? t.placeholderMaintenance : t.placeholder} 
-                disabled={serviceRestricted || isTyping}
+                placeholder={IS_MAINTENANCE_MODE ? t.placeholderMaintenance : t.placeholder} 
+                disabled={IS_MAINTENANCE_MODE || isTyping}
                 className={`flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-5 py-4 text-[13px] text-white focus:outline-none transition-all placeholder:text-neutral-600 ${
-                  !serviceRestricted ? 'focus:border-blue-500/50' : 'cursor-not-allowed opacity-50'
+                  !IS_MAINTENANCE_MODE ? 'focus:border-blue-500/50' : ''
                 }`} 
               />
               <button 
                 onClick={() => handleAsk()} 
-                disabled={!input.trim() || isTyping || serviceRestricted} 
+                disabled={!input.trim() || isTyping || IS_MAINTENANCE_MODE} 
                 className="cursor-hide w-12 h-12 bg-white text-black rounded-xl flex items-center justify-center hover:bg-blue-900 hover:text-white transition-all shadow-xl disabled:opacity-30"
               >
                 <i className="fa-solid fa-paper-plane text-sm"></i>
@@ -290,16 +287,21 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       ) : (
         <div className="relative group flex items-center">
           <div className="absolute right-full mr-4 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 pointer-events-none transition-all duration-500">
-            <div className={`backdrop-blur-xl border px-4 py-2 rounded-xl whitespace-nowrap shadow-2xl transition-colors duration-300 ${serviceRestricted ? 'bg-amber-500/[0.08] border-amber-500/30' : 'bg-blue-500/[0.08] border-blue-500/30'}`}>
+            <div className={`backdrop-blur-xl border px-4 py-2 rounded-xl whitespace-nowrap shadow-2xl transition-colors duration-300 ${IS_MAINTENANCE_MODE ? 'bg-amber-500/[0.08] border-amber-500/30' : 'bg-blue-500/[0.08] border-blue-500/30'}`}>
               <span className="text-[10px] font-black uppercase tracking-[0.15em] text-white/90">
-                {serviceRestricted ? t.maintenanceStatus : t.tooltip}
+                {IS_MAINTENANCE_MODE ? t.maintenanceStatus : t.tooltip}
               </span>
             </div>
           </div>
-          <button onClick={() => setIsOpen(true)} className={`relative w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 hover:rounded-[2rem] hover:bg-blue-900 hover:text-white ${serviceRestricted ? 'grayscale' : ''}`}>
-            <i className="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
-            <span className={`absolute -top-1 -right-1 flex h-4 w-4 z-10 ${serviceRestricted ? 'bg-amber-500' : 'bg-emerald-500'} rounded-full border-2 border-[#050505]`}></span>
-          </button>
+          <div className="relative">
+            <button onClick={() => setIsOpen(true)} className={`relative w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 hover:rounded-[2rem] hover:bg-blue-900 hover:text-white ${IS_MAINTENANCE_MODE ? 'grayscale' : ''}`}>
+              <i className="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
+            </button>
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 z-10 pointer-events-none">
+              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${IS_MAINTENANCE_MODE ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
+              <span className={`relative inline-flex rounded-full h-4 w-4 border-2 border-[#050505] ${IS_MAINTENANCE_MODE ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+            </span>
+          </div>
         </div>
       )}
     </div>
