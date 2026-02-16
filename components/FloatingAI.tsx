@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
@@ -51,6 +50,7 @@ const MarkdownLite = ({ text }: { text: string }) => {
   );
 };
 
+// Helper function to process inline bold and italic styles in MarkdownLite
 function processInlineStyles(text: string) {
   const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
   return parts.map((part, j) => {
@@ -113,7 +113,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     const userMsg = customInput || input.trim();
     if (!userMsg || isTyping) return;
     
-    // Validación de red (Error del usuario final)
+    // Check for network connection
     if (!navigator.onLine) {
       setMessages(prev => [...prev, {role: 'user', text: userMsg}, {role: 'error', text: t.errorOffline}]);
       setInput('');
@@ -125,9 +125,11 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
+      // Use standard GoogleGenAI initialization
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
 
+      // Call generateContent with Gemini model and Search grounding
       const result: GenerateContentResponse = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: userMsg,
@@ -137,12 +139,14 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         }
       });
 
+      // Extract text output using .text property
       const botResponse = result.text || t.errorDesc;
+      // Extract grounding chunks for search grounding requirement
       const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
       
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
     } catch (error) {
-      console.error("AI failure handled silently");
+      console.error("AI failure:", error);
       setMessages(prev => [...prev, {
         role: 'error', 
         text: t.errorDesc
@@ -208,23 +212,23 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                       </div>
                     )}
                     {m.role === 'bot' || m.role === 'error' ? <MarkdownLite text={m.text} /> : m.text}
+                    
+                    {/* Render grounding sources if search tool was used */}
                     {m.sources && m.sources.length > 0 && (
-                      <div className="mt-4 pt-3 border-t border-white/10 space-y-2">
-                        <span className="text-[9px] font-black uppercase tracking-widest text-blue-400/70">
-                          {lang === 'es' ? 'Fuentes:' : 'Sources:'}
-                        </span>
-                        <div className="flex flex-col gap-1.5">
+                      <div className="mt-4 pt-3 border-t border-white/10">
+                        <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500 block mb-2">Sources:</span>
+                        <div className="flex flex-wrap gap-2">
                           {m.sources.map((source, si) => (
                             source.web && (
                               <a 
-                                key={si} 
-                                href={source.web.uri} 
-                                target="_blank" 
+                                key={si}
+                                href={source.web.uri}
+                                target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[10px] text-neutral-400 hover:text-blue-400 transition-colors flex items-center gap-2 truncate no-cursor-effect"
+                                className="text-[10px] text-blue-400 hover:text-blue-300 underline flex items-center gap-1"
                               >
                                 <i className="fa-solid fa-link text-[8px]"></i>
-                                <span className="truncate">{source.web.title || source.web.uri}</span>
+                                {source.web.title || 'Link'}
                               </a>
                             )
                           ))}

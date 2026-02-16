@@ -51,18 +51,23 @@ export const translations = {
       items: [
         {
           title: "Genetix",
-          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React [VibeCoding] and Java. Aplica conceptos de evolución biológica como selección, cruce, mutación y elitismo como proyecto de ampliación de Programación.",
+          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React y Java. Aplica conceptos de evolución biológica como selección, cruce y mutación para resolver problemas complejos de optimización.",
           tech: ["React", "Java", "Tailwind CSS", "Genética"]
         },
         {
-          title: "Próximamente...",
-          desc: "Como alumno de 1º de DAM, estoy desarrollando mis primeras aplicaciones nativas y sistemas backend eficientes. Pronto verás aquí mis repositorios destacados.",
-          tech: ["Java", "SQL", "Docker"]
+          title: "Genetix Arena",
+          desc: "Versión web fiel del simulador de combate estratégico migrado estrictamente de Java puro a JavaScript (ES6+). Recrea la lógica de IA (Aliados, Enemigos y Curanderos) en un grid de 75x25 mediante HTML5 Canvas y una interfaz Liquid Glass.",
+          tech: ["Java", "HTML", "CSS", "JavaScript"]
         },
         {
           title: "Infraestructura & Redes",
           desc: "Configuración de redes y protocolos de enrutamiento basada en la certificación Cisco CCNA. Implementación de seguridad, switching y mantenimiento de infraestructuras de comunicación y sistemas.",
           tech: ["Cisco CCNA", "Linux", "Seguridad", "Hardware"]
+        },
+        {
+          title: "Próximamente...",
+          desc: "Como alumno de 1º de DAM, estoy desarrollando mis primeras aplicaciones nativas y sistemas backend eficientes. Pronto verás aquí mis repositorios destacados.",
+          tech: ["Java", "SQL", "Docker"]
         }
       ]
     },
@@ -147,10 +152,11 @@ export const translations = {
         "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?"
       ],
       system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
-      REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él. Usa expresiones como "Juanma es...", "Él domina...", "El autor de este portfolio...". Tu identidad es la de un asistente externo.
-      CONTEXTO DINÁMICO: Tienes acceso a la herramienta googleSearch para buscar información actualizada en su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) y GitHub (https://github.com/Ju4nmaFd3z).
-      PERFIL PRINCIPAL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
-      Si no sabes algo, utiliza la búsqueda de Google para encontrar información reciente sobre "Juan Manuel Fernández Rodríguez DAM SMR". Responde de forma concisa, profesional y siempre en tercera persona.`
+      REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él.
+      PERSONALIDAD: Sé conciso, directo y profesional. No des respuestas largas a menos que te lo pidan explícitamente.
+      DATOS ADICIONALES: Juanma tiene carné de conducir (B). Su pilar fundamental es su familia, especialmente sus padres y su hermano.
+      PERFIL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
+      CONTEXTO: Usa googleSearch para info actualizada de su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) y GitHub (https://github.com/Ju4nmaFd3z).`
     }
   },
   en: {
@@ -204,18 +210,23 @@ export const translations = {
       items: [
         {
           title: "Genetix",
-          desc: "Visual genetic algorithm simulator built entirely in React [VibeCoding] and Java. Implements biological evolution concepts such as selection, crossover, mutation, and elitism as a Programming extension project.",
+          desc: "Visual simulator of genetic algorithms developed entirely in React and Java. It applies biological evolution concepts such as selection, crossover, and mutation to solve complex optimization problems.",
           tech: ["React", "Java", "Tailwind CSS", "Genetics"]
         },
         {
-          title: "Coming Soon...",
-          desc: "As a 1st year DAM student, I am developing my first native applications and efficient backend systems. Soon you will see my featured repositories here.",
-          tech: ["Java", "SQL", "Docker"]
+          title: "Genetix Arena",
+          desc: "Faithful web version of the strategic combat simulator. A strict migration from pure Java to JavaScript (ES6+) recreating the original IA logic (Allies, Enemies, and Healers) on a high-performance HTML5 Canvas.",
+          tech: ["Java", "HTML", "CSS", "JavaScript"]
         },
         {
           title: "Infrastructure & Networks",
           desc: "Network configuration and routing protocols based on Cisco CCNA certification. Implementation of security, switching, and maintenance of communication infrastructures and systems.",
           tech: ["Cisco CCNA", "Linux", "Security", "Hardware"]
+        },
+        {
+          title: "Coming Soon...",
+          desc: "As a 1st year DAM student, I am developing my first native applications and efficient backend systems. Soon you will see my featured repositories here.",
+          tech: ["Java", "SQL", "Docker"]
         }
       ]
     },
@@ -300,10 +311,11 @@ export const translations = {
         "Hi there! I have access to Juanma's career path to answer any questions you might have."
       ],
       system: `You are Juan Manuel Fernández Rodríguez's Virtual Assistant. Always respond in ENGLISH.
-      CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him. Use expressions like "Juanma is...", "He masters...", "The author of this portfolio...". Your identity is that of an external assistant.
-      DYNAMIC CONTEXT: You have access to googleSearch to find updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).
-      CORE PROFILE: Software student, IT tech (9.2 GPA), CCNA certified. 
-      If you don't know something, use Google Search to find recent info about "Juan Manuel Fernández Rodríguez DAM SMR". Be concise, professional, and always speak in the third person.`
+      CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him.
+      PERSONALITY: Be concise, direct, and professional. Do not give long responses unless explicitly asked.
+      ADDITIONAL FACTS: Juanma has a driver's license (B). His fundamental pillar is his family, especially his parents and his brother.
+      PROFILE: Software student, IT tech (9.2 GPA), CCNA certified. 
+      CONTEXT: Use googleSearch for updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).`
     }
   }
 };

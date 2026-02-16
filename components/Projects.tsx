@@ -28,10 +28,11 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     {
       ...t.items[1],
       category: 'software',
-      icon: 'fa-solid fa-code-branch',
-      gradient: 'from-blue-600/20 to-purple-600/20',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200',
-      url: 'https://github.com/Ju4nmaFd3z'
+      icon: 'fa-solid fa-gamepad',
+      gradient: 'from-rose-500/30 to-purple-600/30',
+      image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://ju4nmafd3z.github.io/Genetix_Arena_Web_Edition/',
+      repo: 'https://github.com/Ju4nmaFd3z/Genetix_Arena_Web_Edition.git'
     },
     {
       ...t.items[2],
@@ -40,6 +41,14 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
       gradient: 'from-emerald-600/20 to-blue-600/20',
       image: 'https://images.unsplash.com/photo-1597733336794-12d05021d510?auto=format&fit=crop&q=80&w=1200',
       url: 'https://www.netacad.com/es/courses/ccna-introduction-networks?courseLang=en-US'
+    },
+    {
+      ...t.items[3],
+      category: 'software',
+      icon: 'fa-solid fa-code-branch',
+      gradient: 'from-blue-600/20 to-purple-600/20',
+      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://github.com/Ju4nmaFd3z'
     }
   ];
 
@@ -63,14 +72,15 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     const diff = index - activeIndex;
     
     let displayDiff = diff;
-    if (diff > 1) displayDiff = diff - filteredProjects.length;
-    if (diff < -1) displayDiff = diff + filteredProjects.length;
+    if (diff > 1 && diff >= filteredProjects.length - 1) displayDiff = diff - filteredProjects.length;
+    if (diff < -1 && diff <= - (filteredProjects.length - 1)) displayDiff = diff + filteredProjects.length;
 
+    // Lógica para 4 o más elementos para asegurar que los adyacentes se vean bien
     if (displayDiff === 0) {
       return "z-30 opacity-100 scale-100 translate-x-0 blur-0 shadow-2xl";
-    } else if (displayDiff === 1 || (activeIndex === filteredProjects.length - 1 && index === 0)) {
+    } else if (displayDiff === 1) {
       return "z-10 opacity-40 scale-75 translate-x-[35%] sm:translate-x-[45%] lg:translate-x-[55%] xl:translate-x-[65%] blur-sm pointer-events-none rotate-y-[-10deg]";
-    } else if (displayDiff === -1 || (activeIndex === 0 && index === filteredProjects.length - 1)) {
+    } else if (displayDiff === -1) {
       return "z-10 opacity-40 scale-75 translate-x-[-35%] sm:translate-x-[-45%] lg:translate-x-[-55%] xl:translate-x-[-65%] blur-sm pointer-events-none rotate-y-[10deg]";
     } else {
       return "z-0 opacity-0 scale-50 translate-x-0 blur-xl pointer-events-none";
@@ -125,7 +135,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
         </div>
 
         <div className="relative py-12 lg:py-16 px-4 sm:px-0">
-          {/* Side Arrows - Only visible on XL screens (1280px+) to avoid overlaps on landscape tablets */}
+          {/* Side Arrows */}
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 left-[-5rem] z-50">
             <button 
               onClick={prevProject}
@@ -198,7 +208,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                           rel="noopener noreferrer"
                           className="cursor-safe flex items-center gap-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300"
                         >
-                          {p.title === 'Genetix' ? 'Demo Live' : (lang === 'es' ? 'Explorar' : 'Explore')}
+                          {p.title.includes('Genetix') ? 'Demo Live' : (lang === 'es' ? 'Explorar' : 'Explore')}
                           <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
                         </a>
                         
@@ -221,9 +231,8 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
             ))}
           </div>
 
-          {/* Navigation & Indicators - Visible on all screens up to XL (1280px) to prevent side overlaps */}
+          {/* Navigation & Indicators */}
           <div className="flex items-center justify-center gap-6 mt-10 mb-2">
-            {/* Nav arrow for non-desktop screens */}
             <button 
               onClick={prevProject}
               className="xl:hidden w-12 h-12 rounded-xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 active:scale-90 shadow-sm"
@@ -232,7 +241,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               <i className="fa-solid fa-chevron-left text-neutral-500 text-sm"></i>
             </button>
 
-            {/* Dots */}
             <div className="flex gap-3">
               {filteredProjects.map((_, i) => (
                 <button 
@@ -244,7 +252,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               ))}
             </div>
 
-            {/* Nav arrow for non-desktop screens */}
             <button 
               onClick={nextProject}
               className="xl:hidden w-12 h-12 rounded-xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 active:scale-90 shadow-sm"
