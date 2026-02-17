@@ -56,8 +56,8 @@ export const translations = {
         },
         {
           title: "Genetix Arena",
-          desc: "Versión web fiel del simulador de combate estratégico migrado estrictamente de Java puro a JavaScript (ES6+). Recrea la lógica de IA (Aliados, Enemigos y Curanderos) en un grid de 75x25 mediante HTML5 Canvas y una interfaz Liquid Glass.",
-          tech: ["Java", "HTML", "CSS", "JavaScript"]
+          desc: "Simulador táctico de combate autónomo con IA emergente. Migración de alta fidelidad a TypeScript y React 19 con interfaz inspirada en SpaceX. Gestiona entidades (Ops, Hostiles, Med-Units) en un grid de 75x25.",
+          tech: ["TypeScript", "React 19", "Vite", "Tailwind"]
         },
         {
           title: "Infraestructura & Redes",
@@ -106,7 +106,7 @@ export const translations = {
           period: "2023 - 2025",
           status: "Completado",
           desc: "Instalación y configuración de equipos, mantenimiento de redes locales y seguridad informática. Enfoque práctico en troubleshooting y mejora de sistemas.",
-          highlights: ["Certificación Cisco CCNA (2024)", "Nota Media Final: 9.2"]
+          highlights: ["Cisco CCNA Certification (2024)", "Nota Media Final: 9.2"]
         }
       ]
     },
@@ -215,8 +215,8 @@ export const translations = {
         },
         {
           title: "Genetix Arena",
-          desc: "Faithful web version of the strategic combat simulator. A strict migration from pure Java to JavaScript (ES6+) recreating the original IA logic (Allies, Enemies, and Healers) on a high-performance HTML5 Canvas.",
-          tech: ["Java", "HTML", "CSS", "JavaScript"]
+          desc: "Autonomous tactical combat simulator with emergent AI. High-fidelity migration to TypeScript and React 19 with a SpaceX-inspired interface. Manages entities (Ops, Hostiles, Med-Units) on a 75x25 grid.",
+          tech: ["TypeScript", "React 19", "Vite", "Tailwind"]
         },
         {
           title: "Infrastructure & Networks",
@@ -296,13 +296,13 @@ export const translations = {
     ai: {
       label: 'Virtual Assistant',
       status: 'Online',
-      maintenanceStatus: 'Offline',
-      maintenanceMsg: 'I am unable to process your request at the moment. Please try again later.',
+      maintenanceStatus: 'Out of Service',
+      maintenanceMsg: 'I apologize, I cannot process your request at this moment. Please try again later.',
       placeholder: 'Ask about Juanma...',
       placeholderMaintenance: 'Service unavailable...',
       prompt: 'Powered by Gemini AI',
       tooltip: 'Any questions? Ask me',
-      errorTitle: 'Service Note',
+      errorTitle: 'Service Status',
       errorDesc: 'The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma\'s detailed background and projects while we restore connection.',
       errorOffline: 'No active connection detected. Please verify your network to resume our chat, or continue discovering Juanma\'s portfolio at your own pace.',
       greetings: [

@@ -31,7 +31,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
       icon: 'fa-solid fa-gamepad',
       gradient: 'from-rose-500/30 to-purple-600/30',
       image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=1200',
-      url: 'https://ju4nmafd3z.github.io/Genetix_Arena_Web_Edition/',
+      url: 'https://genetix-arena.vercel.app/',
       repo: 'https://github.com/Ju4nmaFd3z/Genetix_Arena_Web_Edition.git'
     },
     {
