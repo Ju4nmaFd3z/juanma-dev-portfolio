@@ -2,18 +2,7 @@ import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
-// CONFIGURACIÓN DE ESTADO DE LA IA
 const IS_MAINTENANCE_MODE = false;
-
-declare global {
-  interface AIStudio {
-    hasSelectedApiKey: () => Promise<boolean>;
-    openSelectKey: () => Promise<void>;
-  }
-  interface Window {
-    aistudio?: AIStudio;
-  }
-}
 
 interface FloatingAIProps { lang: 'es' | 'en'; }
 
@@ -50,7 +39,6 @@ const MarkdownLite = ({ text }: { text: string }) => {
   );
 };
 
-// Helper function to process inline bold and italic styles in MarkdownLite
 function processInlineStyles(text: string) {
   const parts = text.split(/(\*\*.*?\*\*|\*.*?\*)/g);
   return parts.map((part, j) => {
@@ -85,8 +73,8 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
           public_repos: user.public_repos,
           recent: repos.map((r: any) => `${r.name} (${r.language})`).join(', ')
         });
-      } catch (e) {
-        console.warn("GH API data unavailable");
+      } catch {
+        // GitHub API unavailable — AI will work without repo context
       }
     };
     fetchGH();
@@ -125,13 +113,18 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      // Use standard GoogleGenAI initialization
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const apiKey = process.env.API_KEY;
+      if (!apiKey) {
+        setMessages(prev => [...prev, { role: 'error', text: t.errorDesc }]);
+        setIsTyping(false);
+        return;
+      }
+
+      const ai = new GoogleGenAI({ apiKey });
       const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
 
-      // Call generateContent with Gemini model and Search grounding
       const result: GenerateContentResponse = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-2.0-flash',
         contents: userMsg,
         config: {
           systemInstruction: dynamicInstruction,
@@ -139,16 +132,13 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
         }
       });
 
-      // Extract text output using .text property
       const botResponse = result.text || t.errorDesc;
-      // Extract grounding chunks for search grounding requirement
       const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
-      
+
       setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
-    } catch (error) {
-      console.error("AI failure:", error);
+    } catch {
       setMessages(prev => [...prev, {
-        role: 'error', 
+        role: 'error',
         text: t.errorDesc
       }]);
     } finally {
@@ -212,8 +202,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
                       </div>
                     )}
                     {m.role === 'bot' || m.role === 'error' ? <MarkdownLite text={m.text} /> : m.text}
-                    
-                    {/* Render grounding sources if search tool was used */}
+
                     {m.sources && m.sources.length > 0 && (
                       <div className="mt-4 pt-3 border-t border-white/10">
                         <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500 block mb-2">Sources:</span>

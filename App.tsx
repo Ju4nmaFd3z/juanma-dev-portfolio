@@ -32,7 +32,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === '/' && !isTerminalOpen) {
+      const tag = (e.target as HTMLElement).tagName;
+      const isTypingField = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable;
+      if (e.key === '/' && !isTerminalOpen && !isTypingField) {
         e.preventDefault();
         setIsTerminalOpen(true);
       }
@@ -97,7 +99,6 @@ const App: React.FC = () => {
     <>
       {isLoading && <Preloader onLoadingComplete={() => setIsLoading(false)} />}
       
-      {/* Elementos de fondo y UI fija fuera del contenedor escalado */}
       <SnowEffect theme={theme} />
 
       <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
@@ -112,7 +113,6 @@ const App: React.FC = () => {
         <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} lang={lang} />
       </div>
 
-      {/* Contenedor principal con la animación de escala */}
       <div className={`min-h-screen relative selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-all duration-1000 ${isLoading ? 'opacity-0 scale-95 overflow-hidden h-screen' : 'opacity-100 scale-100'}`}>
         
         <main className="container mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">

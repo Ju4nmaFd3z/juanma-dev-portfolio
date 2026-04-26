@@ -20,9 +20,12 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
   };
 
   const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(id);
-    setTimeout(() => setCopied(null), 2000);
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(id);
+      setTimeout(() => setCopied(null), 2000);
+    }).catch(() => {
+      // Clipboard API unavailable — silently ignore
+    });
   };
 
   return (
@@ -83,8 +86,9 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
           <form onSubmit={handleSubmit} className="glass-card p-10 rounded-[2.5rem] h-full flex flex-col space-y-8 border border-black/10 dark:border-white/10 bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.name}</label>
-                <input 
+                <label htmlFor="contact-name" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.name}</label>
+                <input
+                  id="contact-name"
                   type="text" required value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder={t.form.placeholderName}
@@ -92,8 +96,9 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
                 />
               </div>
               <div className="space-y-3">
-                <label className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.email}</label>
-                <input 
+                <label htmlFor="contact-email" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.email}</label>
+                <input
+                  id="contact-email"
                   type="email" required value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder={t.form.placeholderEmail}
@@ -102,8 +107,9 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
               </div>
             </div>
             <div className="space-y-3 flex-1 flex flex-col">
-              <label className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.message}</label>
-              <textarea 
+              <label htmlFor="contact-message" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.message}</label>
+              <textarea
+                id="contact-message"
                 required value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 placeholder={t.form.placeholderMsg}

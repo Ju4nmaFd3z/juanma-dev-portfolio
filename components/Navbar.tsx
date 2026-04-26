@@ -128,16 +128,15 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
 
         <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Terminal Button */}
-          <button 
+          <button
             onClick={onOpenTerminal}
             className="w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
             title="Open Terminal (/)"
+            aria-label="Open Terminal"
           >
             <i className="fa-solid fa-terminal text-[10px] text-emerald-500 group-hover:scale-110 transition-transform"></i>
           </button>
 
-          {/* Preferences Dropdown */}
           <div className="relative" ref={prefsMenuRef}>
             <button 
               onClick={togglePrefsMenu}
@@ -151,8 +150,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
               <div className="absolute top-full right-0 mt-3 w-52 bg-white/85 dark:bg-neutral-950/85 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
                 <div className="p-2 space-y-1">
                   <div className="px-3 py-2 text-[8px] font-black text-neutral-400 uppercase tracking-widest">{lang === 'es' ? 'Preferencias' : 'Preferences'}</div>
-                  
-                  {/* Language Selector in Dropdown */}
                   <div className="flex bg-black/[0.05] dark:bg-white/[0.05] rounded-xl p-1 mb-2">
                     <button 
                       onClick={() => setLang('es')}
@@ -168,8 +165,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
                     </button>
                   </div>
 
-                  {/* Theme Toggle in Dropdown */}
-                  <button 
+                  <button
                     onClick={toggleTheme}
                     className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
                   >
@@ -221,7 +217,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
           </button>
         </div>
 
-        {/* Mobile Menu */}
         <div className={`absolute top-full left-0 right-0 mt-3 overflow-hidden transition-all duration-500 lg:hidden ${isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
           <div className={`bg-white/90 dark:bg-black/80 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
             {navLinks.map((link) => (

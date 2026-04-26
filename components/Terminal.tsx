@@ -67,7 +67,10 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
     if (isOpen) {
       const timer = setTimeout(focusInput, 100);
       if (history.length === 0) {
-        setHistory([lang === 'es' ? 'Bienvenido a Juanma-Terminal v1.0' : 'Welcome to Juanma-Terminal v1.0', 'Escribe "help" para ver los comandos.']);
+        setHistory([
+          lang === 'es' ? 'Bienvenido a Juanma-Terminal v1.0' : 'Welcome to Juanma-Terminal v1.0',
+          lang === 'es' ? 'Escribe "help" para ver los comandos.' : 'Type "help" to see available commands.'
+        ]);
       }
       return () => clearTimeout(timer);
     }

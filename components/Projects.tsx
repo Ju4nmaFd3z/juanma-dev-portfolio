@@ -75,7 +75,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     if (diff > 1 && diff >= filteredProjects.length - 1) displayDiff = diff - filteredProjects.length;
     if (diff < -1 && diff <= - (filteredProjects.length - 1)) displayDiff = diff + filteredProjects.length;
 
-    // Lógica para 4 o más elementos para asegurar que los adyacentes se vean bien
     if (displayDiff === 0) {
       return "z-30 opacity-100 scale-100 translate-x-0 blur-0 shadow-2xl";
     } else if (displayDiff === 1) {
@@ -99,7 +98,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-600 dark:text-blue-500">{t.title}</span>
             </div>
             <h2 className="text-5xl md:text-7xl font-display font-black tracking-tighter leading-none mb-4 text-neutral-900 dark:text-white">
-              MIS <span className="gradient-text">CREACIONES.</span>
+              {t.sectionHeading1} <span className="gradient-text">{t.sectionHeading2}</span>
             </h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg font-light leading-relaxed">
               {t.subtitle}
@@ -135,7 +134,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
         </div>
 
         <div className="relative py-12 lg:py-16 px-4 sm:px-0">
-          {/* Side Arrows */}
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 left-[-5rem] z-50">
             <button 
               onClick={prevProject}
@@ -231,7 +229,6 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
             ))}
           </div>
 
-          {/* Navigation & Indicators */}
           <div className="flex items-center justify-center gap-6 mt-10 mb-2">
             <button 
               onClick={prevProject}
@@ -265,22 +262,20 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
         <div className="glass-card rounded-[2rem] p-10 lg:p-12 border border-blue-500/10 bg-gradient-to-r from-blue-500/[0.05] dark:from-blue-500/[0.02] to-transparent text-center shadow-sm dark:shadow-none">
           <div className="max-w-2xl mx-auto">
             <h4 className="text-xl font-display font-bold text-neutral-900 dark:text-white mb-4">
-              {lang === 'es' ? 'Construyendo mi futuro...' : 'Building my future...'}
+              {t.buildingTitle}
             </h4>
             <p className="text-neutral-500 dark:text-neutral-500 text-sm leading-relaxed mb-8">
-              {lang === 'es' 
-                ? 'Actualmente estoy explorando nuevas fronteras en el desarrollo móvil y arquitecturas escalables. Mi repositorio de GitHub es testigo de mi progreso diario.' 
-                : 'I am currently exploring new frontiers in mobile development and scalable architectures. My GitHub repository witnesses my daily progress.'}
+              {t.buildingDesc}
             </p>
             <div className="flex justify-center gap-8">
               <div className="flex flex-col items-center">
                 <span className="text-2xl font-black text-neutral-900 dark:text-white mb-1">100+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">Commits / Mes</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">{t.statsCommits}</span>
               </div>
               <div className="w-px h-12 bg-black/10 dark:bg-white/10"></div>
               <div className="flex flex-col items-center">
                 <span className="text-2xl font-black text-neutral-900 dark:text-white mb-1">5+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">Tecnologías</span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">{t.statsTech}</span>
               </div>
             </div>
           </div>

@@ -48,6 +48,12 @@ export const translations = {
       title: 'Proyectos',
       subtitle: 'Bitácora de mi desarrollo profesional',
       github: 'Ver GitHub',
+      sectionHeading1: 'MIS',
+      sectionHeading2: 'CREACIONES.',
+      statsCommits: 'Commits / Mes',
+      statsTech: 'Tecnologías',
+      buildingTitle: 'Construyendo mi futuro...',
+      buildingDesc: 'Actualmente estoy explorando nuevas fronteras en el desarrollo móvil y arquitecturas escalables. Mi repositorio de GitHub es testigo de mi progreso diario.',
       items: [
         {
           title: "Genetix",
@@ -207,6 +213,12 @@ export const translations = {
       title: 'Projects',
       subtitle: 'My professional development log',
       github: 'View GitHub',
+      sectionHeading1: 'MY',
+      sectionHeading2: 'CREATIONS.',
+      statsCommits: 'Commits / Month',
+      statsTech: 'Technologies',
+      buildingTitle: 'Building my future...',
+      buildingDesc: 'I am currently exploring new frontiers in mobile development and scalable architectures. My GitHub repository witnesses my daily progress.',
       items: [
         {
           title: "Genetix",

@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ lang }) => {
         </div>
         <div className="flex gap-10">
           <a href="https://github.com/Ju4nmaFd3z" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-blue-600 dark:hover:text-white transition-colors text-[10px] uppercase tracking-[0.2em] font-bold">GitHub</a>
-          <a href="https://linkedin.com/in/juanma-fernández-rodríguez" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-blue-600 dark:hover:text-white transition-colors text-[10px] uppercase tracking-[0.2em] font-bold">LinkedIn</a>
+          <a href="https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-blue-600 dark:hover:text-white transition-colors text-[10px] uppercase tracking-[0.2em] font-bold">LinkedIn</a>
         </div>
       </div>
     </footer>

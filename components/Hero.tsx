@@ -52,10 +52,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
   return (
     <section className="hero-section min-h-[90vh] flex flex-col justify-center relative pt-32 md:pt-40 lg:pt-0 pb-12 overflow-visible transition-all duration-500 z-[50]">
       
-      {/* Grid principal optimizado para pantallas grandes */}
       <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-8 items-center relative z-10 w-full">
-        
-        {/* LADO IZQUIERDO: TEXTO PRINCIPAL */}
         <div className="flex flex-col items-start text-left space-y-8 order-1 lg:order-1">
           <div className="flex flex-wrap items-center justify-start gap-3">
             <div className="inline-flex items-center gap-2 py-1.5 px-4 glass-card rounded-full border border-blue-500/20 bg-blue-500/5">
@@ -132,7 +129,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             <div className={`flex gap-3 justify-start transition-all duration-500 ${showCVOptions ? 'mt-4' : 'mt-0'}`}>
               {[
                 { icon: 'fa-brands fa-github', url: 'https://github.com/Ju4nmaFd3z' },
-                { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fernández-rodríguez' }
+                { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez' }
               ].map((link, i) => (
                 <a 
                   key={i}
@@ -148,7 +145,6 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
           </div>
         </div>
 
-        {/* LADO DERECHO: FOTO PROFESIONAL */}
         <div className="relative flex justify-center items-center order-2 lg:order-2">
           <div className="relative w-full max-w-[280px] sm:max-w-[350px] lg:max-w-[380px] xl:max-w-[440px] group perspective-1000">
             
