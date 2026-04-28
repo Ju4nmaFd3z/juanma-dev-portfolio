@@ -45,6 +45,14 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     {
       ...t.items[3],
       category: 'software',
+      icon: 'fa-solid fa-bolt',
+      gradient: 'from-purple-700/30 to-violet-500/30',
+      image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://glitchnight.com'
+    },
+    {
+      ...t.items[4],
+      category: 'software',
       icon: 'fa-solid fa-code-branch',
       gradient: 'from-blue-600/20 to-purple-600/20',
       image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200',

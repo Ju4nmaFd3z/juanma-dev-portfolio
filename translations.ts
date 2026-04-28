@@ -71,6 +71,11 @@ export const translations = {
           tech: ["Cisco CCNA", "Linux", "Seguridad", "Hardware"]
         },
         {
+          title: "Glitch Night",
+          desc: "Diseño y desarrollo de la web oficial de Glitch Night, app de ocio nocturno para Málaga. SPA con estética cyberpunk, animaciones GSAP y ScrollTrigger, sistema QR de entrada y descubrimiento de locales y eventos.",
+          tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
+        },
+        {
           title: "Próximamente...",
           desc: "Como alumno de 1º de DAM, estoy desarrollando mis primeras aplicaciones nativas y sistemas backend eficientes. Pronto verás aquí mis repositorios destacados.",
           tech: ["Java", "SQL", "Docker"]
@@ -234,6 +239,11 @@ export const translations = {
           title: "Infrastructure & Networks",
           desc: "Network configuration and routing protocols based on Cisco CCNA certification. Implementation of security, switching, and maintenance of communication infrastructures and systems.",
           tech: ["Cisco CCNA", "Linux", "Security", "Hardware"]
+        },
+        {
+          title: "Glitch Night",
+          desc: "Design and development of the official Glitch Night website — a nightlife app for Málaga. SPA with cyberpunk aesthetic, GSAP and ScrollTrigger animations, QR entry system, and venue and event discovery.",
+          tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
         },
         {
           title: "Coming Soon...",
