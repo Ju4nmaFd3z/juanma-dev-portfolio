@@ -41,11 +41,11 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
         `     | ||   \\/   |`,
         `  _  | || |\\  /| |  JUANMA@PORTFOLIO`,
         ` | |_| || | \\/ | |  ----------------`,
-        `  \\___/ |_|    |_|  OS: Kali Linux / Win 11`,
+        `  \\___/ |_|    |_|  OS: macOS / Kali Linux`,
         `                    HOST: DAM-SMR-v1.0`,
         `                    SHELL: Zsh / Bash`,
-        `                    IDE: VS Code / IntelliJ`,
-        `                    SKILLS: Java, SQL, IT`
+        `                    IDE: VS Code / Antigravity`,
+        `                    SKILLS: Java, SQL, IT, Claude Code`
       ];
       setHistory(prev => [...prev, ...art]);
     },

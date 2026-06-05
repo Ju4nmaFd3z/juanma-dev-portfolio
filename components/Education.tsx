@@ -3,11 +3,32 @@ import { translations } from '../translations';
 
 interface EducationProps { lang: 'es' | 'en'; }
 
+const certColorMap = {
+  cyan: {
+    gradient: 'from-cyan-400/60 via-blue-500/70 to-cyan-500/60',
+    glow:     'shadow-cyan-500/20',
+    glowBg:   'bg-cyan-500',
+    iconBg:   'bg-cyan-500/10',
+    iconText: 'text-cyan-500 dark:text-cyan-400',
+  },
+  amber: {
+    gradient: 'from-amber-400/60 via-orange-500/70 to-amber-400/60',
+    glow:     'shadow-amber-500/20',
+    glowBg:   'bg-amber-500',
+    iconBg:   'bg-amber-500/10',
+    iconText: 'text-amber-500 dark:text-amber-400',
+  },
+} as const;
+
+type CertColorKey = keyof typeof certColorMap;
+
 const Education: React.FC<EducationProps> = ({ lang }) => {
   const t = translations[lang].education;
 
   return (
     <div className="relative">
+
+      {/* ── Academic Education ─────────────────────────────────────── */}
       <h2 className="text-2xl font-display font-bold mb-12 flex items-center gap-4 text-neutral-900 dark:text-white">
         <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-600/10 dark:bg-purple-500/10 text-purple-600 dark:text-purple-500 text-sm">
           <i className="fa-solid fa-graduation-cap"></i>
@@ -32,10 +53,10 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
                 <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white">{edu.degree}</h3>
                 <div className="text-neutral-600 dark:text-neutral-400 text-sm mb-4 font-semibold flex items-center gap-2">
                   <i className="fa-solid fa-school text-[10px] opacity-50"></i>
-                  <a 
-                    href="https://fpalanturing.es/" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href="https://fpalanturing.es/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors no-cursor-effect"
                   >
                     {edu.school}
@@ -57,6 +78,94 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
           </div>
         ))}
       </div>
+
+      {/* ── Divider ────────────────────────────────────────────────── */}
+      <div className="relative my-10 flex items-center gap-4" aria-hidden="true">
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-800 to-transparent" />
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-amber-500/10 ring-1 ring-amber-500/20">
+          <i className="fa-solid fa-medal text-amber-500 text-[10px]"></i>
+        </span>
+        <div className="h-px flex-1 bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-800 to-transparent" />
+      </div>
+
+      {/* ── Certifications ─────────────────────────────────────────── */}
+      <h2 className="text-2xl font-display font-bold mb-8 flex items-center gap-4 text-neutral-900 dark:text-white">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 text-sm">
+          <i className="fa-solid fa-certificate"></i>
+        </span>
+        {t.certs.title}
+      </h2>
+
+      <div className="space-y-6">
+        {t.certs.items.map((cert, i) => {
+          const colorKey = (cert.color in certColorMap ? cert.color : 'cyan') as CertColorKey;
+          const c = certColorMap[colorKey];
+
+          return (
+            <div
+              key={i}
+              className={`cert-card group relative rounded-2xl p-[1.5px] bg-gradient-to-br ${c.gradient} shadow-lg ${c.glow} transition-all duration-500 hover:shadow-xl`}
+            >
+              {/* Inner card */}
+              <div className="relative rounded-[13px] bg-neutral-50 dark:bg-[#0c0c0c] overflow-hidden">
+
+                {/* Dot grid texture */}
+                <div
+                  className="absolute inset-0 opacity-[0.04] dark:opacity-[0.07] pointer-events-none"
+                  style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '18px 18px' }}
+                  aria-hidden="true"
+                />
+
+                {/* Ambient glow blob */}
+                <div
+                  className={`absolute -top-8 -right-8 h-28 w-28 rounded-full blur-3xl opacity-15 ${c.glowBg} pointer-events-none`}
+                  aria-hidden="true"
+                />
+
+                {/* Shimmer sweep */}
+                <div className="cert-shine-layer" aria-hidden="true" />
+
+                {/* Verified badge */}
+                <div className="absolute top-6 right-6 z-10">
+                  <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5">
+                    <i className="fa-solid fa-circle-check text-[9px]"></i>
+                    {t.certs.verified}
+                  </span>
+                </div>
+
+                {/* Content */}
+                <div className="relative z-10 flex gap-6 p-8">
+                  <div className={`hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-black/5 dark:border-white/5 ${c.iconBg} ${c.iconText}`}>
+                    <i className={`${cert.icon} text-lg`}></i>
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 mb-2 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap">
+                      <span>{cert.issuer}</span>
+                      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
+                      <span>{cert.year}</span>
+                    </div>
+                    <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {cert.name}
+                    </h3>
+                    <div className="flex flex-wrap gap-2 border-t border-black/5 dark:border-white/5 pt-5 mt-5">
+                      {cert.skills.map((skill, si) => (
+                        <span
+                          key={si}
+                          className="text-[9px] font-black uppercase tracking-tighter text-neutral-500 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border border-black/5 dark:border-white/5 px-2 py-1 rounded"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
     </div>
   );
 };

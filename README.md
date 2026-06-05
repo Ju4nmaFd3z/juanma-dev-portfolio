@@ -1,50 +1,95 @@
-# 🚀 Mi Portfolio - Conociéndome un poquito más
+<div align="center">
 
-¡Bienvenido/a a mi rinconcito digital! Este repositorio contiene el código de mi **Portfolio Personal**, un espacio donde no solo muestro mis proyectos, sino también mi manera, o por lo menos la que que yo he aprendido a tener estos años, de entender el desarrollo de software: con curiosidad, detalle, elegancia y enfoque en el usuario.
+<br>
 
----
+# Juan Manuel Fernández Rodríguez
+### Técnico SMR &nbsp;·&nbsp; Estudiante DAM &nbsp;·&nbsp; Desarrollador Multiplataforma
 
-## ✨ ¿Por qué este Portfolio?
+<br>
 
-Más que una simple lista de trabajos, este sitio es mi carta de presentación. Lo he diseñado para ofrecer una experiencia fluida y honesta sobre quién soy como desarrollador y persona. Aquí encontrarás:
+[![Portfolio](https://img.shields.io/badge/Ver_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://juanma-dev-portfolio.vercel.app)
+&nbsp;
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez)
+&nbsp;
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Ju4nmaFd3z)
 
-- **📁 Showcase de Proyectos:** Una selección de mis retos personales, explicando no solo el qué hice, sino el *porqué* de cada decisión técnica.
-- **🛠️ Mi Arsenal:** Las herramientas con las que me siento cómodo trabajando y creando soluciones hoy en día.
-- **💡 Mi Filosofía:** Un vistazo a cómo abordo los problemas y mi compromiso con el aprendizaje continuo.
-- **📩 Conexión Directa:** Diferentes vías para que podamos charlar sobre tecnología, proyectos o colaboraciones.
+<br>
 
----
-
-## 🧠 El Stack Detrás de la Magia
-
-He elegido tecnologías modernas que priorizan el rendimiento, la escalabilidad y una gran experiencia de desarrollo:
-
-### Frontend
-![Frontend](https://img.shields.io/badge/Frontend-React%20%2F%20Next.js-blue?style=for-the-badge&logo=react)
-
-### Estilos
-![Estilos](https://img.shields.io/badge/Styles-Tailwind%20CSS-38B2AC?style=for-the-badge&logo=tailwind-css)
-
-### Animaciones
-![Animaciones](https://img.shields.io/badge/Animations-Framer%20Motion-0055FF?style=for-the-badge&logo=framer)
-
-### Despliegue
-![Despliegue](https://img.shields.io/badge/Deploy-Vercel-black?style=for-the-badge&logo=vercel)
+</div>
 
 ---
 
-## 🌟 Lo que creo me hace diferente
-
-No todo es código. Creo que los mejores productos nacen de la empatía y la buena comunicación. En este portfolio intento reflejar mis **soft skills**:
-
-*   **Curiosidad Insaciable:** Siempre estoy explorando nuevas librerías o metodologías para optimizar mi flujo de trabajo.
-*   **Atención al Detalle:** Me importa tanto el "bajo el capó" (código limpio) como la "carrocería" (UI/UX).
-*   **Resolución de Problemas:** No me rindo ante un bug; lo veo como una oportunidad para entender mejor la herramienta.
+SPA personal construida con React 19 y TypeScript sobre Vite. Integra un asistente de IA en tiempo real con Google Gemini, un sistema i18n propio sin dependencias externas, modo oscuro/claro persistente con detección automática del sistema, efecto de partículas personalizado y un terminal interactivo oculto.
 
 ---
 
-## 🚀 Instalación y Uso Local
+## Stack
 
-Si eres un curioso/a y quieres bichear cómo está construido antes de que esté desplegado por completo, tan sólo clona el repo:
-   ```bash
-   git clone https://github.com/Ju4nmaFd3z/juanma-dev-portfolio.git
+<div align="center">
+
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+&nbsp;
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+&nbsp;
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+&nbsp;
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+&nbsp;
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)
+&nbsp;
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+
+</div>
+
+---
+
+## Arquitectura
+
+**i18n sin dependencias**
+Sistema de traducción implementado como objeto TypeScript completamente tipado en `translations.ts`. Soporta interpolación de nodos React para marcado inline dentro de cadenas. Añadir un idioma es únicamente extender el tipo — sin configuración, sin overhead en el bundle.
+
+**Asistente IA contextualizado** *(actualmente fuera de servicio — sin créditos API activos)*
+`FloatingAI` conecta directamente con la API de Gemini vía `@google/genai`. El system prompt inyecta el perfil profesional completo para dar respuestas precisas en cualquiera de los dos idiomas del sitio. Gestiona de forma autónoma los estados de error de API, pérdida de conexión y modo mantenimiento, sin acoplamiento al resto de la app.
+
+**Scroll sin librería de animaciones**
+Las transiciones de entrada de secciones combinan `IntersectionObserver` nativo con clases CSS. Sin Framer Motion, sin GSAP — rendimiento nativo, control total, bundle limpio.
+
+**Tema con detección automática**
+El sistema de tema lee `prefers-color-scheme` en el primer renderizado y persiste la elección del usuario en `localStorage`. Resultado: cero flash de contenido incorrecto en recargas y respeto completo a la preferencia del sistema operativo.
+
+**Terminal como easter egg**
+Presionar `/` desde cualquier punto de la página abre un terminal modal completamente funcional. No es decorativo — refleja la misma filosofía con la que está construido el resto del sitio.
+
+---
+
+## Proyectos
+
+**Genetix Arena**
+Simulador táctico de combate autónomo con IA emergente. Gestiona entidades (Ops, Hostiles, Med-Units) en un grid de 75×25. Migración de alta fidelidad a TypeScript + React 19 con interfaz inspirada en SpaceX.
+`TypeScript` · `React 19` · `Vite` · `Tailwind CSS`
+
+**Genetix**
+Simulador visual de algoritmos genéticos. Selección natural, cruce y mutación aplicados a problemas de optimización. Desarrollado íntegramente en React y Java.
+`React` · `Java` · `Tailwind CSS`
+
+**Glitch Night**
+Web oficial de una app de ocio nocturno para Málaga. SPA con estética cyberpunk, animaciones GSAP con ScrollTrigger, sistema de entrada por QR y descubrimiento de locales y eventos.
+`HTML5` · `CSS3` · `JavaScript` · `GSAP`
+
+---
+
+## Sobre mí
+
+Técnico SMR graduado con **9.2 de nota media**, reconvertido a desarrollador multiplataforma. Actualmente en **1º de DAM en CPIFP Alan Turing** (Málaga). Certificado **Cisco CCNA**. Erasmus+ en Campobasso, Italia. Prácticas FCT en Fix Me Málaga como responsable de automatizaciones, administrador de BBDD y programador.
+
+Llevo años trabajando con hardware y redes antes de llegar al software: entiendo lo que ocurre debajo del capó antes de escribir la primera línea de código.
+
+> *"Para construir algo que perdure, primero hay que saber cómo se sostiene desde abajo."*
+
+---
+
+<div align="center">
+
+juanmafr2007@gmail.com &nbsp;·&nbsp; Málaga, España &nbsp;·&nbsp; 🌴🧑‍💻
+
+</div>

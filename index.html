@@ -96,6 +96,57 @@
         transform: translateY(0);
       }
 
+      @keyframes timeline-flow {
+        0%   { background-position: 0% 0%;   }
+        100% { background-position: 0% 100%; }
+      }
+
+      @keyframes timeline-draw {
+        from { clip-path: inset(100% 0 0 0); }
+        to   { clip-path: inset(0%   0 0 0); }
+      }
+
+      .timeline-fill {
+        clip-path: inset(100% 0 0 0);
+        background: linear-gradient(to bottom, #14b8a6, #8b5cf6, #14b8a6);
+        background-size: 100% 200%;
+      }
+
+      .timeline-fill--active {
+        animation:
+          timeline-flow  4s    linear       infinite,
+          timeline-draw  1.8s  ease-in-out  forwards;
+      }
+
+      @keyframes cert-shine {
+        0%   { transform: translateX(-180%) skewX(-18deg); opacity: 0; }
+        18%  { opacity: 1; }
+        82%  { opacity: 1; }
+        100% { transform: translateX(500%) skewX(-18deg); opacity: 0; }
+      }
+
+      .cert-shine-layer {
+        position: absolute;
+        top: -20%;
+        left: 0;
+        width: 22%;
+        height: 140%;
+        pointer-events: none;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.06) 50%,
+          transparent 100%
+        );
+        transform: translateX(-180%) skewX(-18deg);
+        opacity: 0;
+        /* no forwards — resets invisibly after completing so each hover replays */
+      }
+
+      .cert-card:hover .cert-shine-layer {
+        animation: cert-shine 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      }
+
       ::-webkit-scrollbar { width: 4px; }
       .dark ::-webkit-scrollbar-track { background: #050505; }
       ::-webkit-scrollbar-track { background: #f1f1f1; }

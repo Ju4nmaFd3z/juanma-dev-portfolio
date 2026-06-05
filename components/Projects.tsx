@@ -53,10 +53,18 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     {
       ...t.items[4],
       category: 'software',
-      icon: 'fa-solid fa-code-branch',
-      gradient: 'from-blue-600/20 to-purple-600/20',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1200',
-      url: 'https://github.com/Ju4nmaFd3z'
+      icon: 'fa-solid fa-display',
+      gradient: 'from-fuchsia-600/30 to-cyan-500/30',
+      image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://fixme-arcade.vercel.app'
+    },
+    {
+      ...t.items[5],
+      category: 'systems',
+      icon: 'fa-solid fa-robot',
+      gradient: 'from-emerald-600/30 to-teal-600/30',
+      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo'
     }
   ];
 
@@ -214,7 +222,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                           rel="noopener noreferrer"
                           className="cursor-safe flex items-center gap-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300"
                         >
-                          {p.title.includes('Genetix') ? 'Demo Live' : (lang === 'es' ? 'Explorar' : 'Explore')}
+                          {p.title.includes('Genetix') ? 'Demo Live' : p.title === 'OpenClaw Agent' ? (lang === 'es' ? 'Ver Presentación' : 'View Presentation') : (lang === 'es' ? 'Explorar' : 'Explore')}
                           <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
                         </a>
                         

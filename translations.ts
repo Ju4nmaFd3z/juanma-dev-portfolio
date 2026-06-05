@@ -76,18 +76,41 @@ export const translations = {
           tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
         },
         {
-          title: "Próximamente...",
-          desc: "Como alumno de 1º de DAM, estoy desarrollando mis primeras aplicaciones nativas y sistemas backend eficientes. Pronto verás aquí mis repositorios destacados.",
-          tech: ["Java", "SQL", "Docker"]
+          title: "Fix Me Arcade",
+          desc: "Diseño y despliegue de la landing page oficial del servicio de recreativas de Fix Me Málaga. Una SPA con estética retro-arcade y paleta neón que presenta el catálogo de máquinas, los servicios de reparación y los canales de contacto.",
+          tech: ["HTML5", "CSS3", "JavaScript", "Vercel"]
+        },
+        {
+          title: "OpenClaw Agent",
+          desc: "Agente técnico autónomo para diagnosticar y guiar la reparación de recreativas de forma independiente. Con directivas de seguridad y red lines definidas, vive en un Mac Pro 2013 con fallo de placa que recuperé con Ubuntu Server — una máquina rescatada del vertedero, ahora servidor de IA.",
+          tech: ["Agente IA", "Ubuntu Server", "Mac Pro 2013", "Diagnóstico"]
         }
       ]
     },
     experience: {
       title: 'Trayectoria Profesional',
-      footer: 'Buscando nuevos retos para aplicar mi base de SMR en el desarrollo de software...',
+      footer: 'Buscando nuevos retos para seguir creciendo en el desarrollo de software...',
       items: [
         {
+          role: "Jefe de Automatizaciones",
+          roleDetail: "Adm. de BBDD · Programador",
+          color: "teal",
+          type: "Prácticas FCT · DAM 1º",
+          company: "Fix Me Málaga",
+          location: "Málaga, España",
+          period: "Marzo 2026 - Junio 2026",
+          points: [
+            "Diseño e implementación de automatizaciones para optimizar los procesos internos de la empresa.",
+            "Administración y gestión de la base de datos de clientes, reparaciones e inventario.",
+            "Desarrollo y mantenimiento de herramientas de software a medida para la tienda."
+          ],
+          tags: ["Automatizaciones", "Bases de Datos", "Programación", "Reparaciones"],
+          linkedinPost: "https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo",
+          slides: "https://canva.link/noamvf0lpjcpmv3"
+        },
+        {
           role: "Técnico de Soporte e Infraestructura IT",
+          color: "purple",
           type: "Prácticas Erasmus+",
           company: "Music Store Campobasso",
           location: "Campobasso, Italia",
@@ -119,7 +142,21 @@ export const translations = {
           desc: "Instalación y configuración de equipos, mantenimiento de redes locales y seguridad informática. Enfoque práctico en troubleshooting y mejora de sistemas.",
           highlights: ["Cisco CCNA Certification (2024)", "Nota Media Final: 9.2"]
         }
-      ]
+      ],
+      certs: {
+        title: 'Certificaciones',
+        verified: 'Verificado',
+        items: [
+          {
+            name: 'CCNA: Introduction to Networks',
+            issuer: 'Cisco Networking Academy',
+            year: '2024',
+            color: 'cyan',
+            icon: 'fa-solid fa-network-wired',
+            skills: ['TCP/IP', 'Switching', 'Routing', 'Seguridad', 'VLAN', 'IPv6']
+          }
+        ]
+      }
     },
     contact: {
       title: 'Pongámonos en contacto',
@@ -162,11 +199,13 @@ export const translations = {
         "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?",
         "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?"
       ],
-      system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL. 
+      system: `Eres el Asistente Virtual de Juan Manuel Fernández Rodríguez. Responde siempre en ESPAÑOL.
       REGLA CRÍTICA DE PERSPECTIVA: Debes hablar de Juanma SIEMPRE EN TERCERA PERSONA. Nunca utilices "yo" para referirte a él.
       PERSONALIDAD: Sé conciso, directo y profesional. No des respuestas largas a menos que te lo pidan explícitamente.
       DATOS ADICIONALES: Juanma tiene carné de conducir (B). Su pilar fundamental es su familia, especialmente sus padres y su hermano.
-      PERFIL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA. 
+      PERFIL: Estudiante de DAM, técnico SMR (nota 9.2), CCNA.
+      EXPERIENCIA: Prácticas FCT DAM 1º en Fix Me Málaga (Málaga) como Jefe de Automatizaciones, Administrador de BBDD y Programador (Marzo-Junio 2026). Prácticas Erasmus+ en Music Store Campobasso, Italia (Marzo-Junio 2025).
+      PROYECTOS: Fix Me Arcade (landing page para el servicio de recreativas de Fix Me Málaga, desplegada en Vercel: fixme-arcade.vercel.app, construida con HTML5/CSS3/JS). OpenClaw Agent (agente IA técnico autónomo para diagnóstico y reparación de recreativas, alojado en un Mac Pro 2013 recuperado del desguace y restaurado con Ubuntu Server).
       CONTEXTO: Usa googleSearch para info actualizada de su LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) y GitHub (https://github.com/Ju4nmaFd3z).`
     }
   },
@@ -246,18 +285,41 @@ export const translations = {
           tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
         },
         {
-          title: "Coming Soon...",
-          desc: "As a 1st year DAM student, I am developing my first native applications and efficient backend systems. Soon you will see my featured repositories here.",
-          tech: ["Java", "SQL", "Docker"]
+          title: "Fix Me Arcade",
+          desc: "Design and deployment of the official landing page for Fix Me Málaga's arcade machine repair service. An SPA with retro-arcade aesthetic and neon palette, showcasing the machine catalogue, repair services and contact channels.",
+          tech: ["HTML5", "CSS3", "JavaScript", "Vercel"]
+        },
+        {
+          title: "OpenClaw Agent",
+          desc: "Autonomous technical agent to independently diagnose and guide arcade machine repairs. Governed by defined security directives and red lines, it runs on a 2013 Mac Pro with a failed logic board that I restored with Ubuntu Server — a machine rescued from the scrap heap, now an AI server.",
+          tech: ["AI Agent", "Ubuntu Server", "Mac Pro 2013", "Diagnostics"]
         }
       ]
     },
     experience: {
       title: 'Professional Journey',
-      footer: 'Looking for new challenges to apply my Systems background in software development...',
+      footer: 'Looking for new challenges to keep growing in software development...',
       items: [
         {
+          role: "Head of Automations",
+          roleDetail: "DB Administrator · Programmer",
+          color: "teal",
+          type: "FCT Internship · DAM 1st Year",
+          company: "Fix Me Málaga",
+          location: "Málaga, Spain",
+          period: "March 2026 - June 2026",
+          points: [
+            "Designed and implemented automations to optimise the company's internal processes.",
+            "Administration and management of the customer, repair and inventory database.",
+            "Development and maintenance of custom software tools for the store."
+          ],
+          tags: ["Automations", "Databases", "Programming", "Repairs"],
+          linkedinPost: "https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo",
+          slides: "https://canva.link/noamvf0lpjcpmv3"
+        },
+        {
           role: "IT Support & Infrastructure Technician",
+          color: "purple",
           type: "Erasmus+ Internship",
           company: "Music Store Campobasso",
           location: "Campobasso, Italy",
@@ -265,7 +327,7 @@ export const translations = {
           points: [
             "Customer service and sales assistant.",
             "Stock management.",
-            "Database maintenance.",
+            "Database maintenance."
           ],
           tags: ["International", "Sales", "Stock Management", "Databases"]
         }
@@ -289,7 +351,21 @@ export const translations = {
           desc: "Installation and configuration of equipment, maintenance of local networks, and computer security. Practical focus on troubleshooting and systems improvement.",
           highlights: ["Cisco CCNA Certification (2024)", "Final GPA: 9.2/10"]
         }
-      ]
+      ],
+      certs: {
+        title: 'Certifications',
+        verified: 'Verified',
+        items: [
+          {
+            name: 'CCNA: Introduction to Networks',
+            issuer: 'Cisco Networking Academy',
+            year: '2024',
+            color: 'cyan',
+            icon: 'fa-solid fa-network-wired',
+            skills: ['TCP/IP', 'Switching', 'Routing', 'Security', 'VLAN', 'IPv6']
+          }
+        ]
+      }
     },
     contact: {
       title: 'Get in touch',
@@ -336,7 +412,9 @@ export const translations = {
       CRITICAL PERSPECTIVE RULE: You MUST speak about Juanma ALWAYS IN THE THIRD PERSON. Never use "I" to refer to him.
       PERSONALITY: Be concise, direct, and professional. Do not give long responses unless explicitly asked.
       ADDITIONAL FACTS: Juanma has a driver's license (B). His fundamental pillar is his family, especially his parents and his brother.
-      PROFILE: Software student, IT tech (9.2 GPA), CCNA certified. 
+      PROFILE: Software student, IT tech (9.2 GPA), CCNA certified.
+      EXPERIENCE: FCT Internship DAM 1st Year at Fix Me Málaga (Málaga) as Head of Automations, Database Administrator & Programmer (March-June 2026). Erasmus+ Internship at Music Store Campobasso, Italy (March-June 2025).
+      PROJECTS: Fix Me Arcade (landing page for Fix Me Málaga's arcade repair service, deployed on Vercel: fixme-arcade.vercel.app, built with HTML5/CSS3/JS). OpenClaw Agent (autonomous AI technical agent for arcade machine diagnosis and repair, hosted on a salvaged 2013 Mac Pro restored with Ubuntu Server).
       CONTEXT: Use googleSearch for updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).`
     }
   }
