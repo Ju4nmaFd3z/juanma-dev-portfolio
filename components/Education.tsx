@@ -5,18 +5,20 @@ interface EducationProps { lang: 'es' | 'en'; }
 
 const certColorMap = {
   cyan: {
-    gradient: 'from-cyan-400/60 via-blue-500/70 to-cyan-500/60',
-    glow:     'shadow-cyan-500/20',
-    glowBg:   'bg-cyan-500',
-    iconBg:   'bg-cyan-500/10',
-    iconText: 'text-cyan-500 dark:text-cyan-400',
+    iconBg:      'bg-cyan-500/10',
+    iconText:    'text-cyan-500 dark:text-cyan-400',
+    border:      'border-cyan-600/20 dark:border-cyan-500/20',
+    hoverBorder: 'hover:border-cyan-500/40 dark:hover:border-cyan-400/40',
+    hoverShadow: 'hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.10),0_0_0_1px_rgba(6,182,212,0.08)]',
+    glowColor:   'rgba(6,182,212,0.10)',
   },
   amber: {
-    gradient: 'from-amber-400/60 via-orange-500/70 to-amber-400/60',
-    glow:     'shadow-amber-500/20',
-    glowBg:   'bg-amber-500',
-    iconBg:   'bg-amber-500/10',
-    iconText: 'text-amber-500 dark:text-amber-400',
+    iconBg:      'bg-amber-500/10',
+    iconText:    'text-amber-500 dark:text-amber-400',
+    border:      'border-amber-600/20 dark:border-amber-500/20',
+    hoverBorder: 'hover:border-amber-500/40 dark:hover:border-amber-400/40',
+    hoverShadow: 'hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.10),0_0_0_1px_rgba(245,158,11,0.08)]',
+    glowColor:   'rgba(245,158,11,0.10)',
   },
 } as const;
 
@@ -104,62 +106,48 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
           return (
             <div
               key={i}
-              className={`cert-card group relative rounded-2xl p-[1.5px] bg-gradient-to-br ${c.gradient} shadow-lg ${c.glow} transition-all duration-500 hover:shadow-xl`}
+              className={`cert-card group glass-card relative rounded-2xl overflow-hidden border ${c.border} ${c.hoverBorder} ${c.hoverShadow} shadow-sm dark:shadow-none transition-all duration-500`}
             >
-              {/* Inner card */}
-              <div className="relative rounded-[13px] bg-neutral-50 dark:bg-[#0c0c0c] overflow-hidden">
+              {/* Ambient glow — radial gradient, sin bordes duros */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                style={{ background: `radial-gradient(ellipse 60% 50% at 100% 0%, ${c.glowColor}, transparent)` }}
+                aria-hidden="true"
+              />
 
-                {/* Dot grid texture */}
-                <div
-                  className="absolute inset-0 opacity-[0.04] dark:opacity-[0.07] pointer-events-none"
-                  style={{ backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)', backgroundSize: '18px 18px' }}
-                  aria-hidden="true"
-                />
+              {/* Shimmer sweep */}
+              <div className="cert-shine-layer" aria-hidden="true" />
 
-                {/* Ambient glow blob */}
-                <div
-                  className={`absolute -top-8 -right-8 h-28 w-28 rounded-full blur-3xl opacity-15 ${c.glowBg} pointer-events-none`}
-                  aria-hidden="true"
-                />
+              {/* Verified badge */}
+              <div className="absolute top-6 right-6 z-10">
+                <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5">
+                  <i className="fa-solid fa-circle-check text-[9px]"></i>
+                  {t.certs.verified}
+                </span>
+              </div>
 
-                {/* Shimmer sweep */}
-                <div className="cert-shine-layer" aria-hidden="true" />
-
-                {/* Verified badge */}
-                <div className="absolute top-6 right-6 z-10">
-                  <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5">
-                    <i className="fa-solid fa-circle-check text-[9px]"></i>
-                    {t.certs.verified}
-                  </span>
+              {/* Content */}
+              <div className="relative z-10 flex gap-6 p-8">
+                <div className={`hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-black/5 dark:border-white/5 ${c.iconBg} ${c.iconText}`}>
+                  <i className={`${cert.icon} text-lg`}></i>
                 </div>
-
-                {/* Content */}
-                <div className="relative z-10 flex gap-6 p-8">
-                  <div className={`hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-black/5 dark:border-white/5 ${c.iconBg} ${c.iconText}`}>
-                    <i className={`${cert.icon} text-lg`}></i>
+                <div className="flex-1">
+                  <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 mb-2 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap">
+                    <span>{cert.issuer}</span>
+                    <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
+                    <span>{cert.year}</span>
                   </div>
-                  <div className="flex-1">
-                    <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 mb-2 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap">
-                      <span>{cert.issuer}</span>
-                      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
-                      <span>{cert.year}</span>
-                    </div>
-                    <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {cert.name}
-                    </h3>
-                    <div className="flex flex-wrap gap-2 border-t border-black/5 dark:border-white/5 pt-5 mt-5">
-                      {cert.skills.map((skill, si) => (
-                        <span
-                          key={si}
-                          className="text-[9px] font-black uppercase tracking-tighter text-neutral-500 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border border-black/5 dark:border-white/5 px-2 py-1 rounded"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
+                  <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {cert.name}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 border-t border-black/5 dark:border-white/5 pt-5 mt-5">
+                    {cert.skills.map((skill, si) => (
+                      <span key={si} className="text-[9px] font-black uppercase tracking-tighter text-neutral-500 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border border-black/5 dark:border-white/5 px-2 py-1 rounded">
+                        {skill}
+                      </span>
+                    ))}
                   </div>
                 </div>
-
               </div>
             </div>
           );

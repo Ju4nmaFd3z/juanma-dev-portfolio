@@ -66,7 +66,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </div>
             <div className="hidden sm:inline-flex items-center gap-2 py-1.5 px-4 glass-card rounded-full border border-black/5 dark:border-white/5">
               <i className="fa-solid fa-location-dot text-[10px] text-neutral-400"></i>
-              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500">Málaga, ES</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500">{t.location}</span>
             </div>
           </div>
           
@@ -86,7 +86,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
               onClick={scrollToContact}
               className="w-full sm:w-auto cursor-hide group relative px-6 py-4 sm:px-8 sm:py-5 bg-neutral-900 dark:bg-white text-white dark:text-black text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-black/10 dark:shadow-white/5 overflow-hidden"
             >
-              <span className="relative z-10">{lang === 'es' ? 'HABLEMOS' : 'LET\'S TALK'}</span>
+              <span className="relative z-10">{t.cta}</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-500 dark:from-blue-100 dark:to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <i className="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform relative z-10"></i>
             </button>
@@ -171,8 +171,8 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
                     <i className="fa-solid fa-code text-[10px]"></i>
                   </div>
                   <div className="flex flex-col pr-1 sm:pr-2">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">Availability</span>
-                    <span className="text-[11px] font-black text-neutral-900 dark:text-white whitespace-nowrap">Ready for Internships</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">{t.availability}</span>
+                    <span className="text-[11px] font-black text-neutral-900 dark:text-white whitespace-nowrap">{t.availabilityStatus}</span>
                   </div>
                 </div>
               </div>

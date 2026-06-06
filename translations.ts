@@ -16,7 +16,10 @@ export const translations = {
       desc: 'Técnico SMR reconvertido a {bold}. Combino la precisión técnica de los sistemas con la creatividad del software para resolver problemas reales.',
       descBold: 'Desarrollador Multiplataforma',
       cta: 'HABLEMOS',
-      cv: 'DESCARGAR CV'
+      cv: 'DESCARGAR CV',
+      location: 'Málaga, ES',
+      availability: 'Disponibilidad',
+      availabilityStatus: 'Disponible para Prácticas'
     },
     about: {
       badge: 'El origen de todo',
@@ -52,8 +55,14 @@ export const translations = {
       sectionHeading2: 'CREACIONES.',
       statsCommits: 'Commits / Mes',
       statsTech: 'Tecnologías',
-      buildingTitle: 'Construyendo mi futuro...',
-      buildingDesc: 'Actualmente estoy explorando nuevas fronteras en el desarrollo móvil y arquitecturas escalables. Mi repositorio de GitHub es testigo de mi progreso diario.',
+      statsProjects: 'Proyectos',
+      statsProd: 'En Producción',
+      buildingStatus: 'En Curso',
+      buildingBadge: 'DAM 1º',
+      buildingFocus: 'Enfocado en',
+      buildingTitle: 'En construcción,',
+      buildingTitleHighlight: 'permanente.',
+      buildingDesc: 'Cada commit es una versión mejorada de mí. Estoy al principio del camino, pero lo estoy recorriendo a toda velocidad.',
       items: [
         {
           title: "Genetix",
@@ -225,7 +234,10 @@ export const translations = {
       desc: 'Systems Technician transitioned into {bold}. Combining technical systems precision with software creativity to solve real-world problems.',
       descBold: 'Multiplatform Developer',
       cta: 'LET\'S TALK',
-      cv: 'DOWNLOAD CV'
+      cv: 'DOWNLOAD CV',
+      location: 'Málaga, Spain',
+      availability: 'Availability',
+      availabilityStatus: 'Ready for Internships'
     },
     about: {
       badge: 'Where it all started',
@@ -261,8 +273,14 @@ export const translations = {
       sectionHeading2: 'CREATIONS.',
       statsCommits: 'Commits / Month',
       statsTech: 'Technologies',
-      buildingTitle: 'Building my future...',
-      buildingDesc: 'I am currently exploring new frontiers in mobile development and scalable architectures. My GitHub repository witnesses my daily progress.',
+      statsProjects: 'Projects',
+      statsProd: 'In Production',
+      buildingStatus: 'In Progress',
+      buildingBadge: 'DAM 1st Yr',
+      buildingFocus: 'Currently focused on',
+      buildingTitle: 'Permanently under',
+      buildingTitleHighlight: 'construction.',
+      buildingDesc: 'Every commit is an improved version of me. I\'m at the start of the road, but I\'m running it at full speed.',
       items: [
         {
           title: "Genetix",

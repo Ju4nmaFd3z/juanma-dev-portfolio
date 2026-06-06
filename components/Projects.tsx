@@ -275,27 +275,57 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
           </div>
         </div>
 
-        <div className="glass-card rounded-[2rem] p-10 lg:p-12 border border-blue-500/10 bg-gradient-to-r from-blue-500/[0.05] dark:from-blue-500/[0.02] to-transparent text-center shadow-sm dark:shadow-none">
-          <div className="max-w-2xl mx-auto">
-            <h4 className="text-xl font-display font-bold text-neutral-900 dark:text-white mb-4">
-              {t.buildingTitle}
-            </h4>
-            <p className="text-neutral-500 dark:text-neutral-500 text-sm leading-relaxed mb-8">
-              {t.buildingDesc}
-            </p>
-            <div className="flex justify-center gap-8">
-              <div className="flex flex-col items-center">
-                <span className="text-2xl font-black text-neutral-900 dark:text-white mb-1">100+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">{t.statsCommits}</span>
+        <div className="glass-card rounded-[2rem] overflow-hidden border-blue-500/10 shadow-sm dark:shadow-none">
+            <div className="p-8 sm:p-10 lg:p-12 flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
+
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-2 mb-6">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">{t.buildingStatus}</span>
+                  </div>
+                  <div className="inline-flex items-center px-3 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-400">{t.buildingBadge}</span>
+                  </div>
+                </div>
+
+                <h4 className="text-3xl lg:text-4xl font-display font-black text-neutral-900 dark:text-white mb-4 leading-none">
+                  {t.buildingTitle} <span className="gradient-text">{t.buildingTitleHighlight}</span>
+                </h4>
+
+                <p className="text-neutral-500 dark:text-neutral-400 text-sm lg:text-base leading-relaxed mb-8 max-w-md">
+                  {t.buildingDesc}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mr-1">{t.buildingFocus} →</span>
+                  {['React', 'Java', 'TypeScript', 'APIs'].map((tag) => (
+                    <span key={tag} className="text-[9px] font-black uppercase tracking-widest px-3 py-1.5 bg-black/[0.04] dark:bg-white/[0.04] border border-black/8 dark:border-white/8 rounded-xl text-neutral-600 dark:text-neutral-300">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="w-px h-12 bg-black/10 dark:bg-white/10"></div>
-              <div className="flex flex-col items-center">
-                <span className="text-2xl font-black text-neutral-900 dark:text-white mb-1">5+</span>
-                <span className="text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-600">{t.statsTech}</span>
+
+              <div className="w-full lg:w-auto grid grid-cols-2 gap-3 lg:min-w-[260px]">
+                {[
+                  { value: '50+', label: t.statsCommits },
+                  { value: '6',   label: t.statsProjects },
+                  { value: '5+',  label: t.statsTech },
+                  { value: '2',   label: t.statsProd },
+                ].map((stat, i) => (
+                  <div key={i} className="flex flex-col items-center justify-center p-6 bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 rounded-2xl text-center">
+                    <span className="text-3xl font-display font-black text-neutral-900 dark:text-white mb-1">{stat.value}</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-neutral-400 leading-tight">{stat.label}</span>
+                  </div>
+                ))}
               </div>
+
             </div>
           </div>
-        </div>
       </div>
     </div>
   );
