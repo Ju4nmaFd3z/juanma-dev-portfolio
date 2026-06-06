@@ -113,7 +113,7 @@ const App: React.FC = () => {
         <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} lang={lang} />
       </div>
 
-      <div className={`min-h-screen relative selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-all duration-1000 ${isLoading ? 'opacity-0 scale-95 overflow-hidden h-screen' : 'opacity-100 scale-100'}`}>
+      <div className={`min-h-screen relative selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-opacity duration-1000 ${isLoading ? 'opacity-0 overflow-hidden h-screen' : 'opacity-100'}`}>
         
         <main className="container mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
           <section id="home">
