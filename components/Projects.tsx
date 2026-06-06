@@ -168,7 +168,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
             </button>
           </div>
 
-          <div className="relative h-[550px] sm:h-[600px] w-full perspective-1000">
+          <div className="relative h-[480px] sm:h-[560px] lg:h-[600px] w-full perspective-1000">
             {filteredProjects.map((p, i) => (
               <div 
                 key={i} 
@@ -196,7 +196,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                     </div>
                   </div>
 
-                  <div className="p-8 sm:p-10 flex flex-col flex-1">
+                  <div className="p-5 sm:p-8 lg:p-10 flex flex-col flex-1">
                     <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
                       {p.tech.map((tech, ti) => (
                         <span key={ti} className="text-[8px] sm:text-[9px] uppercase font-black tracking-widest text-neutral-500 dark:text-neutral-400 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-1.5 rounded-lg group-hover:text-blue-600 dark:group-hover:text-blue-300 group-hover:border-blue-500/20 transition-all">

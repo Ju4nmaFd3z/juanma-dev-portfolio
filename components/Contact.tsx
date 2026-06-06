@@ -41,7 +41,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
       <div className="grid lg:grid-cols-5 gap-8 items-stretch">
         {/* Info Card */}
         <div className="lg:col-span-2">
-          <div className="glass-card p-10 rounded-[2.5rem] border border-black/10 dark:border-white/10 h-full flex flex-col bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
+          <div className="glass-card p-5 sm:p-8 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] border border-black/10 dark:border-white/10 h-full flex flex-col bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
             <h3 className="text-2xl font-bold mb-10 text-neutral-900 dark:text-white">{t.infoTitle}</h3>
             <div className="space-y-8 flex-1 flex flex-col justify-center">
               <div className="group flex flex-col gap-2">
@@ -83,7 +83,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
 
         {/* Form Card */}
         <div className="lg:col-span-3">
-          <form onSubmit={handleSubmit} className="glass-card p-10 rounded-[2.5rem] h-full flex flex-col space-y-8 border border-black/10 dark:border-white/10 bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
+          <form onSubmit={handleSubmit} className="glass-card p-5 sm:p-8 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] h-full flex flex-col space-y-6 sm:space-y-8 border border-black/10 dark:border-white/10 bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               <div className="space-y-3">
                 <label htmlFor="contact-name" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.name}</label>

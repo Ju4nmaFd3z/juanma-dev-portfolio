@@ -126,7 +126,7 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
         <div 
           ref={scrollRef}
           onClick={focusInput}
-          className="flex-1 p-6 font-mono text-sm overflow-y-auto space-y-2 text-emerald-500 custom-scrollbar scroll-smooth cursor-text"
+          className="flex-1 p-4 sm:p-6 font-mono text-sm overflow-y-auto space-y-2 text-emerald-500 custom-scrollbar scroll-smooth cursor-text"
         >
           {history.map((line, i) => (
             <div key={i} className="whitespace-pre-wrap leading-relaxed opacity-90">{line}</div>

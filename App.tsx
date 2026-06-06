@@ -120,22 +120,22 @@ const App: React.FC = () => {
             <Hero lang={lang} />
           </section>
           
-          <section id="about" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+          <section id="about" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
             <About lang={lang} />
           </section>
-          
-          <section id="projects" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+
+          <section id="projects" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
             <Projects lang={lang} />
           </section>
-          
-          <section id="experience-education" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+
+          <section id="experience-education" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
               <Experience lang={lang} />
               <Education lang={lang} />
             </div>
           </section>
 
-          <section id="contact" className="py-10 lg:py-24 border-t border-black/5 dark:border-white/5">
+          <section id="contact" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
             <Contact lang={lang} />
           </section>
         </main>

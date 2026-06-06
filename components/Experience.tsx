@@ -85,7 +85,7 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
         {t.title}
       </h2>
 
-      <div ref={timelineRef} className="relative space-y-12">
+      <div ref={timelineRef} className="relative space-y-8 sm:space-y-12 ml-10 lg:ml-0">
 
         {/* ── Unified timeline line ───────────────────────────────────── */}
         <div
@@ -119,13 +119,13 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
               </div>
 
               {/* Card */}
-              <div className={`glass-card relative overflow-hidden rounded-2xl p-8 border-black/5 dark:border-white/5 ${c.hover} shadow-sm dark:shadow-none transition-all duration-700 ${isActive ? 'opacity-100' : 'opacity-60'}`}>
+              <div className={`glass-card relative overflow-hidden rounded-2xl p-5 sm:p-8 border-black/5 dark:border-white/5 ${c.hover} shadow-sm dark:shadow-none transition-all duration-700 ${isActive ? 'opacity-100' : 'opacity-60'}`}>
                 <div className="flex flex-col gap-6 mb-6">
                   <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-wider border shrink-0 ${c.badge}`}>
                       {exp.type}
                     </div>
-                    <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest bg-black/5 dark:bg-white/5 px-4 py-3 rounded-lg border border-black/5 dark:border-white/5 whitespace-nowrap">
+                    <div className="text-[10px] font-black text-neutral-500 uppercase tracking-widest bg-black/5 dark:bg-white/5 px-3 py-2 sm:px-4 sm:py-3 rounded-lg border border-black/5 dark:border-white/5 whitespace-nowrap">
                       {exp.period}
                     </div>
                   </div>

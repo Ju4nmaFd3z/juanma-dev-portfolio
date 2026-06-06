@@ -44,7 +44,7 @@ const About: React.FC<AboutProps> = ({ lang }) => {
 
       <div className="grid lg:grid-cols-12 gap-6">
         {/* Bio Card */}
-        <div className="lg:col-span-8 glass-card p-10 rounded-[2.5rem] border border-black/5 dark:border-white/5 shadow-sm relative overflow-hidden">
+        <div className="lg:col-span-8 glass-card p-6 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] border border-black/5 dark:border-white/5 shadow-sm relative overflow-hidden">
           <div className="space-y-8 relative z-10">
             <p className="text-2xl md:text-3xl text-neutral-800 dark:text-white font-light leading-snug tracking-tight">
               {t.desc1.split('{span1}')[0]}
@@ -74,7 +74,7 @@ const About: React.FC<AboutProps> = ({ lang }) => {
         </div>
 
         {/* Skills Bento */}
-        <div ref={skillsRef} className="lg:col-span-4 glass-card p-10 rounded-[2.5rem] bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm">
+        <div ref={skillsRef} className="lg:col-span-4 glass-card p-6 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm">
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -112,17 +112,19 @@ const About: React.FC<AboutProps> = ({ lang }) => {
           </div>
         </div>
 
-        {/* Stats Row */}
-        {stats.map((stat, i) => (
-          <div key={i} className="lg:col-span-4 glass-card p-8 rounded-[2rem] hover:translate-y-[-4px] transition-transform duration-500 shadow-sm">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400 border border-${stat.color}-500/20`}>
-              <i className={`${stat.icon} text-lg`}></i>
+        {/* Stats Row — 3 columnas en móvil, subgrid en desktop */}
+        <div className="lg:contents grid grid-cols-3 gap-3 sm:gap-4">
+          {stats.map((stat, i) => (
+            <div key={i} className="lg:col-span-4 glass-card p-3 sm:p-6 lg:p-8 rounded-[1.5rem] sm:rounded-[2rem] hover:translate-y-[-4px] transition-transform duration-500 shadow-sm">
+              <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400 border border-${stat.color}-500/20`}>
+                <i className={`${stat.icon} text-xs sm:text-lg`}></i>
+              </div>
+              <div className="text-lg sm:text-3xl font-display font-black text-neutral-900 dark:text-white mb-0.5 sm:mb-1 leading-none">{stat.value}</div>
+              <div className="text-[7px] sm:text-[10px] font-bold text-neutral-500 dark:text-neutral-300 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0 sm:mb-1 leading-tight">{stat.label}</div>
+              <div className="hidden sm:block text-[9px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">{stat.sub}</div>
             </div>
-            <div className="text-3xl font-display font-black text-neutral-900 dark:text-white mb-1">{stat.value}</div>
-            <div className="text-[10px] font-bold text-neutral-500 dark:text-neutral-300 uppercase tracking-[0.2em] mb-1">{stat.label}</div>
-            <div className="text-[9px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">{stat.sub}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

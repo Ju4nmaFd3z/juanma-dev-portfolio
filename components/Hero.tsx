@@ -50,9 +50,9 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
   };
 
   return (
-    <section className="hero-section min-h-[90vh] flex flex-col justify-center relative pt-32 md:pt-40 lg:pt-0 pb-12 overflow-visible transition-all duration-500 z-[50]">
-      
-      <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-8 items-center relative z-10 w-full">
+    <section className="hero-section min-h-[90vh] flex flex-col justify-center relative pt-24 md:pt-40 lg:pt-0 pb-12 overflow-visible transition-all duration-500 z-[50]">
+
+      <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-8 items-center relative z-10 w-full">
         <div className="flex flex-col items-start text-left space-y-8 order-1 lg:order-1">
           <div className="flex flex-wrap items-center justify-start gap-3">
             <div className="inline-flex items-center gap-2 py-1.5 px-4 glass-card rounded-full border border-blue-500/20 bg-blue-500/5">
@@ -70,7 +70,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </div>
           </div>
           
-          <h1 className="text-6xl sm:text-8xl md:text-9xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none">
+          <h1 className="text-5xl sm:text-8xl md:text-9xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none">
             <span className="inline-block whitespace-nowrap">{t.title1}</span>
             <span className="inline lg:hidden xl:inline"> </span>
             <br className="hidden lg:block xl:hidden" />
