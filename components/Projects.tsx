@@ -222,7 +222,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                           rel="noopener noreferrer"
                           className="cursor-safe flex items-center gap-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all duration-300"
                         >
-                          {p.title.includes('Genetix') ? 'Demo Live' : p.title === 'OpenClaw Agent' ? (lang === 'es' ? 'Ver Presentación' : 'View Presentation') : (lang === 'es' ? 'Explorar' : 'Explore')}
+                          {p.title.includes('Genetix') ? 'Demo Live' : p.title === 'OpenClaw Agent' ? (lang === 'es' ? 'Ver Resumen' : 'View Summary') : (lang === 'es' ? 'Explorar' : 'Explore')}
                           <i className="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
                         </a>
                         

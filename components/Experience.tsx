@@ -173,7 +173,7 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
                         rel="noopener noreferrer"
                         className="cursor-safe inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors"
                       >
-                        {lang === 'es' ? 'Ver Presentación' : 'View Presentation'}
+                        {lang === 'es' ? 'Ver Resumen' : 'View Summary'}
                         <i className="fa-brands fa-linkedin text-[11px]"></i>
                       </a>
                     )}
@@ -184,7 +184,7 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
                         rel="noopener noreferrer"
                         className="cursor-safe inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
                       >
-                        {lang === 'es' ? 'Ver Slides' : 'View Slides'}
+                        {lang === 'es' ? 'Ver Video' : 'View Video'}
                         <i className="fa-solid fa-display text-[10px]"></i>
                       </a>
                     )}
