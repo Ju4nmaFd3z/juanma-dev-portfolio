@@ -92,6 +92,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
                   type="text" required value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   placeholder={t.form.placeholderName}
+                  maxLength={100}
                   className="w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
                 />
               </div>
@@ -102,6 +103,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
                   type="email" required value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   placeholder={t.form.placeholderEmail}
+                  maxLength={200}
                   className="w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
                 />
               </div>
@@ -113,6 +115,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
                 required value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 placeholder={t.form.placeholderMsg}
+                maxLength={5000}
                 className="flex-1 w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 resize-none transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700 min-h-[150px]"
               ></textarea>
             </div>

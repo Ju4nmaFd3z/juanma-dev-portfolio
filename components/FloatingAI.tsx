@@ -1,4 +1,3 @@
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import React, { useState, useRef, useEffect } from 'react';
 import { translations } from '../translations';
 
@@ -60,19 +59,28 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   useEffect(() => {
     if (IS_MAINTENANCE_MODE) return;
 
+    const cached = sessionStorage.getItem('gh_data');
+    if (cached) {
+      try { setGithubData(JSON.parse(cached)); } catch { /* ignore */ }
+      return;
+    }
+
     const fetchGH = async () => {
       try {
         const [userRes, reposRes] = await Promise.all([
           fetch('https://api.github.com/users/Ju4nmaFd3z'),
           fetch('https://api.github.com/users/Ju4nmaFd3z/repos?sort=updated&per_page=5')
         ]);
+        if (!userRes.ok || !reposRes.ok) return;
         const user = await userRes.json();
         const repos = await reposRes.json();
-        setGithubData({
+        const data = {
           bio: user.bio,
           public_repos: user.public_repos,
           recent: repos.map((r: any) => `${r.name} (${r.language})`).join(', ')
-        });
+        };
+        setGithubData(data);
+        sessionStorage.setItem('gh_data', JSON.stringify(data));
       } catch {
         // GitHub API unavailable — AI will work without repo context
       }
@@ -113,29 +121,22 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
     setIsTyping(true);
 
     try {
-      const apiKey = process.env.API_KEY;
-      if (!apiKey) {
-        setMessages(prev => [...prev, { role: 'error', text: t.errorDesc }]);
-        setIsTyping(false);
-        return;
-      }
+      const githubContext = githubData
+        ? `Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.`
+        : '';
 
-      const ai = new GoogleGenAI({ apiKey });
-      const dynamicInstruction = `${t.system} ${githubData ? `GH INFO: Bio: ${githubData.bio}. Repos: ${githubData.public_repos}. Recent: ${githubData.recent}.` : ''}`;
-
-      const result: GenerateContentResponse = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: userMsg,
-        config: {
-          systemInstruction: dynamicInstruction,
-          tools: [{ googleSearch: {} }]
-        }
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userMsg, lang, githubContext })
       });
 
-      const botResponse = result.text || t.errorDesc;
-      const sources = result.candidates?.[0]?.groundingMetadata?.groundingChunks;
+      if (!response.ok) throw new Error(`API ${response.status}`);
 
-      setMessages(prev => [...prev, {role: 'bot', text: botResponse, sources}]);
+      const { text, sources } = await response.json();
+      const botResponse = text || t.errorDesc;
+
+      setMessages(prev => [...prev, { role: 'bot', text: botResponse, sources }]);
     } catch {
       setMessages(prev => [...prev, {
         role: 'error',
