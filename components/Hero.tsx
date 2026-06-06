@@ -165,14 +165,20 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
                 />
               </div>
 
-              <div className="absolute -bottom-4 -right-2 sm:-right-6 glass-card p-3 sm:p-4 rounded-3xl border border-white/20 shadow-xl animate-bounce-slow z-30 transform hover:scale-105 transition-transform duration-500">
+              <div className="absolute -bottom-4 -right-2 sm:-right-6 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-2xl shadow-black/50 animate-bounce-slow z-30 hover:scale-105 transition-transform duration-500 bg-neutral-950/85 backdrop-blur-xl">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-indigo-900 via-blue-800 to-indigo-950 flex items-center justify-center text-white">
-                    <i className="fa-solid fa-code text-[10px]"></i>
+                  <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-700 to-indigo-800 flex items-center justify-center text-white shadow-lg shadow-blue-900/50 shrink-0">
+                    <i className="fa-solid fa-code text-xs sm:text-sm"></i>
                   </div>
                   <div className="flex flex-col pr-1 sm:pr-2">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-neutral-500">{t.availability}</span>
-                    <span className="text-[11px] font-black text-neutral-900 dark:text-white whitespace-nowrap">{t.availabilityStatus}</span>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span className="relative flex h-1.5 w-1.5 shrink-0">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                      </span>
+                      <span className="text-[8px] font-black uppercase tracking-widest text-blue-400">{t.availability}</span>
+                    </div>
+                    <span className="text-xs sm:text-sm font-black text-white whitespace-nowrap">{t.availabilityStatus}</span>
                   </div>
                 </div>
               </div>

@@ -75,10 +75,20 @@ const About: React.FC<AboutProps> = ({ lang }) => {
 
         {/* Skills Bento */}
         <div ref={skillsRef} className="lg:col-span-4 glass-card p-10 rounded-[2.5rem] bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm">
-           <h3 className="text-neutral-700 dark:text-white font-bold uppercase tracking-widest text-[10px] mb-10 flex items-center gap-3">
-            <span className="w-8 h-px bg-blue-600 dark:bg-blue-500"></span>
-            {t.skills}
-          </h3>
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/15 text-blue-600 dark:text-blue-400 shrink-0">
+                  <i className="fa-solid fa-bolt text-sm"></i>
+                </span>
+                <div>
+                  <h3 className="text-base font-display font-black text-neutral-900 dark:text-white tracking-tight leading-none">{t.skills}</h3>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-neutral-400 mt-1">{t.skillsSub}</p>
+                </div>
+              </div>
+            </div>
+            <div className="h-px bg-black/5 dark:bg-white/5 mt-6" />
+          </div>
           <div className="space-y-8">
             {t.skillsList.map((skill, i) => (
               <div key={i} className="space-y-3">

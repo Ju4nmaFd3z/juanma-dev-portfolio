@@ -19,7 +19,7 @@ export const translations = {
       cv: 'DESCARGAR CV',
       location: 'Málaga, ES',
       availability: 'Disponibilidad',
-      availabilityStatus: 'Disponible para Prácticas'
+      availabilityStatus: 'Disponible para prácticas'
     },
     about: {
       badge: 'El origen de todo',
@@ -38,6 +38,7 @@ export const translations = {
         { label: 'Certificación', value: 'CCNA', sub: 'Cisco Certified' }
       ],
       skills: 'Hard Skills',
+      skillsSub: 'Dominio técnico',
       skillsList: [
         { name: 'Montaje y Mantenimiento (Hardware)', level: '95%' },
         { name: 'Redes Locales (Cisco CCNA)', level: '85%' },
@@ -237,7 +238,7 @@ export const translations = {
       cv: 'DOWNLOAD CV',
       location: 'Málaga, Spain',
       availability: 'Availability',
-      availabilityStatus: 'Ready for Internships'
+      availabilityStatus: 'Ready for internships'
     },
     about: {
       badge: 'Where it all started',
@@ -256,6 +257,7 @@ export const translations = {
         { label: 'Certification', value: 'CCNA', sub: 'Cisco Certified' }
       ],
       skills: 'Hard Skills',
+      skillsSub: 'Technical proficiency',
       skillsList: [
         { name: 'Hardware Setup & Maintenance', level: '95%' },
         { name: 'Local Networks (Cisco CCNA)', level: '85%' },
