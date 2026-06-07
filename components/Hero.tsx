@@ -268,7 +268,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
                 <CodeRainCanvas />
                 <div className="absolute inset-0 z-20 pointer-events-none rounded-[3.8rem] ring-inset ring-1 ring-white/10 shadow-[inset_0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[inset_0_0_120px_rgba(0,0,0,0.5)] group-hover:shadow-[inset_0_0_60px_rgba(30,58,138,0.2)] transition-all duration-1000"></div>
                 <img
-                  src="/images/me.png"
+                  src="/images/me.webp"
                   alt="Juanma Fernández"
                   fetchPriority="high"
                   className="relative w-full h-auto object-cover rounded-[3.8rem] transition-all duration-1000 z-10 select-none pointer-events-none group-hover:brightness-[1.04]"
