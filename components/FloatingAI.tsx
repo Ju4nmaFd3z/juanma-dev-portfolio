@@ -89,6 +89,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   }, []);
 
   useEffect(() => {
+    if (!isOpen) return;
     if (IS_MAINTENANCE_MODE) {
       setMessages([{role: 'bot', text: t.maintenanceMsg}]);
     } else {

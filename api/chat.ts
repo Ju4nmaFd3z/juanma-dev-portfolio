@@ -18,9 +18,41 @@ PROJECTS: Fix Me Arcade (landing page for Fix Me Málaga's arcade repair service
 CONTEXT: Use googleSearch for updated info on his LinkedIn (https://www.linkedin.com/in/juanma-fernández-rodríguez) and GitHub (https://github.com/Ju4nmaFd3z).`
 };
 
+// ── Rate limiting (in-memory, per serverless instance) ────────────────────────
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const WINDOW_MS = 60_000;
+const MAX_REQUESTS = 15;
+
+function getClientIP(req: any): string {
+  return (
+    (req.headers['x-forwarded-for'] as string | undefined)?.split(',')[0]?.trim() ??
+    (req.headers['x-real-ip'] as string | undefined) ??
+    'unknown'
+  );
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+  if (entry.count >= MAX_REQUESTS) return true;
+  entry.count++;
+  return false;
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  const ip = getClientIP(req);
+  if (isRateLimited(ip)) {
+    return res.status(429).json({ error: 'Too many requests. Please wait a moment.' });
   }
 
   const apiKey = process.env.GEMINI_API_KEY;

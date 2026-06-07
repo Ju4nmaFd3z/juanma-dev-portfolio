@@ -47,9 +47,13 @@ const App: React.FC = () => {
   }, [isTerminalOpen]);
 
   useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  useEffect(() => {
     const root = window.document.documentElement;
     const themeMeta = document.getElementById('theme-meta');
-    
+
     if (theme === 'dark') {
       root.classList.add('dark');
       root.style.colorScheme = 'dark';

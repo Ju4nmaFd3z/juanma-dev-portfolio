@@ -4,6 +4,118 @@ import { translations } from '../translations';
 
 interface HeroProps { lang: 'es' | 'en'; }
 
+const CODE_ROWS = [
+  'import java.util.*;   public class App {   private String name;   int count = 0;   @Override   void run() {   return null; }   ',
+  'def __init__(self):   self.name = name;   return response;   const data = [];   ArrayList<String> list;   filter(x -> x > 0)   ',
+  'interface IService {   try { await fetch(url) }   catch (Exception e) { log(e); }   SELECT * FROM users WHERE active = true;   ',
+  'boolean isValid = true;   while (i < size) { i++; }   throws IOException;   extends BaseComponent {   implements Serializable;   ',
+  'async function load() {   await Promise.all([tasks]);   useEffect(() => { init(); }, []);   setState(newVal);   dispatch(action);   ',
+  'var result = query(sql);   public void run() {   npm run build --prod   git commit -m "feat: add"   docker-compose up -d;   ',
+  '@Autowired Service svc;   ResponseEntity<String> response;   private final Logger log = LoggerFactory.get();   List<T> items = [];   ',
+  'const router = useRouter();   dispatch(setData(response));   .then(res => res.json())   .catch(err => console.log(err));   return;   ',
+  'HashMap<String, Object> map = new HashMap<>();   Optional<User> findById(Long id);   @RestController   @GetMapping("/api/v1/users")   ',
+  'try (Connection c = getConn())   PreparedStatement ps = c.prepare();   ResultSet rs = ps.execute();   while (rs.next()) { map(rs); }   ',
+  'function handleSubmit(event) {   event.preventDefault();   const formData = new FormData(event.target);   await post("/api/data");   ',
+  'class UserService {   @Inject private Repository repo;   public List<User> findAll() {   return repo.findAll();   }   @Override   ',
+];
+
+const CODE_SPEEDS = [22, 19, 25, 21, 24, 18, 20, 27, 19, 23, 21, 24];
+
+const CodeRainCanvas: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const FONT = '13px "Courier New", Courier, monospace';
+    const COLOR = 'rgba(148, 163, 184, 0.30)';
+    const ANGLE = -30 * Math.PI / 180;
+    const ROW_GAP = 65;
+    const SEP = '   ';
+    const NUM_ROWS = CODE_ROWS.length;
+    const dpr = window.devicePixelRatio || 1;
+
+    const measureCtx = document.createElement('canvas').getContext('2d')!;
+    measureCtx.font = FONT;
+    const rowWidths = CODE_ROWS.map(r => measureCtx.measureText(r + SEP).width);
+    const offsets = CODE_ROWS.map((_, i) => (i / NUM_ROWS) * rowWidths[i]);
+
+    const ctx = canvas.getContext('2d')!;
+    let animId = 0;
+    let lastTime = 0;
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+    };
+
+    const draw = (time: number) => {
+      const dt = Math.min((time - lastTime) / 1000, 0.05);
+      lastTime = time;
+
+      const W = canvas.width / dpr;
+      const H = canvas.height / dpr;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      ctx.translate(W / 2, H / 2);
+      ctx.rotate(ANGLE);
+      ctx.font = FONT;
+      ctx.fillStyle = COLOR;
+      ctx.textBaseline = 'middle';
+
+      const totalH = (NUM_ROWS - 1) * ROW_GAP;
+      const xRange = Math.sqrt(W * W + H * H) + 500;
+      const xStart = -xRange / 2;
+      const xEnd = xRange / 2;
+
+      for (let i = 0; i < NUM_ROWS; i++) {
+        offsets[i] = (offsets[i] + CODE_SPEEDS[i] * dt) % rowWidths[i];
+        const rowY = -totalH / 2 + i * ROW_GAP;
+        const rw = rowWidths[i];
+        let x = xStart - rw + offsets[i];
+        while (x < xEnd) {
+          ctx.fillText(CODE_ROWS[i] + SEP, x, rowY);
+          x += rw;
+        }
+      }
+
+      ctx.restore();
+      animId = requestAnimationFrame(draw);
+    };
+
+    const stop = () => { cancelAnimationFrame(animId); animId = 0; };
+    const play = () => { if (animId) return; lastTime = 0; animId = requestAnimationFrame(draw); };
+
+    const handleVisibility = () => { document.hidden ? stop() : play(); };
+
+    const observer = new ResizeObserver(resize);
+
+    resize();
+    play();
+    document.addEventListener('visibilitychange', handleVisibility);
+    observer.observe(canvas);
+
+    return () => {
+      stop();
+      document.removeEventListener('visibilitychange', handleVisibility);
+      observer.disconnect();
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', zIndex: 0 }}
+    />
+  );
+};
+
 const Hero: React.FC<HeroProps> = ({ lang }) => {
   const t = translations[lang].hero;
   const [showCVOptions, setShowCVOptions] = useState(false);
@@ -153,14 +265,16 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             
             <div className="relative animate-in zoom-in-95 fade-in duration-1000 ease-out flex items-center justify-center">
               <div className="relative glass-card p-4 rounded-[4rem] border border-white/20 dark:border-white/10 shadow-2xl overflow-hidden group-hover:scale-[1.03] group-hover:border-blue-500/20 transition-all duration-1000">
+                <CodeRainCanvas />
                 <div className="absolute inset-0 z-20 pointer-events-none rounded-[3.8rem] ring-inset ring-1 ring-white/10 shadow-[inset_0_0_80px_rgba(0,0,0,0.2)] dark:shadow-[inset_0_0_120px_rgba(0,0,0,0.5)] group-hover:shadow-[inset_0_0_60px_rgba(30,58,138,0.2)] transition-all duration-1000"></div>
-                <img 
-                  src="/images/me.png" 
-                  alt="Juanma Fernández" 
+                <img
+                  src="/images/me.png"
+                  alt="Juanma Fernández"
+                  fetchPriority="high"
                   className="relative w-full h-auto object-cover rounded-[3.8rem] transition-all duration-1000 z-10 select-none pointer-events-none group-hover:brightness-[1.04]"
-                  style={{ 
-                    maskImage: 'radial-gradient(ellipse at center, black 68%, transparent 95%)', 
-                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 68%, transparent 95%)' 
+                  style={{
+                    maskImage: 'radial-gradient(ellipse at center, black 88%, transparent 99%)',
+                    WebkitMaskImage: 'radial-gradient(ellipse at center, black 88%, transparent 99%)'
                   }}
                 />
               </div>

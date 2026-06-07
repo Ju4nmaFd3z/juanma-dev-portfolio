@@ -8,10 +8,16 @@ const About: React.FC<AboutProps> = ({ lang }) => {
   const [isSkillsVisible, setIsSkillsVisible] = useState(false);
   const skillsRef = useRef<HTMLDivElement>(null);
   
-  const stats = [
+  const statColorMap = {
+    blue:    'bg-blue-500/10    text-blue-600    dark:text-blue-400    border-blue-500/20',
+    purple:  'bg-purple-500/10  text-purple-600  dark:text-purple-400  border-purple-500/20',
+    emerald: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+  } as const;
+
+  const stats: { label: string; value: string; sub: string; icon: string; color: keyof typeof statColorMap }[] = [
     { label: t.stats[0].label, value: t.stats[0].value, sub: t.stats[0].sub, icon: 'fa-solid fa-star', color: 'blue' },
     { label: t.stats[1].label, value: t.stats[1].value, sub: t.stats[1].sub, icon: 'fa-solid fa-plane-up', color: 'purple' },
-    { label: t.stats[2].label, value: t.stats[2].value, sub: t.stats[2].sub, icon: 'fa-solid fa-shield-halved', color: 'emerald' }
+    { label: t.stats[2].label, value: t.stats[2].value, sub: t.stats[2].sub, icon: 'fa-solid fa-shield-halved', color: 'emerald' },
   ];
 
   useEffect(() => {
@@ -116,7 +122,7 @@ const About: React.FC<AboutProps> = ({ lang }) => {
         <div className="lg:contents grid grid-cols-3 gap-3 sm:gap-4">
           {stats.map((stat, i) => (
             <div key={i} className="lg:col-span-4 glass-card p-3 sm:p-6 lg:p-8 rounded-[1.5rem] sm:rounded-[2rem] hover:translate-y-[-4px] transition-transform duration-500 shadow-sm">
-              <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 bg-${stat.color}-500/10 text-${stat.color}-600 dark:text-${stat.color}-400 border border-${stat.color}-500/20`}>
+              <div className={`w-8 h-8 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 border ${statColorMap[stat.color]}`}>
                 <i className={`${stat.icon} text-xs sm:text-lg`}></i>
               </div>
               <div className="text-lg sm:text-3xl font-display font-black text-neutral-900 dark:text-white mb-0.5 sm:mb-1 leading-none">{stat.value}</div>
