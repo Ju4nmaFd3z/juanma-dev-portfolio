@@ -174,8 +174,8 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                 key={i} 
                 className={`absolute inset-0 m-auto w-full max-w-[310px] sm:max-w-[460px] lg:max-w-[620px] xl:max-w-[750px] h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${getCardStyles(i)}`}
               >
-                <div className="group relative flex flex-col glass-card rounded-[2.5rem] overflow-hidden border-black/5 dark:border-white/5 hover:border-blue-600/30 dark:hover:border-blue-500/30 transition-all duration-700 h-full shadow-sm dark:shadow-none">
-                  <div className="relative aspect-[16/10] overflow-hidden">
+                <div className="group relative flex flex-col glass-card rounded-[2.5rem] border-black/5 dark:border-white/5 hover:border-blue-600/30 dark:hover:border-blue-500/30 transition-all duration-700 h-full shadow-sm dark:shadow-none overflow-hidden [transform:translateZ(0)]">
+                  <div className="relative aspect-[16/10] overflow-hidden rounded-t-[2.5rem] [transform:translateZ(0)]">
                     <div className={`absolute inset-0 bg-gradient-to-t from-neutral-900 dark:from-[#050505] via-transparent to-transparent z-10 opacity-80 transition-opacity duration-700`} />
                     <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient} z-10 mix-blend-overlay`} />
                     
