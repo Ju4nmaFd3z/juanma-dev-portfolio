@@ -7,7 +7,8 @@ export const translations = {
       projects: 'Proyectos',
       journey: 'Trayectoria',
       contact: 'Contacto',
-      downloadCV: 'CV'
+      downloadCV: 'CV',
+      terminal: 'Terminal (Shell)'
     },
     hero: {
       role: 'Técnico SMR & Estudiante de DAM',
@@ -218,7 +219,8 @@ export const translations = {
       projects: 'Projects',
       journey: 'Journey',
       contact: 'Contact',
-      downloadCV: 'CV'
+      downloadCV: 'CV',
+      terminal: 'Terminal (Shell)'
     },
     hero: {
       role: 'IT Systems Tech & Software Student',

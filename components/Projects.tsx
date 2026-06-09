@@ -179,10 +179,11 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                     <div className={`absolute inset-0 bg-gradient-to-t from-neutral-900 dark:from-[#050505] via-transparent to-transparent z-10 opacity-80 transition-opacity duration-700`} />
                     <div className={`absolute inset-0 bg-gradient-to-br ${p.gradient} z-10 mix-blend-overlay`} />
                     
-                    <img 
-                      src={p.image} 
-                      alt={p.title} 
-                      className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-1000 ease-out" 
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-1000 ease-out"
                     />
                     
                     <div className="absolute top-8 left-8 z-20 w-12 h-12 rounded-2xl bg-white/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 flex items-center justify-center text-white text-lg shadow-xl">
@@ -292,9 +293,9 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                   </div>
                 </div>
 
-                <h4 className="text-3xl lg:text-4xl font-display font-black text-neutral-900 dark:text-white mb-4 leading-none">
+                <h3 className="text-3xl lg:text-4xl font-display font-black text-neutral-900 dark:text-white mb-4 leading-none">
                   {t.buildingTitle} <span className="gradient-text">{t.buildingTitleHighlight}</span>
-                </h4>
+                </h3>
 
                 <p className="text-neutral-500 dark:text-neutral-400 text-sm lg:text-base leading-relaxed mb-8 max-w-md">
                   {t.buildingDesc}

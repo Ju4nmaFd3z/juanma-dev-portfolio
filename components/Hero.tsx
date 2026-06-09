@@ -17,9 +17,25 @@ const CODE_ROWS = [
   'try (Connection c = getConn())   PreparedStatement ps = c.prepare();   ResultSet rs = ps.execute();   while (rs.next()) { map(rs); }   ',
   'function handleSubmit(event) {   event.preventDefault();   const formData = new FormData(event.target);   await post("/api/data");   ',
   'class UserService {   @Inject private Repository repo;   public List<User> findAll() {   return repo.findAll();   }   @Override   ',
+  'export default function App() {   <Route path="/" component={Home} />   const theme = createTheme({});   styled.div`color: red`;   ',
+  'for (int i = 0; i < arr.length; i++) {   Collections.sort(list);   Arrays.asList(1, 2, 3);   System.out.println(arr[i]);   break;   ',
+  'const [state, dispatch] = useReducer(reducer, init);   useMemo(() => compute(data), [data]);   ref.current.focus();   cleanup();   ',
+  '@Entity @Table(name = "users")   private Long id;   @Column(nullable = false)   @ManyToOne User owner;   @Transactional void save();   ',
+  'abstract class BaseService<T> {   protected Map<Long, T> cache = new HashMap<>();   @Cacheable void findAll();   evict(key);   ',
+  'type UserDTO = Pick<User, "id"|"name"|"email">;   interface Page<T> { items: T[]; total: number; page: number; }   next();   ',
+  'kubectl apply -f deploy.yaml;   docker build -t app:latest .;   terraform plan;   helm upgrade --install app ./chart;   init;   ',
+  'SELECT u.id, COUNT(o.id) FROM users u LEFT JOIN orders o ON u.id = o.user_id GROUP BY u.id HAVING COUNT(o.id) > 0;   limit 20;   ',
+  'protected void configure(HttpSecurity h) {   h.csrf().disable().authorizeRequests().antMatchers("/api/**").authenticated();   }   ',
+  '@Component({ selector: "app-root" })   export class AppModule { }   RouterModule.forRoot(routes);   NgModule({ imports: [] })   ',
+  'git rebase -i HEAD~3;   git stash pop;   git cherry-pick abc123;   git log --oneline --graph;   git tag -a v1.0 -m "release";   ',
+  'const schema = z.object({ name: z.string(), age: z.number().min(0) });   type Form = z.infer<typeof schema>;   parse(data);   ',
+  'ENV NODE_ENV=production   COPY package*.json ./   RUN npm ci --only=production   EXPOSE 3000   CMD ["node", "dist/main.js"]   ',
+  'public <T> ResponseEntity<T> ok(T body) {   return ResponseEntity.status(200).body(body);   }   @ExceptionHandler   handle();   ',
+  'pipeline { agent any   stages { stage("build") { steps { sh "mvn package" } }   stage("deploy") { steps { } } } }   finally;   ',
+  '@pytest.mark.parametrize("x,y", [(1,2),(3,4)])   def test_add(x, y):   assert add(x, y) == x + y;   mock.patch("module.fn")   ',
 ];
 
-const CODE_SPEEDS = [22, 19, 25, 21, 24, 18, 20, 27, 19, 23, 21, 24];
+const CODE_SPEEDS = [14, 12, 16, 13, 15, 11, 13, 17, 12, 14, 13, 15, 12, 16, 11, 14, 10, 15, 13, 12, 14, 16, 11, 15, 13, 10, 14, 12];
 
 const CodeRainCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -28,10 +44,9 @@ const CodeRainCanvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const FONT = '13px "Courier New", Courier, monospace';
-    const COLOR = 'rgba(148, 163, 184, 0.30)';
-    const ANGLE = -30 * Math.PI / 180;
-    const ROW_GAP = 65;
+    const FONT = '16px "Courier New", Courier, monospace';
+    const COLOR = 'rgba(148, 163, 184, 0.18)';
+    const ROW_GAP = 34;
     const SEP = '   ';
     const NUM_ROWS = CODE_ROWS.length;
     const dpr = window.devicePixelRatio || 1;
@@ -63,13 +78,12 @@ const CodeRainCanvas: React.FC = () => {
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.translate(W / 2, H / 2);
-      ctx.rotate(ANGLE);
       ctx.font = FONT;
       ctx.fillStyle = COLOR;
       ctx.textBaseline = 'middle';
 
       const totalH = (NUM_ROWS - 1) * ROW_GAP;
-      const xRange = Math.sqrt(W * W + H * H) + 500;
+      const xRange = W + 400;
       const xStart = -xRange / 2;
       const xEnd = xRange / 2;
 
@@ -77,7 +91,9 @@ const CodeRainCanvas: React.FC = () => {
         offsets[i] = (offsets[i] + CODE_SPEEDS[i] * dt) % rowWidths[i];
         const rowY = -totalH / 2 + i * ROW_GAP;
         const rw = rowWidths[i];
-        let x = xStart - rw + offsets[i];
+        const eo = offsets[i];
+        const ltr = i % 2 === 0;
+        let x = ltr ? xStart - rw + eo : xStart - rw - eo;
         while (x < xEnd) {
           ctx.fillText(CODE_ROWS[i] + SEP, x, rowY);
           x += rw;

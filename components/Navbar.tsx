@@ -131,8 +131,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
           <button
             onClick={onOpenTerminal}
             className="w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
-            title="Open Terminal (/)"
-            aria-label="Open Terminal"
+            title={t.terminal}
+            aria-label={t.terminal}
           >
             <i className="fa-solid fa-terminal text-[10px] text-emerald-500 group-hover:scale-110 transition-transform"></i>
           </button>
@@ -236,7 +236,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
               onClick={() => { setIsMenuOpen(false); onOpenTerminal(); }}
               className="w-full text-left p-4 rounded-xl font-bold uppercase tracking-widest text-[10px] flex justify-between items-center transition-all text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10"
             >
-              Terminal (Shell)
+              {t.terminal}
               <i className="fa-solid fa-terminal"></i>
             </button>
 
