@@ -74,7 +74,7 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0"
+      className="fixed inset-0 pointer-events-none z-0 animate-in fade-in duration-1000"
     />
   );
 };

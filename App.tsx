@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [lang, setLang] = useState<'es' | 'en'>('es');
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const handleLoadingComplete = useCallback(() => setIsLoading(false), []);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -101,9 +102,9 @@ const App: React.FC = () => {
 
   return (
     <>
-      {isLoading && <Preloader onLoadingComplete={() => setIsLoading(false)} />}
-      
-      <SnowEffect theme={theme} />
+      {isLoading && <Preloader onLoadingComplete={handleLoadingComplete} />}
+
+      {!isLoading && <SnowEffect theme={theme} />}
 
       <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
         <Navbar 

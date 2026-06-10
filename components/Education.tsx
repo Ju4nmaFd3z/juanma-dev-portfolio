@@ -41,17 +41,17 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
       <div className="space-y-6">
         {t.items.map((edu, i) => (
           <div key={i} className={`group glass-card relative overflow-hidden rounded-2xl p-5 sm:p-8 border ${i === 0 ? 'border-purple-600/20 dark:border-purple-500/20' : 'border-blue-600/20 dark:border-blue-500/20'} transition-all duration-500 shadow-sm dark:shadow-none`}>
-            <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-              <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${edu.status === 'En curso' || edu.status === 'In progress' ? 'border-amber-600/20 text-amber-600 bg-amber-500/5' : 'border-green-600/20 text-green-600 bg-green-500/5'}`}>
-                {edu.status}
-              </span>
-            </div>
             <div className="flex gap-6">
               <div className={`hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-black/5 dark:border-white/5 ${i === 0 ? 'bg-purple-600/5 text-purple-600 dark:text-purple-400' : 'bg-blue-600/5 text-blue-600 dark:text-blue-400'}`}>
                 <i className={`${i === 0 ? 'fa-solid fa-code' : 'fa-solid fa-server'} text-lg`}></i>
               </div>
-              <div className="flex-1 min-w-0 pr-20 sm:pr-0">
-                <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 mb-2 tracking-[0.2em] uppercase">{edu.period}</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-3 mb-2">
+                  <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 tracking-[0.2em] uppercase">{edu.period}</div>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shrink-0 whitespace-nowrap ${edu.status === 'En curso' || edu.status === 'In progress' ? 'border-amber-600/20 text-amber-600 bg-amber-500/5' : 'border-green-600/20 text-green-600 bg-green-500/5'}`}>
+                    {edu.status}
+                  </span>
+                </div>
                 <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white">{edu.degree}</h3>
                 <div className="text-neutral-600 dark:text-neutral-400 text-sm mb-4 font-semibold flex items-center gap-2">
                   <i className="fa-solid fa-school text-[10px] opacity-50"></i>
@@ -118,24 +118,22 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
               {/* Shimmer sweep */}
               <div className="cert-shine-layer" aria-hidden="true" />
 
-              {/* Verified badge */}
-              <div className="absolute top-6 right-6 z-10">
-                <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5">
-                  <i className="fa-solid fa-circle-check text-[9px]"></i>
-                  {t.certs.verified}
-                </span>
-              </div>
-
               {/* Content */}
               <div className="relative z-10 flex gap-4 sm:gap-6 p-5 sm:p-8">
                 <div className={`hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-black/5 dark:border-white/5 ${c.iconBg} ${c.iconText}`}>
                   <i className={`${cert.icon} text-lg`}></i>
                 </div>
-                <div className="flex-1">
-                  <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 mb-2 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap">
-                    <span>{cert.issuer}</span>
-                    <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
-                    <span>{cert.year}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap min-w-0">
+                      <span>{cert.issuer}</span>
+                      <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
+                      <span>{cert.year}</span>
+                    </div>
+                    <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5 shrink-0 whitespace-nowrap">
+                      <i className="fa-solid fa-circle-check text-[9px]"></i>
+                      {t.certs.verified}
+                    </span>
                   </div>
                   <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {cert.name}
