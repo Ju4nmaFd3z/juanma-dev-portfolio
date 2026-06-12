@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { translations } from '../translations';
 import { downloadCV as downloadCVFile } from '../utils/downloadCV';
+import { useMagnetic } from '../utils/useMagnetic';
 
 interface NavbarProps {
   activeSection: string;
@@ -20,6 +21,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
   
   const cvMenuRef = useRef<HTMLDivElement>(null);
   const prefsMenuRef = useRef<HTMLDivElement>(null);
+  const terminalBtnRef = useMagnetic<HTMLButtonElement>(0.3);
+  const prefsBtnRef = useMagnetic<HTMLButtonElement>(0.3);
   const t = translations[lang].nav;
 
   useEffect(() => {
@@ -121,6 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
         <div className="flex items-center gap-2 sm:gap-3">
           
           <button
+            ref={terminalBtnRef}
             onClick={onOpenTerminal}
             className="w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
             title={t.terminal}
@@ -130,7 +134,8 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
           </button>
 
           <div className="relative" ref={prefsMenuRef}>
-            <button 
+            <button
+              ref={prefsBtnRef}
               onClick={togglePrefsMenu}
               className={`w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all ${showPrefsMenu ? 'bg-black/10 dark:bg-white/10 border-blue-500/30' : ''}`}
               aria-label="Preferences"

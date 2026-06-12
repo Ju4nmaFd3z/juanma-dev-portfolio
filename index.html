@@ -49,16 +49,35 @@
       const cursor = document.createElement('div');
       cursor.className = 'custom-cursor';
       cursor.setAttribute('aria-hidden', 'true');
+      cursor.style.translate = '-100px -100px';
       document.body.appendChild(cursor);
 
+      // Inertial cursor: lerped position via the independent `translate`
+      // property (no layout reads, no conflict with transform-based states)
+      // plus velocity-reactive scale. The rAF loop sleeps once settled.
+      let tx = -100, ty = -100, cx = -100, cy = -100;
+      let lastX = 0, lastY = 0, speed = 0, curScale = 1, raf = 0;
+
+      const loop = () => {
+        cx += (tx - cx) * 0.35;
+        cy += (ty - cy) * 0.35;
+        speed *= 0.85;
+        const targetScale = 1 + Math.min(speed * 0.004, 0.4);
+        curScale += (targetScale - curScale) * 0.2;
+        cursor.style.translate = (cx - 10) + 'px ' + (cy - 10) + 'px';
+        cursor.style.scale = curScale.toFixed(3);
+        const settled = Math.abs(tx - cx) < 0.1 && Math.abs(ty - cy) < 0.1 && Math.abs(curScale - 1) < 0.005;
+        raf = settled ? 0 : requestAnimationFrame(loop);
+      };
+
       document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth >= 1024) {
-          requestAnimationFrame(() => {
-            cursor.style.left = e.clientX - (cursor.offsetWidth / 2) + 'px';
-            cursor.style.top = e.clientY - (cursor.offsetHeight / 2) + 'px';
-          });
-        }
-      });
+        if (window.innerWidth < 1024) return;
+        speed += Math.hypot(e.clientX - lastX, e.clientY - lastY);
+        lastX = e.clientX; lastY = e.clientY;
+        tx = e.clientX; ty = e.clientY;
+        if (cx === -100) { cx = tx; cy = ty; }
+        if (!raf) raf = requestAnimationFrame(loop);
+      }, { passive: true });
 
       document.addEventListener('mousedown', () => {
         if (window.innerWidth >= 1024) document.body.classList.add('cursor-clicking');

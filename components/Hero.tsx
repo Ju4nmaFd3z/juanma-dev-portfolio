@@ -2,6 +2,8 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import { translations } from '../translations';
 import { downloadCV as downloadCVFile } from '../utils/downloadCV';
+import { isFinePointer } from '../utils/pointerField';
+import { useMagnetic } from '../utils/useMagnetic';
 
 interface HeroProps { lang: 'es' | 'en'; }
 
@@ -67,6 +69,24 @@ const CodeRainCanvas: React.FC = () => {
     let cachedW = 0;
     let cachedH = 0;
 
+    // The Field: rows excite (brighten + accelerate) near the cursor.
+    // Shades pre-computed slate → electric blue; py in centered logical coords.
+    const SHADES = [
+      COLOR,
+      'rgba(150, 170, 200, 0.26)',
+      'rgba(151, 180, 220, 0.34)',
+      'rgba(150, 190, 240, 0.44)',
+      'rgba(147, 197, 253, 0.55)',
+    ];
+    const FIELD_RADIUS = 90;
+    let py = 1e9;
+
+    const onPointerMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      py = e.clientY - r.top - r.height / 2;
+    };
+    const onPointerLeave = () => { py = 1e9; };
+
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -94,9 +114,22 @@ const CodeRainCanvas: React.FC = () => {
       const xStart = -xRange / 2;
       const xEnd   =  xRange / 2;
 
+      let lastFill = '';
       for (let i = 0; i < NUM_ROWS; i++) {
-        offsets[i] = (offsets[i] + CODE_SPEEDS[i] * dt) % rowWidths[i];
         const rowY = -totalH / 2 + i * ROW_GAP;
+
+        // Cursor proximity → brighter shade + up to 3.5× speed
+        const d = Math.abs(rowY - py);
+        let fill = COLOR;
+        let speedMul = 1;
+        if (d < FIELD_RADIUS) {
+          const boost = 1 - d / FIELD_RADIUS;
+          fill = SHADES[(boost * (SHADES.length - 1)) | 0];
+          speedMul = 1 + boost * 2.5;
+        }
+        if (fill !== lastFill) { ctx.fillStyle = fill; lastFill = fill; }
+
+        offsets[i] = (offsets[i] + CODE_SPEEDS[i] * speedMul * dt) % rowWidths[i];
         const rw   = rowWidths[i];
         const eo   = offsets[i];
         const ltr  = i % 2 === 0;
@@ -115,16 +148,25 @@ const CodeRainCanvas: React.FC = () => {
     const handleVisibility = () => { document.hidden ? stop() : play(); };
 
     const observer = new ResizeObserver(resize);
+    const field = canvas.parentElement;
 
     resize();
     play();
     document.addEventListener('visibilitychange', handleVisibility);
     observer.observe(canvas);
+    if (isFinePointer && field) {
+      field.addEventListener('mousemove', onPointerMove, { passive: true });
+      field.addEventListener('mouseleave', onPointerLeave);
+    }
 
     return () => {
       stop();
       document.removeEventListener('visibilitychange', handleVisibility);
       observer.disconnect();
+      if (isFinePointer && field) {
+        field.removeEventListener('mousemove', onPointerMove);
+        field.removeEventListener('mouseleave', onPointerLeave);
+      }
     };
   }, []);
 
@@ -137,10 +179,54 @@ const CodeRainCanvas: React.FC = () => {
   );
 };
 
+const SOCIAL_LINKS = [
+  { icon: 'fa-brands fa-github', url: 'https://github.com/Ju4nmaFd3z', label: 'GitHub profile' },
+  { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez', label: 'LinkedIn profile' },
+];
+
+const MagneticSocial: React.FC<{ link: typeof SOCIAL_LINKS[number] }> = ({ link }) => {
+  const ref = useMagnetic<HTMLAnchorElement>(0.3);
+  return (
+    <a
+      ref={ref}
+      href={link.url}
+      aria-label={link.label}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center glass-card rounded-2xl hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all border border-black/5 dark:border-white/5 group active:scale-95 shrink-0"
+    >
+      <i className={`${link.icon} text-lg sm:text-xl text-neutral-700 dark:text-white group-hover:scale-110 transition-transform duration-300`} aria-hidden="true"></i>
+    </a>
+  );
+};
+
 const Hero: React.FC<HeroProps> = ({ lang }) => {
   const t = translations[lang].hero;
   const [showCVOptions, setShowCVOptions] = useState(false);
   const cvRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const spotRaf = useRef(0);
+  const ctaRef = useMagnetic<HTMLButtonElement>(0.18);
+  const cvBtnRef = useMagnetic<HTMLButtonElement>(0.18);
+
+  // Ionized headline — a liquid circle of inverted color trails the cursor
+  const handleSpot = (e: React.MouseEvent) => {
+    if (!isFinePointer) return;
+    const { clientX, clientY } = e;
+    cancelAnimationFrame(spotRaf.current);
+    spotRaf.current = requestAnimationFrame(() => {
+      const el = titleRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--sx', `${clientX - r.left}px`);
+      el.style.setProperty('--sy', `${clientY - r.top}px`);
+      el.style.setProperty('--sr', '9rem');
+    });
+  };
+  const clearSpot = () => {
+    cancelAnimationFrame(spotRaf.current);
+    titleRef.current?.style.setProperty('--sr', '0px');
+  };
   
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -194,11 +280,23 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </div>
           </div>
           
-          <h1 className="text-5xl sm:text-8xl md:text-9xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none">
+          <h1
+            ref={titleRef}
+            onMouseMove={handleSpot}
+            onMouseLeave={clearSpot}
+            className="relative text-5xl sm:text-8xl md:text-9xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none"
+          >
             <span className="inline-block whitespace-nowrap">{t.title1}</span>
             <span className="inline lg:hidden xl:inline"> </span>
             <br className="hidden lg:block xl:hidden" />
             <span className="gradient-text inline-block whitespace-nowrap">{t.title2}</span>
+            {/* Ionized layer — colors invert inside the cursor's light circle */}
+            <span className="spotlight-layer" aria-hidden="true">
+              <span className="gradient-text inline-block whitespace-nowrap">{t.title1}</span>
+              <span className="inline lg:hidden xl:inline"> </span>
+              <br className="hidden lg:block xl:hidden" />
+              <span className="spotlight-glow inline-block whitespace-nowrap text-neutral-900 dark:text-white">{t.title2}</span>
+            </span>
           </h1>
           
           <p className="text-xl sm:text-2xl lg:text-2xl text-neutral-600 dark:text-neutral-400 font-light max-w-2xl leading-relaxed">
@@ -206,7 +304,8 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
           </p>
           
           <div className="flex flex-wrap justify-start gap-4 items-center pt-4 w-full">
-            <button 
+            <button
+              ref={ctaRef}
               onClick={scrollToContact}
               className="w-full sm:w-auto cursor-hide group relative px-6 py-4 sm:px-8 sm:py-5 bg-neutral-900 dark:bg-white text-white dark:text-black text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-xl shadow-black/10 dark:shadow-white/5 overflow-hidden"
             >
@@ -216,7 +315,8 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </button>
 
             <div className="relative flex-1 sm:flex-initial w-full sm:w-auto" ref={cvRef}>
-              <button 
+              <button
+                ref={cvBtnRef}
                 onClick={() => setShowCVOptions(!showCVOptions)}
                 className={`w-full sm:w-auto group px-6 py-4 sm:px-8 sm:py-5 bg-black/5 dark:bg-white/5 border text-neutral-900 dark:text-white text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${showCVOptions ? 'border-blue-500/30 bg-black/10 dark:bg-white/10' : 'border-black/10 dark:border-white/10'}`}
               >
@@ -251,20 +351,8 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             </div>
 
             <div className={`flex gap-3 justify-start transition-all duration-500 ${showCVOptions ? 'mt-4' : 'mt-0'}`}>
-              {[
-                { icon: 'fa-brands fa-github', url: 'https://github.com/Ju4nmaFd3z', label: 'GitHub profile' },
-                { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez', label: 'LinkedIn profile' }
-              ].map((link, i) => (
-                <a
-                  key={i}
-                  href={link.url}
-                  aria-label={link.label}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center glass-card rounded-2xl hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all border border-black/5 dark:border-white/5 group active:scale-95 shrink-0"
-                >
-                  <i className={`${link.icon} text-lg sm:text-xl text-neutral-700 dark:text-white group-hover:scale-110 transition-transform duration-300`} aria-hidden="true"></i>
-                </a>
+              {SOCIAL_LINKS.map((link) => (
+                <MagneticSocial key={link.url} link={link} />
               ))}
             </div>
           </div>

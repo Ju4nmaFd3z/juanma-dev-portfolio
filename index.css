@@ -30,7 +30,10 @@ body {
 /* Skip rendering off-screen sections entirely until the user scrolls to them.
    contain-intrinsic-size gives the browser an estimated size so the scrollbar
    doesn't jump. Values are rough estimates per section. */
-#about, #projects, #experience-education, #contact {
+/* NOTE: #projects is deliberately excluded — content-visibility implies
+   paint containment, which clips the carousel arrows positioned outside
+   the section box (left-[-5rem]/right-[-5rem]). */
+#about, #experience-education, #contact {
   content-visibility: auto;
   /* `auto <size>` remembers the real height after first render,
      falling back to the estimate on cold loads. Prevents scrollbar jumps. */
@@ -175,18 +178,22 @@ body {
 .animate-glow-pulse-organic {
   animation: glow-pulse-organic 12s ease-in-out infinite;
 }
+/* !important is required: Tailwind's responsive utilities (lg:pt-0,
+   min-h-[90vh]) are emitted AFTER these rules in the built CSS, so
+   without it they win the cascade and the hero loses its top padding,
+   sliding under the fixed navbar. */
 @media (orientation: landscape) {
   .hero-section {
-    padding-top: 10rem;
-    padding-bottom: 2rem;
-    min-height: auto;
+    padding-top: 10rem !important;
+    padding-bottom: 2rem !important;
+    min-height: auto !important;
   }
 }
 @media (orientation: landscape) and (min-width: 1024px) {
   .hero-section {
-    padding-top: 12rem;
-    padding-bottom: 4rem;
-    min-height: 90vh;
+    padding-top: 12rem !important;
+    padding-bottom: 4rem !important;
+    min-height: 90vh !important;
   }
 }
 
@@ -199,8 +206,108 @@ body {
   animation: loader-progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
+/* ── The Field: cursor light ─────────────────────────────────── */
+/* Compositor-only fixed layer moved with translate3d by CursorGlow. */
+.cursor-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+  background: radial-gradient(
+    circle,
+    rgba(37, 99, 235, 0.05) 0%,
+    rgba(37, 99, 235, 0.02) 35%,
+    transparent 70%
+  );
+}
+.dark .cursor-glow {
+  background: radial-gradient(
+    circle,
+    rgba(96, 165, 250, 0.07) 0%,
+    rgba(96, 165, 250, 0.03) 35%,
+    transparent 70%
+  );
+}
+
+/* ── The Field: ionized headline ─────────────────────────────── */
+/* Duplicated hero headline revealed through a liquid clip-path circle
+   that trails the cursor. clip-path only repaints the headline element. */
+.spotlight-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  clip-path: circle(var(--sr, 0px) at var(--sx, 50%) var(--sy, 50%));
+  transition: clip-path 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.spotlight-glow {
+  text-shadow: 0 0 32px rgba(96, 165, 250, 0.45);
+}
+
+/* ── The Field: kinetic assembly ─────────────────────────────── */
+.kinetic .k-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.kinetic .k-word > span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em);
+  filter: blur(6px);
+  transition:
+    opacity   0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter    0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.section-fade.visible .kinetic .k-word > span {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+/* Gradient halves of headlines arrive as one block, after the characters */
+.k-late {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  filter: blur(8px);
+  transition:
+    opacity   0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
+    filter    0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
+}
+.section-fade.visible .k-late {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
+/* ── The Field: project card tilt ────────────────────────────── */
+.tilt-wrap {
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* ── Reduced motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  .cursor-glow,
+  .spotlight-layer {
+    display: none;
+  }
+  .kinetic .k-word > span,
+  .k-late {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+  .tilt-wrap {
+    transition: none;
+  }
   .section-fade {
     transition: none;
     opacity: 1;
@@ -225,6 +332,8 @@ body {
 
 /* ── Custom cursor ───────────────────────────────────────────── */
 .custom-cursor {
+  top: 0;
+  left: 0;
   width: 20px;
   height: 20px;
   border: 1.5px solid rgba(128, 128, 128, 0.5);

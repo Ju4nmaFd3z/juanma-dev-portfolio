@@ -2,13 +2,32 @@
 import React, { useState, useEffect, memo } from 'react';
 import { translations } from '../translations';
 import { Project } from '../types';
+import Kinetic from './Kinetic';
+import { isFinePointer } from '../utils/pointerField';
+import { useMagnetic } from '../utils/useMagnetic';
 
 interface ProjectsProps { lang: 'es' | 'en'; }
+
+// The Field: active card tilts toward the cursor. Inactive cards are
+// pointer-events-none, so these handlers only ever fire on the front card.
+const handleTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+  if (!isFinePointer) return;
+  const el = e.currentTarget;
+  const r = el.getBoundingClientRect();
+  const rx = (0.5 - (e.clientY - r.top) / r.height) * 5;
+  const ry = ((e.clientX - r.left) / r.width - 0.5) * 5;
+  el.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+};
+const resetTilt = (e: React.MouseEvent<HTMLDivElement>) => {
+  e.currentTarget.style.transform = '';
+};
 
 const Projects: React.FC<ProjectsProps> = ({ lang }) => {
   const t = translations[lang].projects;
   const [filter, setFilter] = useState<'all' | 'software' | 'systems'>('all');
   const [activeIndex, setActiveIndex] = useState(0);
+  const prevRef = useMagnetic<HTMLButtonElement>(0.3);
+  const nextRef = useMagnetic<HTMLButtonElement>(0.3);
 
   const categories = {
     es: { all: 'Todos', software: 'Software', systems: 'Sistemas' },
@@ -114,7 +133,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-600 dark:text-blue-500">{t.title}</span>
             </div>
             <h2 className="text-5xl md:text-7xl font-display font-black tracking-tighter leading-none mb-4 text-neutral-900 dark:text-white">
-              {t.sectionHeading1} <span className="gradient-text">{t.sectionHeading2}</span>
+              <Kinetic text={t.sectionHeading1} /> <span className="gradient-text k-late">{t.sectionHeading2}</span>
             </h2>
             <p className="text-neutral-600 dark:text-neutral-400 text-lg font-light leading-relaxed">
               {t.subtitle}
@@ -152,6 +171,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
         <div className="relative py-12 lg:py-16 px-4 sm:px-0">
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 left-[-5rem] z-50">
             <button
+              ref={prevRef}
               onClick={prevProject}
               aria-label="Previous project"
               className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
@@ -162,6 +182,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
 
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 right-[-5rem] z-50">
             <button
+              ref={nextRef}
               onClick={nextProject}
               aria-label="Next project"
               className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
@@ -176,6 +197,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                 key={p.title}
                 className={`absolute inset-0 m-auto w-full max-w-[310px] sm:max-w-[460px] lg:max-w-[620px] xl:max-w-[750px] h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${getCardStyles(i)}`}
               >
+                <div className="tilt-wrap" onMouseMove={handleTilt} onMouseLeave={resetTilt}>
                 <div className="group relative flex flex-col glass-card rounded-[2.5rem] border-black/5 dark:border-white/5 hover:border-blue-600/30 dark:hover:border-blue-500/30 transition-all duration-700 h-full shadow-sm dark:shadow-none overflow-hidden [transform:translateZ(0)]">
                   <div className="relative aspect-[16/10] overflow-hidden rounded-t-[2.5rem] [transform:translateZ(0)]">
                     <div className={`absolute inset-0 bg-gradient-to-t from-neutral-900 dark:from-[#050505] via-transparent to-transparent z-10 opacity-80 transition-opacity duration-700`} />
@@ -244,6 +266,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                       </div>
                     </div>
                   </div>
+                </div>
                 </div>
               </div>
             ))}

@@ -10,6 +10,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import FloatingAI from './components/FloatingAI';
 import SnowEffect from './components/SnowEffect';
+import CursorGlow from './components/CursorGlow';
 import Terminal from './components/Terminal';
 import Preloader from './components/Preloader';
 import { translations } from './translations';
@@ -104,6 +105,7 @@ const App: React.FC = () => {
       {isLoading && <Preloader onLoadingComplete={handleLoadingComplete} />}
 
       {!isLoading && <SnowEffect theme={theme} />}
+      {!isLoading && <CursorGlow />}
 
       <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} aria-hidden={isLoading}>
         <Navbar

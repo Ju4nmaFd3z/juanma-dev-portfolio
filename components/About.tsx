@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, memo } from 'react';
 import { translations } from '../translations';
+import Kinetic from './Kinetic';
 
 interface AboutProps { lang: 'es' | 'en'; }
 
@@ -51,8 +52,8 @@ const About: React.FC<AboutProps> = ({ lang }) => {
       <div className="flex flex-col mb-16">
         <span className="text-blue-600 dark:text-blue-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4">{t.badge}</span>
         <h2 className="text-5xl md:text-7xl lg:text-8xl font-display font-black tracking-tighter leading-none text-neutral-900 dark:text-white">
-          {t.title1} <br />
-          <span className="gradient-text">{t.title2}</span>
+          <Kinetic text={t.title1} /> <br />
+          <span className="gradient-text k-late">{t.title2}</span>
         </h2>
       </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, memo } from 'react';
 import { translations } from '../translations';
+import Kinetic from './Kinetic';
 
 interface ContactProps { lang: 'es' | 'en'; }
 
@@ -37,7 +38,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
           const titleEnd = words[words.length - 1];
           return (
             <h2 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tighter text-neutral-900 dark:text-white">
-              {titleStart}<span className="gradient-text">{titleEnd}</span>
+              <Kinetic text={titleStart.trim()} /> <span className="gradient-text k-late">{titleEnd}</span>
             </h2>
           );
         })()}
