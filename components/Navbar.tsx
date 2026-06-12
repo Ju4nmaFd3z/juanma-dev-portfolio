@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { translations } from '../translations';
+import { downloadCV as downloadCVFile } from '../utils/downloadCV';
 
 interface NavbarProps {
   activeSection: string;
@@ -81,24 +82,15 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
   };
 
   const downloadCV = (fileLang: 'es' | 'en') => {
-    const fileName = fileLang === 'es' 
-      ? 'CVJuanManuelFernandezRodriguezES.pdf' 
-      : 'CVJuanManuelFernandezRodriguezEN.pdf';
-    
-    const link = document.createElement('a');
-    link.href = `/${fileName}`; 
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadCVFile(fileLang);
     setShowCVMenu(false);
   };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-[1000] flex justify-center transition-all duration-500 px-4 sm:px-6 ${isScrolled ? 'pt-2 sm:pt-4' : 'pt-4 sm:pt-8'}`}>
       <nav className={`w-full max-w-5xl rounded-2xl h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 border transition-all duration-500 ${
-        isScrolled 
-        ? 'bg-white/30 dark:bg-black/30 backdrop-blur-3xl border-black/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)]' 
+        isScrolled
+        ? 'bg-white/30 dark:bg-black/30 backdrop-blur-xl border-black/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)]'
         : 'bg-black/5 dark:bg-white/5 backdrop-blur-md border-black/5 dark:border-white/5'
       }`}>
         

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 
 interface PreloaderProps {
   onLoadingComplete: () => void;
@@ -24,13 +24,13 @@ const Preloader: React.FC<PreloaderProps> = ({ onLoadingComplete }) => {
   return (
     <div
       aria-hidden="true"
-      className={`fixed inset-0 z-[20000] flex items-center justify-center bg-[#050505] transition-all duration-1000 ease-[cubic-bezier(0.87,0,0.13,1)] ${
+      className={`fixed inset-0 z-[20000] flex items-center justify-center bg-[#050505] transition-[transform,opacity] duration-1000 ease-[cubic-bezier(0.87,0,0.13,1)] ${
         isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
       }`}
     >
       <div className="relative flex flex-col items-center">
         <div
-          className={`flex flex-col items-center gap-2 transition-all duration-1000 ease-out ${
+          className={`flex flex-col items-center gap-2 transition-[opacity,filter,transform] duration-1000 ease-out ${
             showContent ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-md scale-95'
           }`}
         >
@@ -49,17 +49,8 @@ const Preloader: React.FC<PreloaderProps> = ({ onLoadingComplete }) => {
         <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-blue-600/5 rounded-full blur-[120px] transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}></div>
       </div>
 
-      <style>{`
-        @keyframes loader-progress {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        .animate-loader-progress {
-          animation: loader-progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-        }
-      `}</style>
     </div>
   );
 };
 
-export default Preloader;
+export default memo(Preloader);

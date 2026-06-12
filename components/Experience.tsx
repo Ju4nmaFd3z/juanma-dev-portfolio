@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, memo } from 'react';
 import { translations } from '../translations';
 
 interface ExperienceProps { lang: 'es' | 'en'; }
@@ -207,4 +207,4 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
   );
 };
 
-export default Experience;
+export default memo(Experience);

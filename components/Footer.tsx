@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { translations } from '../translations';
 
 interface FooterProps { lang: 'es' | 'en'; }
@@ -20,4 +20,4 @@ const Footer: React.FC<FooterProps> = ({ lang }) => {
   );
 };
 
-export default Footer;
+export default memo(Footer);

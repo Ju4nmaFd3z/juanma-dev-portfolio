@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo, memo } from 'react';
 
 interface TerminalProps {
   isOpen: boolean;
@@ -13,22 +13,22 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const commands: Record<string, () => void> = {
+  const commands = useMemo<Record<string, () => void>>(() => ({
     help: () => {
-      const msg = lang === 'es' 
-        ? 'Comandos disponibles: help, clear, whoami, projects, neofetch, contact, exit' 
+      const msg = lang === 'es'
+        ? 'Comandos disponibles: help, clear, whoami, projects, neofetch, contact, exit'
         : 'Available commands: help, clear, whoami, projects, neofetch, contact, exit';
-      setHistory(prev => [...prev, `> help`, msg]);
+      setHistory(prev => [...prev, '> help', msg]);
     },
     clear: () => setHistory([]),
     whoami: () => {
       const msg = lang === 'es'
         ? 'Juanma Fernández: Técnico SMR, futuro Dev DAM. Amante del hardware y el código limpio.'
         : 'Juanma Fernández: IT Tech, future Software Dev. Hardware lover & clean code enthusiast.';
-      setHistory(prev => [...prev, `> whoami`, msg]);
+      setHistory(prev => [...prev, '> whoami', msg]);
     },
     projects: () => {
-      setHistory(prev => [...prev, `> projects`, lang === 'es' ? 'Navegando a Proyectos...' : 'Navigating to Projects...']);
+      setHistory(prev => [...prev, '> projects', lang === 'es' ? 'Navegando a Proyectos...' : 'Navigating to Projects...']);
       setTimeout(() => {
         document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
         onClose();
@@ -36,28 +36,28 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
     },
     neofetch: () => {
       const art = [
-        `> neofetch`,
-        `      _  ___  ___ `,
-        `     | ||   \\/   |`,
-        `  _  | || |\\  /| |  JUANMA@PORTFOLIO`,
-        ` | |_| || | \\/ | |  ----------------`,
-        `  \\___/ |_|    |_|  OS: macOS / Kali Linux`,
-        `                    HOST: DAM-SMR-v1.0`,
-        `                    SHELL: Zsh / Bash`,
-        `                    IDE: VS Code / Antigravity`,
-        `                    SKILLS: Java, SQL, IT, Claude Code`
+        '> neofetch',
+        '      _  ___  ___ ',
+        '     | ||   \\/   |',
+        '  _  | || |\\  /| |  JUANMA@PORTFOLIO',
+        ' | |_| || | \\/ | |  ----------------',
+        '  \\___/ |_|    |_|  OS: macOS / Kali Linux',
+        '                    HOST: DAM-SMR-v1.0',
+        '                    SHELL: Zsh / Bash',
+        '                    IDE: VS Code / Antigravity',
+        '                    SKILLS: Java, SQL, IT, Claude Code',
       ];
       setHistory(prev => [...prev, ...art]);
     },
     contact: () => {
-      setHistory(prev => [...prev, `> contact`, lang === 'es' ? 'Abriendo contacto...' : 'Opening contact...']);
+      setHistory(prev => [...prev, '> contact', lang === 'es' ? 'Abriendo contacto...' : 'Opening contact...']);
       setTimeout(() => {
         document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
         onClose();
       }, 500);
     },
     exit: () => onClose(),
-  };
+  }), [lang, onClose]);
 
   const focusInput = () => {
     inputRef.current?.focus();
@@ -152,4 +152,4 @@ const Terminal: React.FC<TerminalProps> = ({ isOpen, onClose, lang }) => {
   );
 };
 
-export default Terminal;
+export default memo(Terminal);

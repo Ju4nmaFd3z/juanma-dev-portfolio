@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { translations } from '../translations';
 import { Project } from '../types';
 
@@ -151,27 +151,29 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
 
         <div className="relative py-12 lg:py-16 px-4 sm:px-0">
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 left-[-5rem] z-50">
-            <button 
+            <button
               onClick={prevProject}
+              aria-label="Previous project"
               className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
             >
-              <i className="fa-solid fa-chevron-left text-neutral-400 group-hover:text-blue-600 transition-colors"></i>
+              <i className="fa-solid fa-chevron-left text-neutral-400 group-hover:text-blue-600 transition-colors" aria-hidden="true"></i>
             </button>
           </div>
-          
+
           <div className="hidden xl:flex absolute top-1/2 -translate-y-1/2 right-[-5rem] z-50">
-            <button 
+            <button
               onClick={nextProject}
+              aria-label="Next project"
               className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center border border-black/10 dark:border-white/10 hover:bg-white dark:hover:bg-white/10 hover:border-blue-500/50 transition-all active:scale-90 group"
             >
-              <i className="fa-solid fa-chevron-right text-neutral-400 group-hover:text-blue-600 transition-colors"></i>
+              <i className="fa-solid fa-chevron-right text-neutral-400 group-hover:text-blue-600 transition-colors" aria-hidden="true"></i>
             </button>
           </div>
 
           <div className="relative h-[480px] sm:h-[560px] lg:h-[600px] w-full perspective-1000">
             {filteredProjects.map((p, i) => (
-              <div 
-                key={i} 
+              <div
+                key={p.title}
                 className={`absolute inset-0 m-auto w-full max-w-[310px] sm:max-w-[460px] lg:max-w-[620px] xl:max-w-[750px] h-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${getCardStyles(i)}`}
               >
                 <div className="group relative flex flex-col glass-card rounded-[2.5rem] border-black/5 dark:border-white/5 hover:border-blue-600/30 dark:hover:border-blue-500/30 transition-all duration-700 h-full shadow-sm dark:shadow-none overflow-hidden [transform:translateZ(0)]">
@@ -183,7 +185,8 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
                       src={p.image}
                       alt={p.title}
                       loading="lazy"
-                      className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-all duration-1000 ease-out"
+                      decoding="async"
+                      className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000 ease-out"
                     />
                     
                     <div className="absolute top-8 left-8 z-20 w-12 h-12 rounded-2xl bg-white/20 dark:bg-white/10 backdrop-blur-xl border border-white/20 dark:border-white/10 flex items-center justify-center text-white text-lg shadow-xl">
@@ -199,8 +202,8 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
 
                   <div className="p-5 sm:p-8 lg:p-10 flex flex-col flex-1">
                     <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
-                      {p.tech.map((tech, ti) => (
-                        <span key={ti} className="text-[8px] sm:text-[9px] uppercase font-black tracking-widest text-neutral-500 dark:text-neutral-400 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-1.5 rounded-lg group-hover:text-blue-600 dark:group-hover:text-blue-300 group-hover:border-blue-500/20 transition-all">
+                      {p.tech.map((tech) => (
+                        <span key={tech} className="text-[8px] sm:text-[9px] uppercase font-black tracking-widest text-neutral-500 dark:text-neutral-400 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 px-3 py-1.5 rounded-lg group-hover:text-blue-600 dark:group-hover:text-blue-300 group-hover:border-blue-500/20 transition-all">
                           {tech}
                         </span>
                       ))}
@@ -332,4 +335,4 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
   );
 };
 
-export default Projects;
+export default memo(Projects);

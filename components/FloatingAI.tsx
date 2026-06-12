@@ -1,7 +1,24 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { translations } from '../translations';
 
 const IS_MAINTENANCE_MODE = false;
+const MAX_MESSAGES = 50;
+
+interface GithubData {
+  bio: string | null;
+  public_repos: number;
+  recent: string;
+}
+
+interface Source {
+  web?: { uri: string; title?: string };
+}
+
+interface Message {
+  role: 'user' | 'bot' | 'error';
+  text: string;
+  sources?: Source[];
+}
 
 interface FloatingAIProps { lang: 'es' | 'en'; }
 
@@ -50,9 +67,9 @@ function processInlineStyles(text: string) {
 const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<{role: 'user' | 'bot' | 'error', text: string, sources?: any[]}[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [githubData, setGithubData] = useState<any>(null);
+  const [githubData, setGithubData] = useState<GithubData | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const t = translations[lang].ai;
 
@@ -91,12 +108,14 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   useEffect(() => {
     if (!isOpen) return;
     if (IS_MAINTENANCE_MODE) {
-      setMessages([{role: 'bot', text: t.maintenanceMsg}]);
+      setMessages([{ role: 'bot', text: t.maintenanceMsg }]);
     } else {
       const randomGreeting = t.greetings[Math.floor(Math.random() * t.greetings.length)];
-      setMessages([{role: 'bot', text: randomGreeting}]);
+      setMessages([{ role: 'bot', text: randomGreeting }]);
     }
-  }, [lang, isOpen]);
+    // Intentionally excludes `lang` — language changes must not wipe an open conversation
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -117,7 +136,9 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       return;
     }
 
-    setMessages(prev => [...prev, {role: 'user', text: userMsg}]);
+    const trim = <T,>(arr: T[]): T[] => arr.length > MAX_MESSAGES ? arr.slice(arr.length - MAX_MESSAGES) : arr;
+
+    setMessages(prev => trim([...prev, { role: 'user', text: userMsg }]));
     setInput('');
     setIsTyping(true);
 
@@ -137,12 +158,12 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
       const { text, sources } = await response.json();
       const botResponse = text || t.errorDesc;
 
-      setMessages(prev => [...prev, { role: 'bot', text: botResponse, sources }]);
+      setMessages(prev => trim([...prev, { role: 'bot', text: botResponse, sources }]));
     } catch {
-      setMessages(prev => [...prev, {
+      setMessages(prev => trim([...prev, {
         role: 'error',
         text: t.errorDesc
-      }]);
+      }]));
     } finally {
       setIsTyping(false);
     }
@@ -303,4 +324,4 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   );
 };
 
-export default FloatingAI;
+export default memo(FloatingAI);

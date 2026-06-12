@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -20,32 +20,30 @@ const App: React.FC = () => {
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const handleLoadingComplete = useCallback(() => setIsLoading(false), []);
+  const isTerminalOpenRef = useRef(isTerminalOpen);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('theme');
-      if (saved) return saved as 'dark' | 'light';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'dark';
+    const saved = localStorage.getItem('theme');
+    if (saved) return saved as 'dark' | 'light';
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   });
 
   const t = translations[lang];
+
+  useEffect(() => { isTerminalOpenRef.current = isTerminalOpen; }, [isTerminalOpen]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement).tagName;
       const isTypingField = tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable;
-      if (e.key === '/' && !isTerminalOpen && !isTypingField) {
+      if (e.key === '/' && !isTerminalOpenRef.current && !isTypingField) {
         e.preventDefault();
         setIsTerminalOpen(true);
       }
-      if (e.key === 'Escape') {
-        setIsTerminalOpen(false);
-      }
+      if (e.key === 'Escape') setIsTerminalOpen(false);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isTerminalOpen]);
+  }, []); // Stable — reads current open state via ref
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -90,7 +88,6 @@ const App: React.FC = () => {
     sectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) {
-        el.classList.add('section-fade');
         observer.observe(el);
       }
     });
@@ -98,7 +95,9 @@ const App: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  const toggleTheme = useCallback(() => setTheme(prev => prev === 'dark' ? 'light' : 'dark'), []);
+  const handleOpenTerminal  = useCallback(() => setIsTerminalOpen(true),  []);
+  const handleCloseTerminal = useCallback(() => setIsTerminalOpen(false), []);
 
   return (
     <>
@@ -106,41 +105,41 @@ const App: React.FC = () => {
 
       {!isLoading && <SnowEffect theme={theme} />}
 
-      <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
-        <Navbar 
-          activeSection={activeSection} 
-          lang={lang} 
-          setLang={setLang} 
-          theme={theme} 
+      <div className={`transition-opacity duration-1000 ${isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} aria-hidden={isLoading}>
+        <Navbar
+          activeSection={activeSection}
+          lang={lang}
+          setLang={setLang}
+          theme={theme}
           toggleTheme={toggleTheme}
-          onOpenTerminal={() => setIsTerminalOpen(true)}
+          onOpenTerminal={handleOpenTerminal}
         />
-        <Terminal isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} lang={lang} />
+        <Terminal isOpen={isTerminalOpen} onClose={handleCloseTerminal} lang={lang} />
       </div>
 
       <div className={`min-h-screen relative selection:bg-blue-500/30 text-neutral-800 dark:text-neutral-200 transition-opacity duration-1000 ${isLoading ? 'opacity-0 overflow-hidden h-screen' : 'opacity-100'}`}>
         
         <main id="main" className="container mx-auto px-4 sm:px-8 lg:px-16 xl:px-24 relative z-10">
-          <section id="home">
+          <section id="home" aria-label={t.nav.home}>
             <Hero lang={lang} />
           </section>
-          
-          <section id="about" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
+
+          <section id="about" className="section-fade py-14 lg:py-24 border-t border-black/5 dark:border-white/5" aria-label={t.nav.about}>
             <About lang={lang} />
           </section>
 
-          <section id="projects" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
+          <section id="projects" className="section-fade py-14 lg:py-24 border-t border-black/5 dark:border-white/5" aria-label={t.nav.projects}>
             <Projects lang={lang} />
           </section>
 
-          <section id="experience-education" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
+          <section id="experience-education" className="section-fade py-14 lg:py-24 border-t border-black/5 dark:border-white/5" aria-label={t.nav.journey}>
             <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
               <Experience lang={lang} />
               <Education lang={lang} />
             </div>
           </section>
 
-          <section id="contact" className="py-14 lg:py-24 border-t border-black/5 dark:border-white/5">
+          <section id="contact" className="section-fade py-14 lg:py-24 border-t border-black/5 dark:border-white/5" aria-label={t.nav.contact}>
             <Contact lang={lang} />
           </section>
         </main>

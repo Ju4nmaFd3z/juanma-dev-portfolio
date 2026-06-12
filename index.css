@@ -26,13 +26,28 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Content visibility ──────────────────────────────────────── */
+/* Skip rendering off-screen sections entirely until the user scrolls to them.
+   contain-intrinsic-size gives the browser an estimated size so the scrollbar
+   doesn't jump. Values are rough estimates per section. */
+#about, #projects, #experience-education, #contact {
+  content-visibility: auto;
+  /* `auto <size>` remembers the real height after first render,
+     falling back to the estimate on cold loads. Prevents scrollbar jumps. */
+  contain-intrinsic-size: auto 800px;
+}
+
 /* ── Gradient text ───────────────────────────────────────────── */
 .gradient-text {
   background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 200% auto;
   animation: gradient-flow 8s ease infinite;
+  /* Promote to compositor layer so background-position animation
+     doesn't force a main-thread paint on every frame */
+  will-change: background-position;
 }
 @keyframes gradient-flow {
   0%   { background-position: 0%   50%; }
@@ -46,22 +61,43 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Scope transition to only the properties that actually change on hover.
+     `transition: all` forces the browser to track every property. */
+  transition:
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background   0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow   0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-card:hover {
   border-color: rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Reduce backdrop-filter cost on mobile — blur(12px) forces a GPU compositing
+   layer for every card simultaneously. Halving the radius cuts GPU work by ~4×. */
+@media (max-width: 767px) {
+  .glass-card {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
 /* ── Section fade-in ─────────────────────────────────────────── */
 .section-fade {
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Only animate opacity + transform — the only properties that change.
+     `will-change` promotes to its own compositor layer before animation starts. */
+  will-change: opacity, transform;
+  transition:
+    opacity   0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .section-fade.visible {
   opacity: 1;
   transform: translateY(0);
+  /* Release the compositor layer after animation completes */
+  will-change: auto;
 }
 
 /* ── Timeline ────────────────────────────────────────────────── */
@@ -107,6 +143,9 @@ body {
   transform: translateX(-180%) skewX(-18deg);
   opacity: 0;
 }
+.cert-card {
+  will-change: transform;
+}
 .cert-card:hover {
   transform: translateY(-3px);
 }
@@ -120,6 +159,69 @@ body {
 .dark ::-webkit-scrollbar-track { background: #050505; }
 ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* ── Hero animations ─────────────────────────────────────────── */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes glow-pulse-organic {
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1);    filter: blur(150px); }
+  50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); filter: blur(170px); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 4s ease-in-out infinite;
+}
+.animate-glow-pulse-organic {
+  animation: glow-pulse-organic 12s ease-in-out infinite;
+}
+@media (orientation: landscape) {
+  .hero-section {
+    padding-top: 10rem;
+    padding-bottom: 2rem;
+    min-height: auto;
+  }
+}
+@media (orientation: landscape) and (min-width: 1024px) {
+  .hero-section {
+    padding-top: 12rem;
+    padding-bottom: 4rem;
+    min-height: 90vh;
+  }
+}
+
+/* ── Preloader animation ─────────────────────────────────────── */
+@keyframes loader-progress {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.animate-loader-progress {
+  animation: loader-progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .section-fade {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+  .gradient-text {
+    animation: none;
+  }
+  .timeline-fill--active {
+    animation: none;
+    clip-path: inset(0% 0 0 0);
+  }
+  .animate-bounce-slow,
+  .animate-glow-pulse-organic,
+  .animate-loader-progress {
+    animation: none;
+  }
+  .cert-card:hover {
+    transform: none;
+  }
+}
 
 /* ── Custom cursor ───────────────────────────────────────────── */
 .custom-cursor {

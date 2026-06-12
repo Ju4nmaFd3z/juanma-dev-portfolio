@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { translations } from '../translations';
 
 interface ContactProps { lang: 'es' | 'en'; }
@@ -31,10 +31,16 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
   return (
     <div className="max-w-6xl mx-auto">
       <div className="text-center mb-20">
-        <h2 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tighter text-neutral-900 dark:text-white">
-          {lang === 'es' ? 'Pongámonos en ' : 'Get in '}
-          <span className="gradient-text">{lang === 'es' ? 'contacto' : 'touch'}</span>
-        </h2>
+        {(() => {
+          const words = t.title.split(' ');
+          const titleStart = words.slice(0, -1).join(' ') + ' ';
+          const titleEnd = words[words.length - 1];
+          return (
+            <h2 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tighter text-neutral-900 dark:text-white">
+              {titleStart}<span className="gradient-text">{titleEnd}</span>
+            </h2>
+          );
+        })()}
         <p className="text-neutral-600 dark:text-neutral-400 text-xl max-w-2xl mx-auto font-light leading-relaxed">{t.subtitle}</p>
       </div>
 
@@ -133,4 +139,4 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
   );
 };
 
-export default Contact;
+export default memo(Contact);

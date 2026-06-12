@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { translations } from '../translations';
 
 interface EducationProps { lang: 'es' | 'en'; }
@@ -24,6 +24,9 @@ const certColorMap = {
 
 type CertColorKey = keyof typeof certColorMap;
 
+const isInProgress = (status: string) =>
+  status.toLowerCase().includes('curso') || status.toLowerCase().includes('progress');
+
 const Education: React.FC<EducationProps> = ({ lang }) => {
   const t = translations[lang].education;
 
@@ -48,7 +51,7 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-3 mb-2">
                   <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 tracking-[0.2em] uppercase">{edu.period}</div>
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shrink-0 whitespace-nowrap ${edu.status === 'En curso' || edu.status === 'In progress' ? 'border-amber-600/20 text-amber-600 bg-amber-500/5' : 'border-green-600/20 text-green-600 bg-green-500/5'}`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border shrink-0 whitespace-nowrap ${isInProgress(edu.status) ? 'border-amber-600/20 text-amber-600 bg-amber-500/5' : 'border-green-600/20 text-green-600 bg-green-500/5'}`}>
                     {edu.status}
                   </span>
                 </div>
@@ -156,4 +159,4 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
   );
 };
 
-export default Education;
+export default memo(Education);

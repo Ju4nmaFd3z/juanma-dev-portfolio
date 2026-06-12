@@ -1,6 +1,7 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, memo } from 'react';
 import { translations } from '../translations';
+import { downloadCV as downloadCVFile } from '../utils/downloadCV';
 
 interface HeroProps { lang: 'es' | 'en'; }
 
@@ -51,48 +52,54 @@ const CodeRainCanvas: React.FC = () => {
     const NUM_ROWS = CODE_ROWS.length;
     const dpr = window.devicePixelRatio || 1;
 
+    // Measure text once — font is fixed size, never changes
     const measureCtx = document.createElement('canvas').getContext('2d')!;
     measureCtx.font = FONT;
     const rowWidths = CODE_ROWS.map(r => measureCtx.measureText(r + SEP).width);
     const offsets = CODE_ROWS.map((_, i) => (i / NUM_ROWS) * rowWidths[i]);
 
+    // Pre-compute layout constants
+    const totalH = (NUM_ROWS - 1) * ROW_GAP;
+
     const ctx = canvas.getContext('2d')!;
     let animId = 0;
     let lastTime = 0;
+    let cachedW = 0;
+    let cachedH = 0;
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
-      canvas.width = Math.round(rect.width * dpr);
-      canvas.height = Math.round(rect.height * dpr);
+      cachedW = rect.width;
+      cachedH = rect.height;
+      canvas.width  = Math.round(cachedW * dpr);
+      canvas.height = Math.round(cachedH * dpr);
+      // Bake scale + center translation into the canvas transform once.
+      // Every subsequent draw call works in logical CSS pixels centered at (0,0).
+      // Eliminates ctx.save / ctx.scale / ctx.translate / ctx.restore per frame.
+      ctx.setTransform(dpr, 0, 0, dpr, canvas.width / 2, canvas.height / 2);
+      ctx.font = FONT;
+      ctx.fillStyle = COLOR;
+      ctx.textBaseline = 'middle';
     };
 
     const draw = (time: number) => {
       const dt = Math.min((time - lastTime) / 1000, 0.05);
       lastTime = time;
 
-      const W = canvas.width / dpr;
-      const H = canvas.height / dpr;
+      // clearRect in logical coords relative to the centered origin
+      ctx.clearRect(-cachedW / 2, -cachedH / 2, cachedW, cachedH);
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.translate(W / 2, H / 2);
-      ctx.font = FONT;
-      ctx.fillStyle = COLOR;
-      ctx.textBaseline = 'middle';
-
-      const totalH = (NUM_ROWS - 1) * ROW_GAP;
-      const xRange = W + 400;
+      const xRange = cachedW + 400;
       const xStart = -xRange / 2;
-      const xEnd = xRange / 2;
+      const xEnd   =  xRange / 2;
 
       for (let i = 0; i < NUM_ROWS; i++) {
         offsets[i] = (offsets[i] + CODE_SPEEDS[i] * dt) % rowWidths[i];
         const rowY = -totalH / 2 + i * ROW_GAP;
-        const rw = rowWidths[i];
-        const eo = offsets[i];
-        const ltr = i % 2 === 0;
+        const rw   = rowWidths[i];
+        const eo   = offsets[i];
+        const ltr  = i % 2 === 0;
         let x = ltr ? xStart - rw + eo : xStart - rw - eo;
         while (x < xEnd) {
           ctx.fillText(CODE_ROWS[i] + SEP, x, rowY);
@@ -100,13 +107,11 @@ const CodeRainCanvas: React.FC = () => {
         }
       }
 
-      ctx.restore();
       animId = requestAnimationFrame(draw);
     };
 
     const stop = () => { cancelAnimationFrame(animId); animId = 0; };
     const play = () => { if (animId) return; lastTime = 0; animId = requestAnimationFrame(draw); };
-
     const handleVisibility = () => { document.hidden ? stop() : play(); };
 
     const observer = new ResizeObserver(resize);
@@ -153,16 +158,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
   };
 
   const downloadCV = (fileLang: 'es' | 'en') => {
-    const fileName = fileLang === 'es' 
-      ? 'CVJuanManuelFernandezRodriguezES.pdf' 
-      : 'CVJuanManuelFernandezRodriguezEN.pdf';
-      
-    const link = document.createElement('a');
-    link.href = `/${fileName}`; 
-    link.setAttribute('download', fileName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadCVFile(fileLang);
     setShowCVOptions(false);
   };
 
@@ -256,17 +252,18 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
 
             <div className={`flex gap-3 justify-start transition-all duration-500 ${showCVOptions ? 'mt-4' : 'mt-0'}`}>
               {[
-                { icon: 'fa-brands fa-github', url: 'https://github.com/Ju4nmaFd3z' },
-                { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez' }
+                { icon: 'fa-brands fa-github', url: 'https://github.com/Ju4nmaFd3z', label: 'GitHub profile' },
+                { icon: 'fa-brands fa-linkedin-in', url: 'https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez', label: 'LinkedIn profile' }
               ].map((link, i) => (
-                <a 
+                <a
                   key={i}
-                  href={link.url} 
-                  target="_blank" 
+                  href={link.url}
+                  aria-label={link.label}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center glass-card rounded-2xl hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/20 dark:hover:border-white/20 transition-all border border-black/5 dark:border-white/5 group active:scale-95 shrink-0"
                 >
-                  <i className={`${link.icon} text-lg sm:text-xl text-neutral-700 dark:text-white group-hover:scale-110 transition-transform duration-300`}></i>
+                  <i className={`${link.icon} text-lg sm:text-xl text-neutral-700 dark:text-white group-hover:scale-110 transition-transform duration-300`} aria-hidden="true"></i>
                 </a>
               ))}
             </div>
@@ -317,40 +314,8 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
         </div>
       </div>
       
-      <style>{`
-        @keyframes bounce-slow {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes glow-pulse-organic {
-          0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); filter: blur(150px); }
-          50% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); filter: blur(170px); }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 4s ease-in-out infinite;
-        }
-        .animate-glow-pulse-organic {
-          animation: glow-pulse-organic 12s ease-in-out infinite;
-        }
-        
-        @media (orientation: landscape) {
-          .hero-section {
-            padding-top: 10rem !important;
-            padding-bottom: 2rem !important;
-            min-height: auto !important;
-          }
-        }
-
-        @media (orientation: landscape) and (min-width: 1024px) {
-          .hero-section {
-            padding-top: 12rem !important;
-            padding-bottom: 4rem !important;
-            min-height: 90vh !important;
-          }
-        }
-      `}</style>
     </section>
   );
 };
 
-export default Hero;
+export default memo(Hero);
