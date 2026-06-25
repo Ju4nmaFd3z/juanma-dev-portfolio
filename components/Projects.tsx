@@ -113,9 +113,9 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
     if (displayDiff === 0) {
       return "z-30 opacity-100 scale-100 translate-x-0 blur-0 shadow-2xl";
     } else if (displayDiff === 1) {
-      return "z-10 opacity-40 scale-75 translate-x-[35%] sm:translate-x-[45%] lg:translate-x-[55%] xl:translate-x-[65%] blur-sm pointer-events-none rotate-y-[-10deg]";
+      return "z-10 opacity-40 scale-75 translate-x-[35%] sm:translate-x-[45%] lg:translate-x-[55%] xl:translate-x-[65%] blur-sm pointer-events-none";
     } else if (displayDiff === -1) {
-      return "z-10 opacity-40 scale-75 translate-x-[-35%] sm:translate-x-[-45%] lg:translate-x-[-55%] xl:translate-x-[-65%] blur-sm pointer-events-none rotate-y-[10deg]";
+      return "z-10 opacity-40 scale-75 translate-x-[-35%] sm:translate-x-[-45%] lg:translate-x-[-55%] xl:translate-x-[-65%] blur-sm pointer-events-none";
     } else {
       return "z-0 opacity-0 scale-50 translate-x-0 blur-xl pointer-events-none";
     }
@@ -161,7 +161,7 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               href="https://github.com/Ju4nmaFd3z" 
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 glass-card rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/10 transition-all border-black/5 dark:border-white/10 shadow-sm dark:shadow-none"
+              className="flex items-center justify-center gap-3 w-full sm:w-auto px-8 py-4 glass-card rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/10 transition-all border border-black/5 dark:border-white/10 shadow-sm dark:shadow-none"
             >
               {t.github} <i className="fa-brands fa-github text-sm"></i>
             </a>

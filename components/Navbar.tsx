@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { translations } from '../translations';
-import { downloadCV as downloadCVFile } from '../utils/downloadCV';
+import { buildCvDoc } from '../utils/cvDoc';
 import { useMagnetic } from '../utils/useMagnetic';
+import type { ViewerDoc } from '../types';
 
 interface NavbarProps {
   activeSection: string;
@@ -11,28 +12,27 @@ interface NavbarProps {
   theme: 'dark' | 'light';
   toggleTheme: () => void;
   onOpenTerminal: () => void;
+  onOpenDocument: (doc: ViewerDoc) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, toggleTheme, onOpenTerminal }) => {
+const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, toggleTheme, onOpenTerminal, onOpenDocument }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showCVMenu, setShowCVMenu] = useState(false);
   const [showPrefsMenu, setShowPrefsMenu] = useState(false);
-  
-  const cvMenuRef = useRef<HTMLDivElement>(null);
+
   const prefsMenuRef = useRef<HTMLDivElement>(null);
   const terminalBtnRef = useMagnetic<HTMLButtonElement>(0.3);
   const prefsBtnRef = useMagnetic<HTMLButtonElement>(0.3);
   const t = translations[lang].nav;
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+      setIsMenuOpen(false);
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     const handleClickOutside = (event: MouseEvent) => {
-      if (cvMenuRef.current && !cvMenuRef.current.contains(event.target as Node)) {
-        setShowCVMenu(false);
-      }
       if (prefsMenuRef.current && !prefsMenuRef.current.contains(event.target as Node)) {
         setShowPrefsMenu(false);
       }
@@ -69,24 +69,18 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
   const togglePrefsMenu = () => {
     const nextState = !showPrefsMenu;
     setShowPrefsMenu(nextState);
-    if (nextState) {
-      setIsMenuOpen(false);
-      setShowCVMenu(false);
-    }
+    if (nextState) setIsMenuOpen(false);
   };
 
   const toggleMobileNav = () => {
     const nextState = !isMenuOpen;
     setIsMenuOpen(nextState);
-    if (nextState) {
-      setShowPrefsMenu(false);
-      setShowCVMenu(false);
-    }
+    if (nextState) setShowPrefsMenu(false);
   };
 
-  const downloadCV = (fileLang: 'es' | 'en') => {
-    downloadCVFile(fileLang);
-    setShowCVMenu(false);
+  const openCV = () => {
+    onOpenDocument(buildCvDoc(lang, t.downloadCV));
+    setIsMenuOpen(false);
   };
 
   return (
@@ -176,38 +170,13 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
             )}
           </div>
 
-          <div className="relative" ref={cvMenuRef}>
-            <button 
-              onClick={() => setShowCVMenu(!showCVMenu)}
-              className={`hidden lg:flex items-center gap-2 px-4 py-2 lg:h-[38px] bg-black/[0.03] dark:bg-white/[0.03] text-black/70 dark:text-white/70 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-black/10 dark:hover:bg-white/10 hover:text-black dark:hover:text-white border border-black/5 dark:border-white/10 transition-all ${showCVMenu ? 'bg-black/10 dark:bg-white/10 text-black dark:text-white border-blue-500/30' : ''}`}
-            >
-              <i className="fa-solid fa-download text-[10px]"></i>
-              {t.downloadCV}
-              <i className={`fa-solid fa-chevron-down text-[7px] transition-transform duration-300 ${showCVMenu ? 'rotate-180' : ''}`}></i>
-            </button>
-
-            {showCVMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right">
-                <div className="p-2 space-y-1">
-                  <div className="px-3 py-2 text-[8px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.2em]">{lang === 'es' ? 'Seleccionar Idioma' : 'Select Language'}</div>
-                  <button 
-                    onClick={() => downloadCV('es')}
-                    className="w-full px-3 py-3 rounded-xl flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-300 hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all group"
-                  >
-                    <span>Español</span>
-                    <i className="fa-solid fa-download text-[9px] opacity-30 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all duration-300"></i>
-                  </button>
-                  <button 
-                    onClick={() => downloadCV('en')}
-                    className="w-full px-3 py-3 rounded-xl flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-neutral-600 dark:text-neutral-300 hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all group"
-                  >
-                    <span>English</span>
-                    <i className="fa-solid fa-download text-[9px] opacity-30 group-hover:opacity-100 group-hover:translate-y-0.5 transition-all duration-300"></i>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
+          <button
+            onClick={openCV}
+            className="hidden lg:flex items-center gap-2 px-4 py-2 lg:h-[38px] bg-black/[0.03] dark:bg-white/[0.03] text-black/70 dark:text-white/70 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-black/10 dark:hover:bg-white/10 hover:text-black dark:hover:text-white hover:border-blue-500/30 border border-black/5 dark:border-white/10 transition-all"
+          >
+            <i className="fa-solid fa-eye text-[10px]"></i>
+            {t.downloadCV}
+          </button>
           
           <button className="lg:hidden text-black/70 dark:text-white/70 p-2" onClick={toggleMobileNav}>
             <i className={`fa-solid ${isMenuOpen ? 'fa-xmark' : 'fa-bars-staggered'} text-xl transition-transform duration-300`}></i>
@@ -239,14 +208,10 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, to
 
             <div className="h-px bg-black/5 dark:bg-white/5 my-2 mx-4"></div>
 
-            <div className="grid grid-cols-2 gap-2 p-2">
-              <button onClick={() => downloadCV('es')} className="flex flex-col items-center gap-2 py-4 bg-black/[0.03] dark:bg-white/[0.05] rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-black/5 dark:border-white/5 active:scale-95">
-                <span className="text-xl mb-1">🇪🇸</span>
-                CV ESPAÑOL
-              </button>
-              <button onClick={() => downloadCV('en')} className="flex flex-col items-center gap-2 py-4 bg-black/[0.03] dark:bg-white/[0.05] rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-black/5 dark:border-white/5 active:scale-95">
-                <span className="text-xl mb-1">🇬🇧</span>
-                CV ENGLISH
+            <div className="p-2">
+              <button onClick={openCV} className="w-full flex items-center justify-center gap-3 py-4 bg-black/[0.03] dark:bg-white/[0.05] rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-black/5 dark:border-white/5 active:scale-95">
+                <i className="fa-solid fa-eye text-sm"></i>
+                {lang === 'es' ? 'Ver CV' : 'View CV'}
               </button>
             </div>
           </div>

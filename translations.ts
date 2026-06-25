@@ -157,6 +157,8 @@ export const translations = {
       certs: {
         title: 'Certificaciones',
         verified: 'Verificado',
+        view: 'Ver título',
+        download: 'Descargar',
         items: [
           {
             name: 'CCNA: Introduction to Networks',
@@ -164,10 +166,26 @@ export const translations = {
             year: '2024',
             color: 'cyan',
             icon: 'fa-solid fa-network-wired',
-            skills: ['TCP/IP', 'Switching', 'Routing', 'Seguridad', 'VLAN', 'IPv6']
+            skills: ['TCP/IP', 'Switching', 'Routing', 'Seguridad', 'VLAN', 'IPv6'],
+            file: '/certs/ccna.pdf'
+          },
+          {
+            name: 'Introducción Práctica a DevOps',
+            issuer: 'LemonCode',
+            year: '2026',
+            color: 'amber',
+            icon: 'fa-solid fa-infinity',
+            skills: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'],
+            file: '/certs/devops-lemoncode.pdf'
           }
         ]
       }
+    },
+    viewer: {
+      download: 'Descargar',
+      close: 'Cerrar',
+      openInNewTab: 'Abrir en nueva pestaña',
+      cannotDisplay: 'Tu navegador no puede mostrar el PDF.'
     },
     contact: {
       title: 'Pongámonos en contacto',
@@ -369,6 +387,8 @@ export const translations = {
       certs: {
         title: 'Certifications',
         verified: 'Verified',
+        view: 'View title',
+        download: 'Download',
         items: [
           {
             name: 'CCNA: Introduction to Networks',
@@ -376,10 +396,26 @@ export const translations = {
             year: '2024',
             color: 'cyan',
             icon: 'fa-solid fa-network-wired',
-            skills: ['TCP/IP', 'Switching', 'Routing', 'Security', 'VLAN', 'IPv6']
+            skills: ['TCP/IP', 'Switching', 'Routing', 'Security', 'VLAN', 'IPv6'],
+            file: '/certs/ccna.pdf'
+          },
+          {
+            name: 'Practical Introduction to DevOps',
+            issuer: 'LemonCode',
+            year: '2026',
+            color: 'amber',
+            icon: 'fa-solid fa-infinity',
+            skills: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'],
+            file: '/certs/devops-lemoncode.pdf'
           }
         ]
       }
+    },
+    viewer: {
+      download: 'Download',
+      close: 'Close',
+      openInNewTab: 'Open in new tab',
+      cannotDisplay: 'Your browser cannot display the PDF.'
     },
     contact: {
       title: 'Get in touch',

@@ -187,7 +187,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   return (
     <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end">
       {isOpen ? (
-        <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[calc(100svh-6rem)] sm:h-[600px] max-h-[600px] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
+        <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[calc(100svh-6rem)] sm:h-[600px] max-h-[600px] min-h-[320px] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg ${IS_MAINTENANCE_MODE ? 'grayscale-[0.5]' : ''}`}>
@@ -209,7 +209,7 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-black/20">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 bg-black/20">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-500`}>
                 <div className="flex flex-col max-w-[85%] gap-2">

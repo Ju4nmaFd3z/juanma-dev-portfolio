@@ -197,7 +197,6 @@ const Experience: React.FC<ExperienceProps> = ({ lang }) => {
 
         {/* Footer */}
         <div className="group relative">
-          <div className="absolute -left-[2.35rem] top-0 h-full w-px border-l border-black/10 dark:border-white/10 border-dashed" />
           <div className="glass-card rounded-2xl p-6 border-dashed border-black/10 dark:border-white/10 opacity-60">
             <p className="text-xs text-neutral-400 dark:text-neutral-500 font-medium">{t.footer}</p>
           </div>

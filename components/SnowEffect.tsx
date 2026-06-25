@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, memo } from 'react';
+import { prefersReducedMotion } from '../utils/pointerField';
 
 interface SnowEffectProps {
   theme?: 'dark' | 'light';
@@ -8,6 +9,8 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -98,6 +101,8 @@ const SnowEffect: React.FC<SnowEffectProps> = ({ theme = 'dark' }) => {
       document.removeEventListener('visibilitychange', handleVisibility);
     };
   }, [theme]);
+
+  if (prefersReducedMotion) return null;
 
   return (
     <canvas

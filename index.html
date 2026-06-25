@@ -86,6 +86,15 @@
         if (window.innerWidth >= 1024) document.body.classList.remove('cursor-clicking');
       });
 
+      // When the tab loses focus / is hidden (e.g. opening a link in a new tab),
+      // a control's mouseup/mouseleave may never fire — clear transient cursor
+      // states so the custom cursor isn't left stuck or invisible on return.
+      const resetCursorState = () => {
+        document.body.classList.remove('cursor-clicking', 'link-hover', 'safe-hover', 'cursor-hidden-active');
+      };
+      window.addEventListener('blur', resetCursorState);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) resetCursorState(); });
+
       const handleHover      = () => { if (window.innerWidth >= 1024) document.body.classList.add('link-hover'); };
       const handleUnhover    = () => { if (window.innerWidth >= 1024) document.body.classList.remove('link-hover'); };
       const handleSafeHover  = () => { if (window.innerWidth >= 1024) document.body.classList.add('safe-hover'); };

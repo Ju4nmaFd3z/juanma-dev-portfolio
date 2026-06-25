@@ -11,21 +11,24 @@ export interface Project {
   repo?: string;
 }
 
-export interface Experience {
-  role: string;
-  type: string;
-  company: string;
-  location: string;
-  period: string;
-  points: string[];
-  tags: string[];
+// ── Document viewer (CV + certification titles) ──────────────────
+export interface ViewerSource {
+  id: string;            // 'es' | 'en' | 'pdf'
+  label: string;         // "Español", "English", "Título"
+  flag?: string;         // optional emoji for the CV language toggle
+  url: string;           // '/CV…ES.pdf' | '/certs/ccna.pdf'
+  downloadName: string;  // filename used when downloading
 }
 
-export interface Education {
-  degree: string;
-  school: string;
-  period: string;
-  status: string;
-  desc: string;
-  highlights?: string[];
+export interface ViewerDoc {
+  title: string;             // modal header
+  sources: ViewerSource[];   // 1 (cert) or 2 (CV ES/EN)
+  activeId?: string;         // initially selected source
+}
+
+export interface ViewerLabels {
+  download: string;
+  close: string;
+  openInNewTab: string;
+  cannotDisplay: string;
 }

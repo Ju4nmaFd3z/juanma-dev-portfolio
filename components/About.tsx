@@ -135,7 +135,7 @@ const About: React.FC<AboutProps> = ({ lang }) => {
                 <i className={`${stat.icon} text-xs sm:text-lg`}></i>
               </div>
               <div className="text-lg sm:text-3xl font-display font-black text-neutral-900 dark:text-white mb-0.5 sm:mb-1 leading-none">{stat.value}</div>
-              <div className="text-[7px] sm:text-[10px] font-bold text-neutral-500 dark:text-neutral-300 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0 sm:mb-1 leading-tight">{stat.label}</div>
+              <div className="text-[8px] sm:text-[10px] font-bold text-neutral-500 dark:text-neutral-300 uppercase tracking-[0.15em] sm:tracking-[0.2em] mb-0 sm:mb-1 leading-tight">{stat.label}</div>
               <div className="hidden sm:block text-[9px] text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">{stat.sub}</div>
             </div>
           ))}

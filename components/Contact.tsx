@@ -12,8 +12,12 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = `Contacto Portfolio: ${formData.name}`;
-    const body = `Hola Juanma,\n\nSoy ${formData.name} (${formData.email}).\n\n${formData.message}`;
+    const subject = lang === 'en'
+      ? `Portfolio Contact: ${formData.name}`
+      : `Contacto Portfolio: ${formData.name}`;
+    const body = lang === 'en'
+      ? `Hi Juanma,\n\nI'm ${formData.name} (${formData.email}).\n\n${formData.message}`
+      : `Hola Juanma,\n\nSoy ${formData.name} (${formData.email}).\n\n${formData.message}`;
     const mailtoUrl = `mailto:juanmafr2007@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = mailtoUrl;
     setSent(true);
@@ -31,7 +35,7 @@ const Contact: React.FC<ContactProps> = ({ lang }) => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-20">
+      <div className="text-center mb-10 md:mb-20">
         {(() => {
           const words = t.title.split(' ');
           const titleStart = words.slice(0, -1).join(' ') + ' ';

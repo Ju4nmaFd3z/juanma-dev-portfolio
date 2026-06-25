@@ -1,7 +1,12 @@
 import React, { memo } from 'react';
 import { translations } from '../translations';
+import { downloadFile } from '../utils/downloadFile';
+import type { ViewerDoc } from '../types';
 
-interface EducationProps { lang: 'es' | 'en'; }
+interface EducationProps {
+  lang: 'es' | 'en';
+  onOpenDocument: (doc: ViewerDoc) => void;
+}
 
 const certColorMap = {
   cyan: {
@@ -27,7 +32,7 @@ type CertColorKey = keyof typeof certColorMap;
 const isInProgress = (status: string) =>
   status.toLowerCase().includes('curso') || status.toLowerCase().includes('progress');
 
-const Education: React.FC<EducationProps> = ({ lang }) => {
+const Education: React.FC<EducationProps> = ({ lang, onOpenDocument }) => {
   const t = translations[lang].education;
 
   return (
@@ -128,10 +133,10 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-3 mb-2">
-                    <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 tracking-[0.2em] uppercase flex items-center gap-2 flex-wrap min-w-0">
-                      <span>{cert.issuer}</span>
+                    <div className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 tracking-[0.15em] uppercase flex items-center gap-2 min-w-0">
+                      <span className="truncate">{cert.issuer}</span>
                       <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0"></span>
-                      <span>{cert.year}</span>
+                      <span className="shrink-0">{cert.year}</span>
                     </div>
                     <span className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-green-600/20 text-green-600 bg-green-500/5 shrink-0 whitespace-nowrap">
                       <i className="fa-solid fa-circle-check text-[9px]"></i>
@@ -141,13 +146,36 @@ const Education: React.FC<EducationProps> = ({ lang }) => {
                   <h3 className="text-xl font-bold mb-1 text-neutral-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                     {cert.name}
                   </h3>
-                  <div className="flex flex-wrap gap-2 border-t border-black/5 dark:border-white/5 pt-5 mt-5">
-                    {cert.skills.map((skill, si) => (
-                      <span key={si} className="text-[9px] font-black uppercase tracking-tighter text-neutral-500 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border border-black/5 dark:border-white/5 px-2 py-1 rounded">
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
+                  {cert.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2 border-t border-black/5 dark:border-white/5 pt-5 mt-5">
+                      {cert.skills.map((skill, si) => (
+                        <span key={si} className="text-[9px] font-black uppercase tracking-tighter text-neutral-500 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border border-black/5 dark:border-white/5 px-2 py-1 rounded">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {cert.file && (
+                    <div className={`flex flex-wrap gap-3 mt-5 ${cert.skills.length === 0 ? 'border-t border-black/5 dark:border-white/5 pt-5' : ''}`}>
+                      <button
+                        onClick={() => onOpenDocument({
+                          title: cert.name,
+                          sources: [{ id: 'pdf', label: t.certs.view, url: cert.file, downloadName: cert.file.split('/').pop() || 'certificado.pdf' }],
+                        })}
+                        className={`cursor-safe flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border ${c.border} ${c.iconBg} ${c.iconText} hover:scale-[1.03] active:scale-95 transition-all`}
+                      >
+                        <i className="fa-solid fa-eye text-[10px]"></i>
+                        {t.certs.view}
+                      </button>
+                      <button
+                        onClick={() => downloadFile(cert.file, cert.file.split('/').pop() || 'certificado.pdf')}
+                        className="cursor-safe flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border border-black/5 dark:border-white/10 text-neutral-600 dark:text-neutral-300 bg-black/[0.02] dark:bg-white/[0.03] hover:bg-black/5 dark:hover:bg-white/5 hover:scale-[1.03] active:scale-95 transition-all"
+                      >
+                        <i className="fa-solid fa-download text-[10px]"></i>
+                        {t.certs.download}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

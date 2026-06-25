@@ -1,11 +1,12 @@
 
-import React, { useState, useRef, useEffect, memo } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import { translations } from '../translations';
-import { downloadCV as downloadCVFile } from '../utils/downloadCV';
+import { buildCvDoc } from '../utils/cvDoc';
 import { isFinePointer } from '../utils/pointerField';
 import { useMagnetic } from '../utils/useMagnetic';
+import type { ViewerDoc } from '../types';
 
-interface HeroProps { lang: 'es' | 'en'; }
+interface HeroProps { lang: 'es' | 'en'; onOpenDocument: (doc: ViewerDoc) => void; }
 
 const CODE_ROWS = [
   'import java.util.*;   public class App {   private String name;   int count = 0;   @Override   void run() {   return null; }   ',
@@ -200,10 +201,8 @@ const MagneticSocial: React.FC<{ link: typeof SOCIAL_LINKS[number] }> = ({ link 
   );
 };
 
-const Hero: React.FC<HeroProps> = ({ lang }) => {
+const Hero: React.FC<HeroProps> = ({ lang, onOpenDocument }) => {
   const t = translations[lang].hero;
-  const [showCVOptions, setShowCVOptions] = useState(false);
-  const cvRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const spotRaf = useRef(0);
   const ctaRef = useMagnetic<HTMLButtonElement>(0.18);
@@ -228,25 +227,12 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
     titleRef.current?.style.setProperty('--sr', '0px');
   };
   
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (cvRef.current && !cvRef.current.contains(event.target as Node)) {
-        setShowCVOptions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const scrollToContact = (e: React.MouseEvent) => {
     e.preventDefault();
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const downloadCV = (fileLang: 'es' | 'en') => {
-    downloadCVFile(fileLang);
-    setShowCVOptions(false);
-  };
+  const openCV = () => onOpenDocument(buildCvDoc(lang, t.cv));
 
   const renderDescription = () => {
     const parts = t.desc.split('{bold}');
@@ -284,7 +270,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
             ref={titleRef}
             onMouseMove={handleSpot}
             onMouseLeave={clearSpot}
-            className="relative text-5xl sm:text-8xl md:text-9xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none"
+            className="relative text-5xl sm:text-8xl md:text-8xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-display font-black leading-[0.85] tracking-tighter text-neutral-900 dark:text-white max-w-[20ch] lg:max-w-none"
           >
             <span className="inline-block whitespace-nowrap">{t.title1}</span>
             <span className="inline lg:hidden xl:inline"> </span>
@@ -314,43 +300,18 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
               <i className="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform relative z-10"></i>
             </button>
 
-            <div className="relative flex-1 sm:flex-initial w-full sm:w-auto" ref={cvRef}>
+            <div className="relative flex-1 sm:flex-initial w-full sm:w-auto">
               <button
                 ref={cvBtnRef}
-                onClick={() => setShowCVOptions(!showCVOptions)}
-                className={`w-full sm:w-auto group px-6 py-4 sm:px-8 sm:py-5 bg-black/5 dark:bg-white/5 border text-neutral-900 dark:text-white text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:bg-black/10 dark:hover:bg-white/10 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 ${showCVOptions ? 'border-blue-500/30 bg-black/10 dark:bg-white/10' : 'border-black/10 dark:border-white/10'}`}
+                onClick={openCV}
+                className="w-full sm:w-auto group px-6 py-4 sm:px-8 sm:py-5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-[11px] sm:text-sm font-black uppercase tracking-[0.2em] rounded-2xl transition-all hover:bg-black/10 dark:hover:bg-white/10 hover:border-blue-500/30 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3"
               >
                 <span className="whitespace-nowrap">{t.cv}</span>
-                <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${showCVOptions ? 'rotate-180' : ''}`}></i>
+                <i className="fa-solid fa-eye text-[11px] opacity-60 group-hover:opacity-100 transition-opacity"></i>
               </button>
-              
-              <div className={`transition-all duration-500 ease-in-out overflow-hidden ${showCVOptions ? 'max-h-48 opacity-100 mt-3' : 'max-h-0 opacity-0'}`}>
-                <div className="bg-white dark:bg-neutral-950 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl p-2 space-y-1">
-                  <button 
-                    onClick={() => downloadCV('es')}
-                    className="w-full group flex items-center justify-between px-4 py-3 rounded-xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm">🇪🇸</span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">Español</span>
-                    </div>
-                    <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-30 group-hover:opacity-100 transition-all"></i>
-                  </button>
-                  <button 
-                    onClick={() => downloadCV('en')}
-                    className="w-full group flex items-center justify-between px-4 py-3 rounded-xl hover:bg-blue-600/10 dark:hover:bg-blue-500/10 transition-all duration-300"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm">🇬🇧</span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-neutral-700 dark:text-neutral-200">English</span>
-                    </div>
-                    <i className="fa-solid fa-download text-[10px] text-blue-600 dark:text-blue-400 opacity-30 group-hover:opacity-100 transition-all"></i>
-                  </button>
-                </div>
-              </div>
             </div>
 
-            <div className={`flex gap-3 justify-start transition-all duration-500 ${showCVOptions ? 'mt-4' : 'mt-0'}`}>
+            <div className="flex gap-3 justify-start">
               {SOCIAL_LINKS.map((link) => (
                 <MagneticSocial key={link.url} link={link} />
               ))}
@@ -380,7 +341,7 @@ const Hero: React.FC<HeroProps> = ({ lang }) => {
                 />
               </div>
 
-              <div className="absolute -bottom-4 -right-2 sm:-right-6 p-3 sm:p-4 rounded-3xl border border-white/10 shadow-2xl shadow-black/50 animate-bounce-slow z-30 hover:scale-105 transition-transform duration-500 bg-neutral-950/85 backdrop-blur-xl">
+              <div className="absolute -bottom-4 right-0 sm:-right-6 p-2.5 sm:p-4 rounded-3xl border border-white/10 shadow-2xl shadow-black/50 animate-bounce-slow z-30 hover:scale-105 transition-transform duration-500 bg-neutral-950/85 backdrop-blur-xl">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-indigo-600 via-blue-700 to-indigo-800 flex items-center justify-center text-white shadow-lg shadow-blue-900/50 shrink-0">
                     <i className="fa-solid fa-code text-xs sm:text-sm"></i>
