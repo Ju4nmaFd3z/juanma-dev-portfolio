@@ -27,8 +27,7 @@ const App: React.FC = () => {
   const isTerminalOpenRef = useRef(isTerminalOpen);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('theme');
-    if (saved) return saved as 'dark' | 'light';
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    return saved === 'light' ? 'light' : 'dark';
   });
 
   const t = translations[lang];
@@ -141,8 +140,17 @@ const App: React.FC = () => {
           </section>
 
           <section id="experience-education" className="section-fade py-14 lg:py-24 border-t border-black/5 dark:border-white/5" aria-label={t.nav.journey}>
-            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+            <div className="max-w-4xl mx-auto">
               <Experience lang={lang} />
+            </div>
+
+            <div className="relative my-20 lg:my-28 flex items-center gap-4 max-w-4xl mx-auto" aria-hidden="true">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-800 to-transparent" />
+              <span className="h-1.5 w-1.5 rounded-full bg-neutral-300 dark:bg-neutral-700" />
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent via-neutral-200 dark:via-neutral-800 to-transparent" />
+            </div>
+
+            <div className="max-w-4xl mx-auto">
               <Education lang={lang} onOpenDocument={openDocument} />
             </div>
           </section>

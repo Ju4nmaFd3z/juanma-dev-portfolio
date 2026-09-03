@@ -95,6 +95,21 @@ export const translations = {
           title: "OpenClaw Agent",
           desc: "Agente técnico autónomo para diagnosticar y guiar la reparación de recreativas de forma independiente. Con directivas de seguridad y red lines definidas, vive en un Mac Pro 2013 con fallo de placa que recuperé con Ubuntu Server — una máquina rescatada del vertedero, ahora servidor de IA.",
           tech: ["Agente IA", "Ubuntu Server", "Mac Pro 2013", "Diagnóstico"]
+        },
+        {
+          title: "Kukelure",
+          desc: "Web y sistema de gestión integral para un negocio de estética, con el que reemplacé por completo el antiguo sistema de dos teléfonos saturados de WhatsApp. Ahora la gestión de reservas y el contacto con clientes son automáticos, con backend, base de datos y servidor de correo propios configurados de principio a fin.",
+          tech: ["Next.js 15", "Supabase", "TypeScript", "Tailwind CSS"]
+        },
+        {
+          title: "ProcesosBI",
+          desc: "Landing page para ProcesosBI, consultora de Business Intelligence. Sitio 100% estático sin frameworks ni dependencias, con un efecto de \"hilo de luz\" SVG animado con el scroll y despliegue automático vía GitHub Actions.",
+          tech: ["HTML5", "CSS3", "JavaScript", "GitHub Actions"]
+        },
+        {
+          title: "Biznaga Consulting",
+          desc: "Web de mi propia consultoría, todavía en fase de construcción. Sitio estático prerenderizado con escenas 3D en WebGPU (con caída a WebGL2), scroll sincronizado a mano entre DOM y Three.js, y capa de animación con GSAP y Lenis.",
+          tech: ["Next.js 16", "React 19", "TypeScript", "Three.js / WebGPU"]
         }
       ]
     },
@@ -102,6 +117,21 @@ export const translations = {
       title: 'Trayectoria Profesional',
       footer: 'Buscando nuevos retos para seguir creciendo en el desarrollo de software...',
       items: [
+        {
+          role: "Desarrollador Web Freelance",
+          roleDetail: "Diseño · Desarrollo Full-Stack · Despliegue",
+          color: "blue",
+          type: "Proyectos Independientes",
+          company: "Autónomo",
+          location: "Málaga, España",
+          period: "Junio 2026 - Septiembre 2026",
+          points: [
+            "Diseño y desarrollo íntegro de Kukelure, el sistema de gestión y reservas de un negocio de estética, sustituyendo por completo el antiguo flujo manual por WhatsApp que saturaba a la propietaria: reservas, contacto con clientes, backend, base de datos y servidor de correo propios, todo automatizado.",
+            "Desarrollo de la landing page de ProcesosBI, consultora de Business Intelligence, con un sitio estático sin frameworks, ligero y con animaciones propias vinculadas al scroll.",
+            "Gestión de cada proyecto de principio a fin para clientes reales: diseño, desarrollo, despliegue y mantenimiento en producción."
+          ],
+          tags: ["Next.js", "Supabase", "TypeScript", "Freelance"]
+        },
         {
           role: "Jefe de Automatizaciones",
           roleDetail: "Adm. de BBDD · Programador",
@@ -325,6 +355,21 @@ export const translations = {
           title: "OpenClaw Agent",
           desc: "Autonomous technical agent to independently diagnose and guide arcade machine repairs. Governed by defined security directives and red lines, it runs on a 2013 Mac Pro with a failed logic board that I restored with Ubuntu Server — a machine rescued from the scrap heap, now an AI server.",
           tech: ["AI Agent", "Ubuntu Server", "Mac Pro 2013", "Diagnostics"]
+        },
+        {
+          title: "Kukelure",
+          desc: "Website and full management system for a beauty and wellness business, completely replacing the old system of two phones overwhelmed with WhatsApp. Booking management and client contact are now fully automated, with a custom backend, database and mail server configured end-to-end.",
+          tech: ["Next.js 15", "Supabase", "TypeScript", "Tailwind CSS"]
+        },
+        {
+          title: "ProcesosBI",
+          desc: "Landing page for ProcesosBI, a Business Intelligence consultancy. A 100% static site with no frameworks or dependencies, featuring a scroll-driven animated SVG \"light thread\" effect and automatic deployment via GitHub Actions.",
+          tech: ["HTML5", "CSS3", "JavaScript", "GitHub Actions"]
+        },
+        {
+          title: "Biznaga Consulting",
+          desc: "Website for my own consultancy, still under construction. A prerendered static site with WebGPU 3D scenes (falling back to WebGL2), hand-synced scroll between the DOM and Three.js, and an animation layer built with GSAP and Lenis.",
+          tech: ["Next.js 16", "React 19", "TypeScript", "Three.js / WebGPU"]
         }
       ]
     },
@@ -332,6 +377,21 @@ export const translations = {
       title: 'Professional Journey',
       footer: 'Looking for new challenges to keep growing in software development...',
       items: [
+        {
+          role: "Freelance Web Developer",
+          roleDetail: "Design · Full-Stack Development · Deployment",
+          color: "blue",
+          type: "Independent Projects",
+          company: "Self-Employed",
+          location: "Málaga, Spain",
+          period: "June 2026 - September 2026",
+          points: [
+            "Designed and built Kukelure end-to-end, a booking and management system for a beauty and wellness business, fully replacing the old manual WhatsApp workflow that overwhelmed the owner: bookings, client communication, backend, database and its own mail server, all automated.",
+            "Built the landing page for ProcesosBI, a Business Intelligence consultancy, as a lightweight framework-free static site with custom scroll-driven animations.",
+            "Owned each project end-to-end for real clients: design, development, deployment and ongoing production maintenance."
+          ],
+          tags: ["Next.js", "Supabase", "TypeScript", "Freelance"]
+        },
         {
           role: "Head of Automations",
           roleDetail: "DB Administrator · Programmer",

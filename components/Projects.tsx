@@ -84,6 +84,30 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
       gradient: 'from-emerald-600/30 to-teal-600/30',
       image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
       url: 'https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo'
+    },
+    {
+      ...t.items[6],
+      category: 'software',
+      icon: 'fa-solid fa-calendar-check',
+      gradient: 'from-pink-400/30 to-rose-500/30',
+      image: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://kukelure.com/'
+    },
+    {
+      ...t.items[7],
+      category: 'software',
+      icon: 'fa-solid fa-chart-line',
+      gradient: 'from-sky-500/30 to-indigo-600/30',
+      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://procesosbi.com/'
+    },
+    {
+      ...t.items[8],
+      category: 'software',
+      icon: 'fa-solid fa-cube',
+      gradient: 'from-slate-700/30 to-cyan-600/30',
+      image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200',
+      url: 'https://biznaga-consulting.vercel.app/'
     }
   ];
 
@@ -340,9 +364,9 @@ const Projects: React.FC<ProjectsProps> = ({ lang }) => {
               <div className="w-full lg:w-auto grid grid-cols-2 gap-3 lg:min-w-[260px]">
                 {[
                   { value: '50+', label: t.statsCommits },
-                  { value: '6',   label: t.statsProjects },
-                  { value: '5+',  label: t.statsTech },
-                  { value: '2',   label: t.statsProd },
+                  { value: '9',   label: t.statsProjects },
+                  { value: '8+',  label: t.statsTech },
+                  { value: '4',   label: t.statsProd },
                 ].map((stat, i) => (
                   <div key={i} className="flex flex-col items-center justify-center p-6 bg-black/[0.03] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 rounded-2xl text-center">
                     <span className="text-3xl font-display font-black text-neutral-900 dark:text-white mb-1">{stat.value}</span>
