@@ -4,6 +4,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <script>
+      // Set the theme class before first paint — avoids a flash of the light
+      // background (html.dark is otherwise only added once App.tsx mounts).
+      try {
+        if (localStorage.getItem('theme') !== 'light') document.documentElement.classList.add('dark');
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
     <title>Juanma Fernández | Software Developer & Systems Tech</title>
     <meta name="description" content="Portfolio de Juan Manuel Fernández Rodríguez — Técnico SMR, estudiante de DAM y desarrollador. Proyectos, trayectoria y contacto." />
 
