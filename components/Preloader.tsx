@@ -1,0 +1,56 @@
+
+import React, { useEffect, useState, memo } from 'react';
+
+interface PreloaderProps {
+  onLoadingComplete: () => void;
+}
+
+const Preloader: React.FC<PreloaderProps> = ({ onLoadingComplete }) => {
+  const [isExiting, setIsExiting] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    const appearanceTimer = setTimeout(() => setShowContent(true), 100);
+    const exitTimer = setTimeout(() => setIsExiting(true), 2500);
+    const completeTimer = setTimeout(() => onLoadingComplete(), 3300);
+
+    return () => {
+      clearTimeout(appearanceTimer);
+      clearTimeout(exitTimer);
+      clearTimeout(completeTimer);
+    };
+  }, [onLoadingComplete]);
+
+  return (
+    <div
+      aria-hidden="true"
+      className={`fixed inset-0 z-[20000] flex items-center justify-center bg-[#050505] transition-[transform,opacity] duration-1000 ease-[cubic-bezier(0.87,0,0.13,1)] ${
+        isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
+      }`}
+    >
+      <div className="relative flex flex-col items-center">
+        <div
+          className={`flex flex-col items-center gap-2 transition-[opacity,filter,transform] duration-1000 ease-out ${
+            showContent ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-md scale-95'
+          }`}
+        >
+          <div className="flex flex-col items-center leading-none">
+            <span className="text-white font-display font-black text-5xl sm:text-7xl md:text-8xl tracking-[-0.05em]">
+              JUANMA
+            </span>
+            <span className="gradient-text font-display font-black text-5xl sm:text-7xl md:text-8xl tracking-[-0.05em]">
+              FERNÁNDEZ
+            </span>
+          </div>
+          <div className="mt-8 w-48 h-[1px] bg-white/10 overflow-hidden relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent w-full animate-loader-progress"></div>
+          </div>
+        </div>
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-blue-600/5 rounded-full blur-[120px] transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}></div>
+      </div>
+
+    </div>
+  );
+};
+
+export default memo(Preloader);
