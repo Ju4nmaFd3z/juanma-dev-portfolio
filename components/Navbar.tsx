@@ -1,223 +1,177 @@
-
-import React, { useState, useEffect, useRef } from 'react';
-import { translations } from '../translations';
-import { buildCvDoc } from '../utils/cvDoc';
-import { useMagnetic } from '../utils/useMagnetic';
-import type { ViewerDoc } from '../types';
+import React, { useEffect, useRef, useState } from 'react';
+import type { ChapterId } from '../engine/bus';
+import { CHAPTERS } from '../engine/bus';
+import type { Lang, T } from '../translations';
 
 interface NavbarProps {
-  activeSection: string;
-  lang: 'es' | 'en';
-  setLang: (lang: 'es' | 'en') => void;
+  active: ChapterId;
+  lang: Lang;
+  setLang: (l: Lang) => void;
   theme: 'dark' | 'light';
   toggleTheme: () => void;
+  onOpenCv: () => void;
   onOpenTerminal: () => void;
-  onOpenDocument: (doc: ViewerDoc) => void;
+  t: T['nav'];
 }
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, lang, setLang, theme, toggleTheme, onOpenTerminal, onOpenDocument }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showPrefsMenu, setShowPrefsMenu] = useState(false);
+const SECTION_ID: Record<ChapterId, string> = {
+  hero: 'home', about: 'about', skills: 'skills', projects: 'projects', journey: 'journey', contact: 'contact',
+};
+const LABEL_KEY: Record<ChapterId, keyof T['nav']> = {
+  hero: 'home', about: 'about', skills: 'skills', projects: 'projects', journey: 'journey', contact: 'contact',
+};
 
-  const prefsMenuRef = useRef<HTMLDivElement>(null);
-  const terminalBtnRef = useMagnetic<HTMLButtonElement>(0.3);
-  const prefsBtnRef = useMagnetic<HTMLButtonElement>(0.3);
-  const t = translations[lang].nav;
+/** 5×5 pixel monogram used as the logo. */
+const Mark: React.FC = () => (
+  <svg width="28" height="28" viewBox="0 0 7 7" shapeRendering="crispEdges" aria-hidden="true">
+    <rect width="7" height="7" fill="var(--accent)" />
+    {['..#....', '..#.#.#', '..#.###', '#.#.#.#', '.#..#.#'].flatMap((row, y) =>
+      [...row].map((c, x) => (c === '#' ? <rect key={`${x}-${y}`} x={x} y={y + 1} width="1" height="1" fill="var(--on-accent)" /> : null)),
+    )}
+  </svg>
+);
+
+const Navbar: React.FC<NavbarProps> = ({ active, lang, setLang, theme, toggleTheme, onOpenCv, onOpenTerminal, t }) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const menuBtn = useRef<HTMLButtonElement>(null);
+  const firstLink = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-      setIsMenuOpen(false);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    const handleClickOutside = (event: MouseEvent) => {
-      if (prefsMenuRef.current && !prefsMenuRef.current.contains(event.target as Node)) {
-        setShowPrefsMenu(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { name: t.home, id: 'home' },
-    { name: t.about, id: 'about' },
-    { name: t.projects, id: 'projects' },
-    { name: t.journey, id: 'experience-education' },
-    { name: t.contact, id: 'contact' },
-  ];
+  // Mobile menu: lock scroll, focus first link, Esc closes, focus returns.
+  useEffect(() => {
+    if (!open) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = 'hidden';
+    firstLink.current?.focus();
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      html.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+      menuBtn.current?.focus();
+    };
+  }, [open]);
 
-  const handleNavClick = (id: string) => {
-    const target = document.getElementById(id);
-    if (!target) return;
-    const offset = 80;
-    const bodyRect = document.body.getBoundingClientRect().top;
-    const elementRect = target.getBoundingClientRect().top;
-    window.scrollTo({
-      top: elementRect - bodyRect - offset,
-      behavior: 'smooth'
-    });
-    setIsMenuOpen(false);
-  };
+  const idx = CHAPTERS.indexOf(active);
 
-  const togglePrefsMenu = () => {
-    const nextState = !showPrefsMenu;
-    setShowPrefsMenu(nextState);
-    if (nextState) setIsMenuOpen(false);
-  };
-
-  const toggleMobileNav = () => {
-    const nextState = !isMenuOpen;
-    setIsMenuOpen(nextState);
-    if (nextState) setShowPrefsMenu(false);
-  };
-
-  const openCV = () => {
-    onOpenDocument(buildCvDoc(lang, t.downloadCV));
-    setIsMenuOpen(false);
-  };
+  const themeBtn = (
+    <button type="button" onClick={toggleTheme} className="icon-btn" aria-label={theme === 'dark' ? t.themeToLight : t.themeToDark}>
+      <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden="true" />
+    </button>
+  );
+  const langBtn = (
+    <button type="button" onClick={() => setLang(lang === 'es' ? 'en' : 'es')} className="icon-btn font-mono text-xs font-bold" aria-label={t.langLabel}>
+      {lang === 'es' ? 'EN' : 'ES'}
+    </button>
+  );
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-[1000] flex justify-center transition-all duration-500 px-4 sm:px-6 ${isScrolled ? 'pt-2 sm:pt-4' : 'pt-4 sm:pt-8'}`}>
-      <nav className={`w-full max-w-5xl rounded-2xl h-14 sm:h-16 flex items-center justify-between px-4 sm:px-6 border transition-all duration-500 ${
-        isScrolled
-        ? 'bg-white/30 dark:bg-black/30 backdrop-blur-xl border-black/10 dark:border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.05)]'
-        : 'bg-black/5 dark:bg-white/5 backdrop-blur-md border-black/5 dark:border-white/5'
-      }`}>
-        
-        <button onClick={() => handleNavClick('home')} className="flex items-center gap-3 sm:gap-4 group">
-          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center bg-black/[0.03] dark:bg-white/[0.03] group-hover:bg-black/[0.07] dark:group-hover:bg-white/[0.07] group-hover:border-black/20 dark:group-hover:border-white/20 transition-all duration-700">
-            <span className="text-black/70 dark:text-white/70 group-hover:text-black dark:group-hover:text-white font-display font-bold text-sm sm:text-base tracking-tighter">JF</span>
-          </div>
-          <div className="flex flex-col items-start leading-tight">
-            <span className="font-display font-bold text-[11px] tracking-[0.15em] text-black/80 dark:text-white/80 group-hover:text-black dark:group-hover:text-white uppercase transition-colors text-left">JUANMA</span>
-            <span className="text-[7px] text-neutral-400 dark:text-neutral-600 font-black uppercase tracking-[0.3em] mt-0.5 group-hover:text-neutral-500 transition-colors text-left">FERNÁNDEZ</span>
-          </div>
-        </button>
+    <>
+      <header
+        className={`fixed top-0 inset-x-0 z-[10060] transition-colors duration-200 ${scrolled || open ? 'bg-panel border-b border-line backdrop-blur-md' : 'bg-transparent border-b border-transparent'}`}
+      >
+        <nav className="mx-auto flex h-16 max-w-[1440px] items-center gap-4 px-4 sm:px-6 lg:px-10" aria-label="Principal">
+          <a href="#home" className="flex items-center gap-3 shrink-0" aria-label="Juanma Fernández — inicio">
+            <Mark />
+            <span className="hidden sm:block font-pixel text-[13px] text-ink">juanma.dev</span>
+          </a>
 
-        <div className="hidden lg:flex items-center gap-1 bg-black/[0.03] dark:bg-white/[0.03] p-1 rounded-xl border border-black/5 dark:border-white/5">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => handleNavClick(link.id)}
-              className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${
-                activeSection === link.id ? 'text-black dark:text-white bg-white/60 dark:bg-white/10 shadow-sm backdrop-blur-md' : 'text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-300'
-              }`}
-            >
-              {link.name}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          
-          <button
-            ref={terminalBtnRef}
-            onClick={onOpenTerminal}
-            className="w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all group"
-            title={t.terminal}
-            aria-label={t.terminal}
-          >
-            <i className="fa-solid fa-terminal text-[10px] text-emerald-500 group-hover:scale-110 transition-transform"></i>
-          </button>
-
-          <div className="relative" ref={prefsMenuRef}>
-            <button
-              ref={prefsBtnRef}
-              onClick={togglePrefsMenu}
-              className={`w-8 h-8 sm:w-[38px] sm:h-[38px] flex items-center justify-center rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/5 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 transition-all ${showPrefsMenu ? 'bg-black/10 dark:bg-white/10 border-blue-500/30' : ''}`}
-              aria-label="Preferences"
-            >
-              <i className={`fa-solid fa-sliders text-[10px] text-neutral-500 dark:text-neutral-400 transition-transform duration-500 ${showPrefsMenu ? 'rotate-90 text-blue-500' : ''}`}></i>
-            </button>
-
-            {showPrefsMenu && (
-              <div className="absolute top-full right-0 mt-3 w-52 bg-white/85 dark:bg-neutral-950/85 backdrop-blur-2xl rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300 ease-out origin-top-right z-[100]">
-                <div className="p-2 space-y-1">
-                  <div className="px-3 py-2 text-[8px] font-black text-neutral-400 uppercase tracking-widest">{lang === 'es' ? 'Preferencias' : 'Preferences'}</div>
-                  <div className="flex bg-black/[0.05] dark:bg-white/[0.05] rounded-xl p-1 mb-2">
-                    <button 
-                      onClick={() => setLang('es')}
-                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'es' ? 'bg-white/60 dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
-                    >
-                      ESPAÑOL
-                    </button>
-                    <button 
-                      onClick={() => setLang('en')}
-                      className={`flex-1 py-2 text-[9px] font-black rounded-lg transition-all ${lang === 'en' ? 'bg-white/60 dark:bg-white/10 text-black dark:text-white shadow-sm' : 'text-neutral-500 hover:text-black dark:hover:text-white'}`}
-                    >
-                      ENGLISH
-                    </button>
-                  </div>
-
-                  <button
-                    onClick={toggleTheme}
-                    className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-all group"
-                  >
-                    <span className="text-[10px] font-bold text-neutral-600 dark:text-neutral-300 uppercase tracking-tight">
-                      {theme === 'dark' ? (lang === 'es' ? 'Modo Oscuro' : 'Dark Mode') : (lang === 'es' ? 'Modo Claro' : 'Light Mode')}
-                    </span>
-                    <i className={`fa-solid ${theme === 'dark' ? 'fa-moon text-blue-400' : 'fa-sun text-amber-500'} text-xs`}></i>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <button
-            onClick={openCV}
-            className="hidden lg:flex items-center gap-2 px-4 py-2 lg:h-[38px] bg-black/[0.03] dark:bg-white/[0.03] text-black/70 dark:text-white/70 text-[9px] font-black uppercase tracking-widest rounded-xl hover:bg-black/10 dark:hover:bg-white/10 hover:text-black dark:hover:text-white hover:border-blue-500/30 border border-black/5 dark:border-white/10 transition-all"
-          >
-            <i className="fa-solid fa-eye text-[10px]"></i>
-            {t.downloadCV}
-          </button>
-          
-          <button className="lg:hidden text-black/70 dark:text-white/70 p-2" onClick={toggleMobileNav}>
-            <i className={`fa-solid ${isMenuOpen ? 'fa-xmark' : 'fa-bars-staggered'} text-xl transition-transform duration-300`}></i>
-          </button>
-        </div>
-
-        <div className={`absolute top-full left-0 right-0 mt-3 overflow-hidden transition-all duration-500 lg:hidden ${isMenuOpen ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'}`}>
-          <div className={`bg-white/90 dark:bg-black/80 backdrop-blur-3xl rounded-2xl p-2 border border-black/10 dark:border-white/10 shadow-2xl mx-4 flex flex-col gap-1 transition-transform duration-500 ${isMenuOpen ? 'translate-y-0' : '-translate-y-4'}`}>
-            {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => handleNavClick(link.id)}
-                className={`w-full text-left p-4 rounded-xl font-bold uppercase tracking-widest text-[10px] flex justify-between items-center transition-all ${
-                  activeSection === link.id ? 'bg-black/10 dark:bg-white/10 text-black dark:text-white' : 'text-neutral-500 hover:bg-black/5 dark:hover:bg-white/5'
-                }`}
-              >
-                {link.name}
-                {activeSection === link.id && <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]"></span>}
-              </button>
+          <ul className="hidden xl:flex items-center gap-1 mx-auto">
+            {CHAPTERS.map((c, i) => (
+              <li key={c}>
+                <a
+                  href={`#${SECTION_ID[c]}`}
+                  aria-current={active === c ? 'true' : undefined}
+                  className={`flex items-center gap-2 px-3 py-2 font-mono text-[12px] uppercase tracking-[0.08em] transition-colors ${active === c ? 'bg-accent text-onAccent' : 'text-ink2 hover:text-ink hover:bg-bg2'}`}
+                >
+                  <span className="opacity-60" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  {t[LABEL_KEY[c]]}
+                </a>
+              </li>
             ))}
-            
-            <button 
-              onClick={() => { setIsMenuOpen(false); onOpenTerminal(); }}
-              className="w-full text-left p-4 rounded-xl font-bold uppercase tracking-widest text-[10px] flex justify-between items-center transition-all text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10"
-            >
-              {t.terminal}
-              <i className="fa-solid fa-terminal"></i>
+          </ul>
+
+          <div className="ml-auto xl:ml-0 flex items-center gap-2">
+            <button type="button" onClick={onOpenTerminal} className="icon-btn hidden md:inline-flex font-mono text-xs" aria-label={t.terminal} title={t.terminal}>
+              <span aria-hidden="true">&gt;_</span>
             </button>
+            <div className="hidden md:flex gap-2">{langBtn}{themeBtn}</div>
+            <button type="button" onClick={onOpenCv} className="btn btn-primary !min-h-[44px] !py-2 !px-4 !shadow-none hover:!translate-x-0 hover:!translate-y-0">
+              <i className="fa-solid fa-file-arrow-down" aria-hidden="true" />
+              {t.cv}
+            </button>
+            <button
+              ref={menuBtn}
+              type="button"
+              className="icon-btn xl:hidden"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              aria-label={open ? t.close : t.menu}
+              onClick={() => setOpen((o) => !o)}
+            >
+              <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-bars'}`} aria-hidden="true" />
+            </button>
+          </div>
+        </nav>
+      </header>
 
-            <div className="h-px bg-black/5 dark:bg-white/5 my-2 mx-4"></div>
-
-            <div className="p-2">
-              <button onClick={openCV} className="w-full flex items-center justify-center gap-3 py-4 bg-black/[0.03] dark:bg-white/[0.05] rounded-xl text-[9px] font-black uppercase tracking-widest text-center hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition-all border border-black/5 dark:border-white/5 active:scale-95">
-                <i className="fa-solid fa-eye text-sm"></i>
-                {lang === 'es' ? 'Ver CV' : 'View CV'}
-              </button>
-            </div>
+      {open && (
+        <div id="mobile-menu" className="fixed inset-0 z-[10050] bg-bg pt-20 px-6 pb-8 flex flex-col xl:hidden" role="dialog" aria-modal="true" aria-label={t.menu}>
+          <ol className="flex-1 flex flex-col justify-center gap-1">
+            {CHAPTERS.map((c, i) => (
+              <li key={c}>
+                <a
+                  ref={i === 0 ? firstLink : undefined}
+                  href={`#${SECTION_ID[c]}`}
+                  onClick={() => setOpen(false)}
+                  aria-current={active === c ? 'true' : undefined}
+                  className={`flex items-baseline gap-4 py-3 border-b border-line ${active === c ? 'text-accentText' : 'text-ink'}`}
+                >
+                  <span className="font-pixel text-xs text-muted w-6">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="display text-4xl sm:text-5xl">{t[LABEL_KEY[c]]}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <div className="flex items-center gap-2">
+            {langBtn}
+            {themeBtn}
+            <button type="button" onClick={() => { setOpen(false); onOpenTerminal(); }} className="icon-btn font-mono text-xs" aria-label={t.terminal}>
+              <span aria-hidden="true">&gt;_</span>
+            </button>
           </div>
         </div>
+      )}
+
+      {/* Progress rail — desktop */}
+      <nav className="hidden lg:flex fixed right-5 top-1/2 -translate-y-1/2 z-[900] flex-col items-end gap-2" aria-label={`${idx + 1} / ${CHAPTERS.length}`}>
+        <span className="font-pixel text-[10px] text-muted mb-2" aria-hidden="true">
+          {String(idx + 1).padStart(2, '0')}/{String(CHAPTERS.length).padStart(2, '0')}
+        </span>
+        {CHAPTERS.map((c) => (
+          <a
+            key={c}
+            href={`#${SECTION_ID[c]}`}
+            className="group flex items-center gap-2 py-1"
+            aria-label={t[LABEL_KEY[c]]}
+            aria-current={active === c ? 'true' : undefined}
+          >
+            <span className="font-mono text-[10px] uppercase tracking-widest text-muted opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity">
+              {t[LABEL_KEY[c]]}
+            </span>
+            <span className={`rail-tick block w-2 ${active === c ? 'h-6 bg-accent' : 'h-2 bg-lineStrong group-hover:bg-ink'}`} />
+          </a>
+        ))}
       </nav>
-    </header>
+    </>
   );
 };
 

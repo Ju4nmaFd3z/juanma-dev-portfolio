@@ -1,56 +1,94 @@
+import React, { useEffect, useRef, useState } from 'react';
+import type { T } from '../translations';
 
-import React, { useEffect, useState, memo } from 'react';
-
-interface PreloaderProps {
-  onLoadingComplete: () => void;
+interface Props {
+  t: T['preloader'];
+  onDone: () => void;
 }
 
-const Preloader: React.FC<PreloaderProps> = ({ onLoadingComplete }) => {
-  const [isExiting, setIsExiting] = useState(false);
-  const [showContent, setShowContent] = useState(false);
+// A short POST screen — the machine boots before the world resolves.
+// ~1.5 s, skippable (button, Esc, Enter, click), shown once per session,
+// skipped entirely under prefers-reduced-motion.
+
+const LOGO = [
+  '     ██ ███    ███',
+  '     ██ ████  ████',
+  '     ██ ██ ████ ██',
+  '██   ██ ██  ██  ██',
+  ' █████  ██      ██',
+];
+
+const Preloader: React.FC<Props> = ({ t, onDone }) => {
+  const [shown, setShown] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [leaving, setLeaving] = useState(false);
+  const done = useRef(false);
+  const skipRef = useRef<HTMLButtonElement>(null);
+
+  const finish = () => {
+    if (done.current) return;
+    done.current = true;
+    setLeaving(true);
+    window.setTimeout(onDone, 260);
+  };
 
   useEffect(() => {
-    const appearanceTimer = setTimeout(() => setShowContent(true), 100);
-    const exitTimer = setTimeout(() => setIsExiting(true), 2500);
-    const completeTimer = setTimeout(() => onLoadingComplete(), 3300);
-
-    return () => {
-      clearTimeout(appearanceTimer);
-      clearTimeout(exitTimer);
-      clearTimeout(completeTimer);
+    skipRef.current?.focus({ preventScroll: true });
+    const total = 1500;
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const k = Math.min(1, (now - t0) / total);
+      setProgress(k);
+      setShown(Math.min(t.lines.length, Math.floor(k * (t.lines.length + 0.6))));
+      if (k < 1) raf = requestAnimationFrame(tick);
+      else window.setTimeout(finish, 180);
     };
-  }, [onLoadingComplete]);
+    raf = requestAnimationFrame(tick);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' || e.key === 'Enter') finish(); };
+    window.addEventListener('keydown', onKey);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('keydown', onKey); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cells = 24;
+  const filled = Math.round(progress * cells);
 
   return (
     <div
-      aria-hidden="true"
-      className={`fixed inset-0 z-[20000] flex items-center justify-center bg-[#050505] transition-[transform,opacity] duration-1000 ease-[cubic-bezier(0.87,0,0.13,1)] ${
-        isExiting ? '-translate-y-full opacity-0' : 'translate-y-0 opacity-100'
-      }`}
+      className={`fixed inset-0 z-[20000] flex items-center justify-center bg-bg text-ink transition-[clip-path] duration-300 ${leaving ? '[clip-path:inset(0_0_100%_0)]' : '[clip-path:inset(0_0_0_0)]'}`}
+      style={{ transitionTimingFunction: 'steps(6)' }}
+      onClick={finish}
+      role="status"
+      aria-live="polite"
     >
-      <div className="relative flex flex-col items-center">
-        <div
-          className={`flex flex-col items-center gap-2 transition-[opacity,filter,transform] duration-1000 ease-out ${
-            showContent ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-md scale-95'
-          }`}
-        >
-          <div className="flex flex-col items-center leading-none">
-            <span className="text-white font-display font-black text-5xl sm:text-7xl md:text-8xl tracking-[-0.05em]">
-              JUANMA
-            </span>
-            <span className="gradient-text font-display font-black text-5xl sm:text-7xl md:text-8xl tracking-[-0.05em]">
-              FERNÁNDEZ
-            </span>
+      <div className="w-full max-w-xl px-6 font-mono text-[13px] sm:text-sm">
+        <pre className="text-accentText leading-[1.05] text-[10px] sm:text-xs mb-6 select-none" aria-hidden="true">{LOGO.join('\n')}</pre>
+        <ul className="space-y-1.5 min-h-[9.5rem]">
+          {t.lines.slice(0, shown).map((line, i) => (
+            <li key={i} className={i === shown - 1 && progress < 1 ? 'caret' : ''}>
+              <span className="text-muted mr-2" aria-hidden="true">{'>'}</span>
+              {line}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-6 flex items-center gap-3" aria-hidden="true">
+          <div className="flex-1 h-3 border border-lineStrong p-[2px]">
+            <div className="boot-bar h-full" style={{ width: `${(filled / cells) * 100}%` }} />
           </div>
-          <div className="mt-8 w-48 h-[1px] bg-white/10 overflow-hidden relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent w-full animate-loader-progress"></div>
-          </div>
+          <span className="tabular-nums w-10 text-right">{Math.round(progress * 100)}%</span>
         </div>
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-blue-600/5 rounded-full blur-[120px] transition-opacity duration-1000 ${showContent ? 'opacity-100' : 'opacity-0'}`}></div>
+        <button
+          ref={skipRef}
+          type="button"
+          onClick={(e) => { e.stopPropagation(); finish(); }}
+          className="mt-8 btn btn-ghost text-[11px]"
+        >
+          {t.skip} <span aria-hidden="true">[ESC]</span>
+        </button>
       </div>
-
     </div>
   );
 };
 
-export default memo(Preloader);
+export default Preloader;

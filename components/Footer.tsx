@@ -1,23 +1,31 @@
-import React, { memo } from 'react';
-import { translations } from '../translations';
+import React from 'react';
+import type { T } from '../translations';
+import { CONTACT } from '../content';
+import { ExternalLink } from './ui';
 
-interface FooterProps { lang: 'es' | 'en'; }
-
-const Footer: React.FC<FooterProps> = ({ lang }) => {
-  const t = translations[lang].footer;
-  return (
-    <footer className="py-10 border-t border-black/5 dark:border-white/5">
-      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="text-neutral-400 dark:text-neutral-500 text-sm font-light">
-          © {new Date().getFullYear()} <span className="text-neutral-700 dark:text-neutral-300 font-medium">Juan Manuel Fernández Rodríguez</span>. <span className="hidden md:inline">{t.role}</span>
-        </div>
-        <div className="flex gap-10">
-          <a href="https://github.com/Ju4nmaFd3z" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-blue-600 dark:hover:text-white transition-colors text-[10px] uppercase tracking-[0.2em] font-bold">GitHub</a>
-          <a href="https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez" target="_blank" rel="noopener noreferrer" className="text-neutral-400 dark:text-neutral-500 hover:text-blue-600 dark:hover:text-white transition-colors text-[10px] uppercase tracking-[0.2em] font-bold">LinkedIn</a>
-        </div>
+const Footer: React.FC<{ t: T['footer']; quote: string }> = ({ t, quote }) => (
+  <footer className="relative z-[1] border-t border-line bg-panel backdrop-blur-sm">
+    <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-10 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <p className="font-pixel text-sm text-ink">Juanma Fernández</p>
+        <p className="mt-1 text-sm text-muted">{t.role}</p>
+        <p className="mt-4 font-display text-lg text-ink2 max-w-[52ch]">“{quote}”</p>
+        <p className="mt-6 text-xs text-muted max-w-[70ch] leading-relaxed">
+          {t.built}{' '}
+          <ExternalLink href="https://www.ascii-magic.com/ascii" className="link-u text-ink2">{t.ascii}</ExternalLink>
+        </p>
+        <p className="mt-2 text-xs text-muted">
+          © {new Date().getFullYear()} Juan Manuel Fernández Rodríguez · Málaga · <span className="hidden md:inline font-mono">{t.terminal}</span>
+        </p>
       </div>
-    </footer>
-  );
-};
+      <div className="flex items-center gap-2">
+        <ExternalLink href={CONTACT.github} className="icon-btn" aria-label="GitHub"><i className="fa-brands fa-github" aria-hidden="true" /></ExternalLink>
+        <ExternalLink href={CONTACT.linkedin} className="icon-btn" aria-label="LinkedIn"><i className="fa-brands fa-linkedin-in" aria-hidden="true" /></ExternalLink>
+        <a href={`mailto:${CONTACT.email}`} className="icon-btn" aria-label={`Email: ${CONTACT.email}`}><i className="fa-solid fa-envelope" aria-hidden="true" /></a>
+        <a href="#home" className="btn btn-ghost !min-h-[44px] !py-2"><i className="fa-solid fa-arrow-up" aria-hidden="true" />{t.top}</a>
+      </div>
+    </div>
+  </footer>
+);
 
-export default memo(Footer);
+export default Footer;

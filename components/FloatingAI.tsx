@@ -185,9 +185,9 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-[10001] flex flex-col items-end">
+    <div className="dark fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[10001] flex flex-col items-end text-[#f3ead7]">
       {isOpen ? (
-        <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[calc(100svh-6rem)] sm:h-[600px] max-h-[600px] min-h-[320px] glass-card rounded-[2.5rem] flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
+        <div className="w-[calc(100vw-3rem)] sm:w-[420px] h-[calc(100svh-6rem)] sm:h-[600px] max-h-[600px] min-h-[320px] glass-card !bg-[#07080f]/95 px-frame flex flex-col shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden border-white/20 animate-in zoom-in duration-300">
           <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
             <div className="flex items-center gap-4">
               <div className={`w-10 h-10 rounded-2xl bg-white text-black flex items-center justify-center shadow-lg ${IS_MAINTENANCE_MODE ? 'grayscale-[0.5]' : ''}`}>
@@ -310,12 +310,12 @@ const FloatingAI: React.FC<FloatingAIProps> = ({ lang }) => {
             </div>
           </div>
           <div className="relative">
-            <button onClick={() => setIsOpen(true)} className={`relative w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 hover:rounded-[2rem] hover:bg-blue-900 hover:text-white ${IS_MAINTENANCE_MODE ? 'grayscale' : ''}`}>
+            <button onClick={() => setIsOpen(true)} aria-label={t.tooltip} className={`relative w-12 h-12 sm:w-14 sm:h-14 bg-[#f2b134] text-[#07080f] flex items-center justify-center shadow-[4px_4px_0_0_#000] transition-transform duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 ${IS_MAINTENANCE_MODE ? 'grayscale' : ''}`}>
               <i className="fa-solid fa-robot text-2xl group-hover:rotate-12 transition-transform"></i>
             </button>
             <span className="absolute -top-1 -right-1 flex h-4 w-4 z-10 pointer-events-none">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${IS_MAINTENANCE_MODE ? 'bg-amber-400' : 'bg-emerald-400'}`}></span>
-              <span className={`relative inline-flex rounded-full h-4 w-4 border-2 border-[#050505] ${IS_MAINTENANCE_MODE ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
+              <span className={`relative inline-flex rounded-full h-4 w-4 border-2 border-[#07080f] ${IS_MAINTENANCE_MODE ? 'bg-amber-500' : 'bg-emerald-500'}`}></span>
             </span>
           </div>
         </div>

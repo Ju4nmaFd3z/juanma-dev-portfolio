@@ -1,16 +1,4 @@
 
-export interface Project {
-  title: string;
-  desc: string;
-  category: 'software' | 'systems';
-  tech: string[];
-  icon: string;
-  gradient: string;
-  image: string;
-  url: string;
-  repo?: string;
-}
-
 // ── Document viewer (CV + certification titles) ──────────────────
 export interface ViewerSource {
   id: string;            // 'es' | 'en' | 'pdf'
@@ -30,5 +18,4 @@ export interface ViewerLabels {
   download: string;
   close: string;
   openInNewTab: string;
-  cannotDisplay: string;
 }

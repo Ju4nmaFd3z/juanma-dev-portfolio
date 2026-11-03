@@ -1,143 +1,82 @@
-
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <script>
-      // Set the theme class before first paint — avoids a flash of the light
-      // background (html.dark is otherwise only added once App.tsx mounts).
-      try {
-        if (localStorage.getItem('theme') !== 'light') document.documentElement.classList.add('dark');
-      } catch (e) {
-        document.documentElement.classList.add('dark');
-      }
+      // Theme + JS flags before first paint (no flash of the wrong theme,
+      // and reveal animations only hide content when JS is running).
+      (function () {
+        var d = document.documentElement;
+        d.classList.add('js');
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (t !== 'dark' && t !== 'light') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        if (t === 'dark') d.classList.add('dark');
+        if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) d.style.scrollBehavior = 'smooth';
+      })();
     </script>
-    <title>Juanma Fernández | Software Developer & Systems Tech</title>
-    <meta name="description" content="Portfolio de Juan Manuel Fernández Rodríguez — Técnico SMR, estudiante de DAM y desarrollador. Proyectos, trayectoria y contacto." />
-
-    <link rel="canonical" href="https://juanma-dev-portfolio.vercel.app" />
+    <title>Juanma Fernández · Sistemas, redes y software</title>
+    <meta name="description" content="Portfolio de Juan Manuel Fernández Rodríguez (Juanma Fernández): técnico en Sistemas Microinformáticos y Redes, certificado Cisco CCNA y estudiante de DAM en Málaga. Proyectos, trayectoria y contacto." />
+    <meta name="author" content="Juan Manuel Fernández Rodríguez" />
+    <link rel="canonical" href="https://juanma-dev-portfolio.vercel.app/" />
 
     <!-- Open Graph -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:url"         content="https://juanma-dev-portfolio.vercel.app" />
-    <meta property="og:title"       content="Juanma Fernández | Software Developer & Systems Tech" />
-    <meta property="og:description" content="Portfolio de Juan Manuel Fernández Rodríguez — Técnico SMR, estudiante de DAM y desarrollador. Proyectos, trayectoria y contacto." />
-    <meta property="og:image"       content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
-    <meta property="og:image:width"  content="1200" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://juanma-dev-portfolio.vercel.app/" />
+    <meta property="og:site_name" content="Juanma Fernández" />
+    <meta property="og:title" content="Juanma Fernández · Sistemas, redes y software" />
+    <meta property="og:description" content="Técnico SMR, certificado Cisco CCNA y estudiante de DAM. Un portfolio construido desde abajo: hardware, redes, sistemas y código." />
+    <meta property="og:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
+    <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt"   content="Juanma Fernández — Software Developer & Systems Tech" />
-    <meta property="og:locale"      content="es_ES" />
+    <meta property="og:image:alt" content="Juanma Fernández — Software Developer & Systems Tech" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_GB" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card"        content="summary_large_image" />
-    <meta name="twitter:title"       content="Juanma Fernández | Software Developer & Systems Tech" />
-    <meta name="twitter:description" content="Portfolio de Juan Manuel Fernández Rodríguez — Técnico SMR, estudiante de DAM y desarrollador." />
-    <meta name="twitter:image"       content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Juanma Fernández · Sistemas, redes y software" />
+    <meta name="twitter:description" content="Técnico SMR, certificado Cisco CCNA y estudiante de DAM. Hardware, redes, sistemas y código." />
+    <meta name="twitter:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#07080f" id="theme-meta" />
 
-    <meta name="theme-color" content="#050505" id="theme-meta">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Juan Manuel Fernández Rodríguez",
+        "alternateName": "Juanma Fernández",
+        "url": "https://juanma-dev-portfolio.vercel.app/",
+        "jobTitle": "Técnico en Sistemas Microinformáticos y Redes · Estudiante de DAM",
+        "address": { "@type": "PostalAddress", "addressLocality": "Málaga", "addressCountry": "ES" },
+        "alumniOf": { "@type": "EducationalOrganization", "name": "CPIFP Alan Turing" },
+        "sameAs": ["https://github.com/Ju4nmaFd3z", "https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez"]
+      }
+    </script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="preload" as="image" href="/images/me.webp" type="image/webp" fetchpriority="high">
-</head>
-  <body class="bg-neutral-50 dark:bg-[#050505] text-neutral-900 dark:text-neutral-200 transition-colors duration-500">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-lg focus:font-bold focus:shadow-lg">Saltar al contenido</a>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Silkscreen&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  </head>
+  <body class="font-sans">
     <div id="root"></div>
     <noscript>
-      <div style="padding:2rem;text-align:center;font-family:sans-serif">
-        Este portfolio requiere JavaScript para funcionar.
+      <div style="padding:2rem;font-family:system-ui,sans-serif;max-width:40rem;margin:0 auto">
+        <h1>Juanma Fernández</h1>
+        <p>Técnico en Sistemas Microinformáticos y Redes, certificado Cisco CCNA y estudiante de DAM en Málaga.</p>
+        <p>Este portfolio necesita JavaScript. Contacto: <a href="mailto:juanmafr2007@gmail.com">juanmafr2007@gmail.com</a> ·
+          <a href="https://github.com/Ju4nmaFd3z">GitHub</a> ·
+          <a href="https://www.linkedin.com/in/juanma-fern%C3%A1ndez-rodr%C3%ADguez">LinkedIn</a> ·
+          <a href="/CVJuanManuelFernandezRodriguezES.pdf">CV (PDF)</a></p>
       </div>
     </noscript>
     <script type="module" src="/index.tsx"></script>
-    <script>
-      const cursor = document.createElement('div');
-      cursor.className = 'custom-cursor';
-      cursor.setAttribute('aria-hidden', 'true');
-      cursor.style.translate = '-100px -100px';
-      document.body.appendChild(cursor);
-
-      // Inertial cursor: lerped position via the independent `translate`
-      // property (no layout reads, no conflict with transform-based states)
-      // plus velocity-reactive scale. The rAF loop sleeps once settled.
-      let tx = -100, ty = -100, cx = -100, cy = -100;
-      let lastX = 0, lastY = 0, speed = 0, curScale = 1, raf = 0;
-
-      const loop = () => {
-        cx += (tx - cx) * 0.35;
-        cy += (ty - cy) * 0.35;
-        speed *= 0.85;
-        const targetScale = 1 + Math.min(speed * 0.004, 0.4);
-        curScale += (targetScale - curScale) * 0.2;
-        cursor.style.translate = (cx - 10) + 'px ' + (cy - 10) + 'px';
-        cursor.style.scale = curScale.toFixed(3);
-        const settled = Math.abs(tx - cx) < 0.1 && Math.abs(ty - cy) < 0.1 && Math.abs(curScale - 1) < 0.005;
-        raf = settled ? 0 : requestAnimationFrame(loop);
-      };
-
-      document.addEventListener('mousemove', (e) => {
-        if (window.innerWidth < 1024) return;
-        speed += Math.hypot(e.clientX - lastX, e.clientY - lastY);
-        lastX = e.clientX; lastY = e.clientY;
-        tx = e.clientX; ty = e.clientY;
-        if (cx === -100) { cx = tx; cy = ty; }
-        if (!raf) raf = requestAnimationFrame(loop);
-      }, { passive: true });
-
-      document.addEventListener('mousedown', () => {
-        if (window.innerWidth >= 1024) document.body.classList.add('cursor-clicking');
-      });
-      document.addEventListener('mouseup', () => {
-        if (window.innerWidth >= 1024) document.body.classList.remove('cursor-clicking');
-      });
-
-      // When the tab loses focus / is hidden (e.g. opening a link in a new tab),
-      // a control's mouseup/mouseleave may never fire — clear transient cursor
-      // states so the custom cursor isn't left stuck or invisible on return.
-      const resetCursorState = () => {
-        document.body.classList.remove('cursor-clicking', 'link-hover', 'safe-hover', 'cursor-hidden-active');
-      };
-      window.addEventListener('blur', resetCursorState);
-      document.addEventListener('visibilitychange', () => { if (document.hidden) resetCursorState(); });
-
-      const handleHover      = () => { if (window.innerWidth >= 1024) document.body.classList.add('link-hover'); };
-      const handleUnhover    = () => { if (window.innerWidth >= 1024) document.body.classList.remove('link-hover'); };
-      const handleSafeHover  = () => { if (window.innerWidth >= 1024) document.body.classList.add('safe-hover'); };
-      const handleSafeUnhover= () => { if (window.innerWidth >= 1024) document.body.classList.remove('safe-hover'); };
-      const handleHideHover  = () => { if (window.innerWidth >= 1024) document.body.classList.add('cursor-hidden-active'); };
-      const handleHideUnhover= () => { if (window.innerWidth >= 1024) document.body.classList.remove('cursor-hidden-active'); };
-
-      const addListeners = () => {
-        document.querySelectorAll('a:not(.cursor-safe):not(.cursor-hide):not(.no-cursor-effect), .cursor-pointer:not(button):not(input):not(textarea):not(.cursor-safe):not(.cursor-hide):not(.no-cursor-effect)').forEach(el => {
-          if (el.dataset.cursorBound) return;
-          el.addEventListener('mouseenter', handleHover);
-          el.addEventListener('mouseleave', handleUnhover);
-          el.dataset.cursorBound = "true";
-        });
-        document.querySelectorAll('.cursor-safe').forEach(el => {
-          if (el.dataset.cursorBoundSafe) return;
-          el.addEventListener('mouseenter', handleSafeHover);
-          el.addEventListener('mouseleave', handleSafeUnhover);
-          el.dataset.cursorBoundSafe = "true";
-        });
-        document.querySelectorAll('.cursor-hide').forEach(el => {
-          if (el.dataset.cursorBoundHide) return;
-          el.addEventListener('mouseenter', handleHideHover);
-          el.addEventListener('mouseleave', handleHideUnhover);
-          el.dataset.cursorBoundHide = "true";
-        });
-      };
-
-      const observer = new MutationObserver(addListeners);
-      observer.observe(document.body, { childList: true, subtree: true });
-      addListeners();
-    </script>
   </body>
 </html>

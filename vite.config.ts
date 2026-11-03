@@ -9,6 +9,10 @@ export default defineConfig(() => {
         host: 'localhost',
       },
       plugins: [react()],
+      build: {
+        // The WebGL engine (Three.js) is a single lazy chunk by design.
+        chunkSizeWarningLimit: 650,
+      },
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),

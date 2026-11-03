@@ -2,388 +2,324 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Cursor ─────────────────────────────────────────────────── */
-@media (min-width: 1024px) {
-  body, a, button, input, textarea,
-  .cursor-pointer, .cursor-text, [contenteditable="true"] {
-    cursor: none !important;
-  }
+/* ════════════════════════════════════════════════════════════════
+   THE PIXEL DIMENSION — design tokens
+   Same palette family as the WebGL world (engine/palette.ts), so UI
+   and renders read as one system. Light = "paper", dark = "night".
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  --bg: #f2ecdf;
+  --bg-2: #e8dfcb;
+  --ink: #1d1a26;
+  --ink-2: #3d3849;
+  --muted: #625b6c;
+  --line: rgba(36, 32, 46, 0.18);
+  --line-strong: rgba(36, 32, 46, 0.42);
+  --panel: rgba(242, 236, 223, 0.86);
+  --panel-solid: #ece4d3;
+  --accent: #e39b1b;
+  --accent-text: #8a5300;
+  --on-accent: #1d1a26;
+  --teal: #1d7a70;
+  --mint: #23877c;
+  --coral: #c4432a;
+  --berry: #9c3d62;
+  --shadow: #24202e;
+  --focus: #3f5aa8;
+  color-scheme: light;
+}
+.dark {
+  --bg: #07080f;
+  --bg-2: #111527;
+  --ink: #f3ead7;
+  --ink-2: #d4cebf;
+  --muted: #9298b3;
+  --line: rgba(159, 176, 216, 0.16);
+  --line-strong: rgba(159, 176, 216, 0.38);
+  --panel: rgba(7, 8, 15, 0.82);
+  --panel-solid: #0d1020;
+  --accent: #f2b134;
+  --accent-text: #f2b134;
+  --on-accent: #07080f;
+  --teal: #2fb3a6;
+  --mint: #6fe0c4;
+  --coral: #ff7a5c;
+  --berry: #e07aa0;
+  --shadow: #000000;
+  --focus: #6fe0c4;
+  color-scheme: dark;
 }
 
-/* ── Base ────────────────────────────────────────────────────── */
 html {
-  overflow-x: hidden;
-  background-color: #fafafa;
-}
-html.dark {
-  background-color: #050505;
+  background: var(--bg);
+  overflow-x: clip;
+  scroll-padding-top: 5rem;
 }
 body {
-  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
-  touch-action: pan-y;
-  overscroll-behavior-x: none;
-  -webkit-overflow-scrolling: touch;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--accent); color: var(--on-accent); }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }
 
-/* ── Content visibility ──────────────────────────────────────── */
-/* Skip rendering off-screen sections entirely until the user scrolls to them.
-   contain-intrinsic-size gives the browser an estimated size so the scrollbar
-   doesn't jump. Values are rough estimates per section. */
-/* NOTE: #projects is deliberately excluded — content-visibility implies
-   paint containment, which clips the carousel arrows positioned outside
-   the section box (left-[-5rem]/right-[-5rem]). */
-#about, #experience-education, #contact {
-  content-visibility: auto;
-  /* `auto <size>` remembers the real height after first render,
-     falling back to the estimate on cold loads. Prevents scrollbar jumps. */
-  contain-intrinsic-size: auto 800px;
-}
+/* Everything below lives in the components layer so Tailwind utilities
+   (hidden, md:inline-flex, lg:sticky…) can always override it. */
+@layer components {
+/* ── Typography helpers ──────────────────────────────────────── */
+.font-pixel { font-family: 'Silkscreen', 'JetBrains Mono', monospace; letter-spacing: 0.04em; }
 
-/* ── Gradient text ───────────────────────────────────────────── */
-.gradient-text {
-  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #f472b6 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-size: 200% auto;
-  animation: gradient-flow 8s ease infinite;
-  /* Promote to compositor layer so background-position animation
-     doesn't force a main-thread paint on every frame */
-  will-change: background-position;
+.eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-@keyframes gradient-flow {
-  0%   { background-position: 0%   50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0%   50%; }
+.chapter-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Silkscreen', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
 }
+.chapter-tag .num {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 0.15rem 0.45rem;
+}
+.display {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+.display em {
+  font-style: normal;
+  color: var(--accent-text);
+}
+.rich strong { color: var(--ink); font-weight: 600; }
 
-/* ── Glass card ──────────────────────────────────────────────── */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  /* Scope transition to only the properties that actually change on hover.
-     `transition: all` forces the browser to track every property. */
-  transition:
-    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    background   0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow   0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Reduce backdrop-filter cost on mobile — blur(12px) forces a GPU compositing
-   layer for every card simultaneously. Halving the radius cuts GPU work by ~4×. */
-@media (max-width: 767px) {
-  .glass-card {
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-  }
-}
-
-/* ── Section fade-in ─────────────────────────────────────────── */
-.section-fade {
-  opacity: 0;
-  transform: translateY(20px);
-  /* Only animate opacity + transform — the only properties that change.
-     `will-change` promotes to its own compositor layer before animation starts. */
-  will-change: opacity, transform;
-  transition:
-    opacity   0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.section-fade.visible {
-  opacity: 1;
-  transform: translateY(0);
-  /* Release the compositor layer after animation completes */
-  will-change: auto;
-}
-
-/* ── Timeline ────────────────────────────────────────────────── */
-@keyframes timeline-flow {
-  0%   { background-position: 0% 0%;   }
-  100% { background-position: 0% 100%; }
-}
-@keyframes timeline-draw {
-  from { clip-path: inset(100% 0 0 0); }
-  to   { clip-path: inset(0%   0 0 0); }
-}
-.timeline-fill {
-  clip-path: inset(100% 0 0 0);
-  background: linear-gradient(to bottom, #14b8a6, #8b5cf6, #14b8a6);
-  background-size: 100% 200%;
-}
-.timeline-fill--active {
-  animation:
-    timeline-flow 4s    linear      infinite,
-    timeline-draw 1.8s  ease-in-out forwards;
-}
-
-/* ── Cert card shine ─────────────────────────────────────────── */
-@keyframes cert-shine {
-  0%   { transform: translateX(-180%) skewX(-18deg); opacity: 0; }
-  18%  { opacity: 1; }
-  82%  { opacity: 1; }
-  100% { transform: translateX(500%) skewX(-18deg); opacity: 0; }
-}
-.cert-shine-layer {
-  position: absolute;
-  top: -20%;
-  left: 0;
-  width: 22%;
-  height: 140%;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.06) 50%,
-    transparent 100%
+/* ── Pixel frame: stepped corners, the UI's signature ────────── */
+.px-frame {
+  --c: 6px;
+  clip-path: polygon(
+    0 var(--c), var(--c) var(--c), var(--c) 0,
+    calc(100% - var(--c)) 0, calc(100% - var(--c)) var(--c), 100% var(--c),
+    100% calc(100% - var(--c)), calc(100% - var(--c)) calc(100% - var(--c)), calc(100% - var(--c)) 100%,
+    var(--c) 100%, var(--c) calc(100% - var(--c)), 0 calc(100% - var(--c))
   );
-  transform: translateX(-180%) skewX(-18deg);
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  padding: 0.7rem 1.15rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 2px solid var(--ink);
+  color: var(--ink);
+  background: transparent;
+  box-shadow: 4px 4px 0 0 var(--shadow);
+  transition: transform 0.12s steps(2), box-shadow 0.12s steps(2), background-color 0.15s;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.dark .btn { box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.9); border-color: var(--line-strong); }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 0 var(--shadow); }
+.dark .btn:hover { box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.9); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 0 var(--shadow); }
+.btn-primary { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.btn-ghost { box-shadow: none; border-color: var(--line-strong); }
+.btn-ghost:hover { box-shadow: none; border-color: var(--ink); transform: none; background: var(--bg-2); }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  background: var(--panel);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.icon-btn:hover { border-color: var(--ink); background: var(--bg-2); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.72rem;
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
+  background: var(--panel);
+}
+
+.link-u {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.2s steps(4);
+}
+.link-u:hover { background-size: 100% 100%; color: var(--on-accent); }
+
+/* ── World canvas & fallback ─────────────────────────────────── */
+.world {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+@supports (height: 100lvh) {
+  .world { height: 100lvh; }
+}
+.world-fallback {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(var(--line-strong) 1px, transparent 1.5px),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+  background-size: 8px 8px, 100% 100%;
+}
+
+/* ── Chapters & stage ────────────────────────────────────────── */
+.chapter {
+  position: relative;
+  z-index: 1;
+}
+/* The stage is an empty box the WebGL lens is aimed at. In the components
+   layer so utilities such as lg:sticky can override its position. */
+.stage {
+  position: relative;
+  pointer-events: none;
+}
+/* Fallback art shown in the stage when WebGL is unavailable. */
+.stage-fallback {
+  position: absolute;
+  inset: 12%;
+  display: grid;
+  place-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  white-space: pre;
+  font-size: clamp(0.8rem, 1.6vw, 1.35rem);
+  line-height: 1.05;
+  color: var(--accent-text);
   opacity: 0;
 }
-.cert-card {
-  will-change: transform;
+.no-webgl .stage-fallback { opacity: 1; }
+
+/* ── Reveal: pixel-stepped entrance ──────────────────────────── */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  /* No clip-path here: IntersectionObserver honours it and would never fire. */
+  transition:
+    opacity 0.45s steps(5),
+    transform 0.55s steps(6);
+  transition-delay: var(--d, 0ms);
 }
-.cert-card:hover {
-  transform: translateY(-3px);
-}
-.cert-card:hover .cert-shine-layer {
-  animation: cert-shine 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+.js .reveal.in {
+  opacity: 1;
+  transform: none;
 }
 
-/* ── Document viewer (liquid glass) ──────────────────────────── */
-.doc-viewer-sheen {
-  background:
-    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(59, 130, 246, 0.10), transparent 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%);
-}
+/* Progress rail */
+.rail-tick { transition: background-color 0.2s steps(2), height 0.2s steps(3); }
 
-/* ── Scrollbar ───────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-.dark ::-webkit-scrollbar-track { background: #050505; }
-::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
+/* Blinking caret (terminal / preloader) */
+.caret::after {
+  content: '█';
+  margin-left: 2px;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Signal dot */
+.live-dot { position: relative; display: inline-block; width: 8px; height: 8px; background: var(--mint); }
+.live-dot::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid var(--mint);
+  animation: ping 1.6s steps(6) infinite;
+}
+@keyframes ping { from { opacity: 1; transform: scale(0.6); } to { opacity: 0; transform: scale(1.6); } }
+
+/* Preloader */
+.boot-bar { background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 10px); }
+
+/* Form */
+.field {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.75rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: 1rem;
+  transition: border-color 0.15s;
+}
+.field::placeholder { color: var(--muted); opacity: 0.8; }
+.field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
+.field[aria-invalid='true'] { border-color: var(--coral); }
+
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--line-strong); }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
-/* ── Hero animations ─────────────────────────────────────────── */
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50%       { transform: translateY(-8px); }
-}
-@keyframes glow-pulse-organic {
-  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1);    filter: blur(150px); }
-  50%       { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); filter: blur(170px); }
-}
-.animate-bounce-slow {
-  animation: bounce-slow 4s ease-in-out infinite;
-}
-.animate-glow-pulse-organic {
-  animation: glow-pulse-organic 12s ease-in-out infinite;
-}
-/* !important is required: Tailwind's responsive utilities (lg:pt-0,
-   min-h-[90vh]) are emitted AFTER these rules in the built CSS, so
-   without it they win the cascade and the hero loses its top padding,
-   sliding under the fixed navbar. */
-@media (orientation: landscape) {
-  .hero-section {
-    padding-top: 10rem !important;
-    padding-bottom: 2rem !important;
-    min-height: auto !important;
-  }
-}
-@media (orientation: landscape) and (min-width: 1024px) {
-  .hero-section {
-    padding-top: 12rem !important;
-    padding-bottom: 4rem !important;
-    min-height: 90vh !important;
-  }
+/* Legacy glass used by the AI assistant & terminal */
+.glass-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
-/* ── Preloader animation ─────────────────────────────────────── */
-@keyframes loader-progress {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-.animate-loader-progress {
-  animation: loader-progress 2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-}
-
-/* ── The Field: cursor light ─────────────────────────────────── */
-/* Compositor-only fixed layer moved with translate3d by CursorGlow. */
-.cursor-glow {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 640px;
-  height: 640px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 1;
-  will-change: transform;
-  background: radial-gradient(
-    circle,
-    rgba(37, 99, 235, 0.05) 0%,
-    rgba(37, 99, 235, 0.02) 35%,
-    transparent 70%
-  );
-}
-.dark .cursor-glow {
-  background: radial-gradient(
-    circle,
-    rgba(96, 165, 250, 0.07) 0%,
-    rgba(96, 165, 250, 0.03) 35%,
-    transparent 70%
-  );
-}
-
-/* ── The Field: ionized headline ─────────────────────────────── */
-/* Duplicated hero headline revealed through a liquid clip-path circle
-   that trails the cursor. clip-path only repaints the headline element. */
-.spotlight-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  clip-path: circle(var(--sr, 0px) at var(--sx, 50%) var(--sy, 50%));
-  transition: clip-path 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.spotlight-glow {
-  text-shadow: 0 0 32px rgba(96, 165, 250, 0.45);
-}
-
-/* ── The Field: kinetic assembly ─────────────────────────────── */
-.kinetic .k-word {
-  display: inline-block;
-  white-space: nowrap;
-}
-.kinetic .k-word > span {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(0.45em);
-  filter: blur(6px);
-  transition:
-    opacity   0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    filter    0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.section-fade.visible .kinetic .k-word > span {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-/* Gradient halves of headlines arrive as one block, after the characters */
-.k-late {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(0.4em);
-  filter: blur(8px);
-  transition:
-    opacity   0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s,
-    filter    0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s;
-}
-.section-fade.visible .k-late {
-  opacity: 1;
-  transform: translateY(0);
-  filter: blur(0);
-}
-
-/* ── The Field: project card tilt ────────────────────────────── */
-.tilt-wrap {
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ── Reduced motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .cursor-glow,
-  .spotlight-layer {
-    display: none;
-  }
-  .kinetic .k-word > span,
-  .k-late {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition: none;
-  }
-  .tilt-wrap {
-    transition: none;
-  }
-  .section-fade {
-    transition: none;
-    opacity: 1;
-    transform: none;
-  }
-  .gradient-text {
-    animation: none;
-  }
-  .timeline-fill--active {
-    animation: none;
-    clip-path: inset(0% 0 0 0);
-  }
-  .animate-bounce-slow,
-  .animate-glow-pulse-organic,
-  .animate-loader-progress {
-    animation: none;
-  }
-  .cert-card:hover {
-    transform: none;
-  }
-  .doc-viewer-panel {
-    animation: none;
-  }
+  html { scroll-behavior: auto !important; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .caret::after, .live-dot::after { animation: none; }
+  .btn, .link-u { transition: none; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
 }
 
-/* ── Custom cursor ───────────────────────────────────────────── */
-.custom-cursor {
-  top: 0;
-  left: 0;
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid rgba(128, 128, 128, 0.5);
-  border-radius: 50%;
-  position: fixed;
-  pointer-events: none;
-  z-index: 2147483647;
-  transition:
-    transform 0.2s cubic-bezier(0.23, 1, 0.32, 1),
-    background 0.3s ease,
-    border-color 0.3s ease,
-    opacity 0.3s ease,
-    border-radius 0.3s ease,
-    width 0.3s ease;
-  mix-blend-mode: normal;
-  transform: scale(1);
-  background: rgba(128, 128, 128, 0.1);
-}
-@media (min-width: 1024px) {
-  .link-hover .custom-cursor {
-    transform: scale(3.5);
-    background: rgba(255, 255, 255, 1);
-    border-color: transparent;
-    mix-blend-mode: difference;
-  }
-  .cursor-clicking .custom-cursor {
-    transform: scale(0.7);
-  }
-  .link-hover.cursor-clicking .custom-cursor {
-    transform: scale(2.8);
-  }
-  .safe-hover .custom-cursor {
-    mix-blend-mode: normal !important;
-    background: rgba(255, 255, 255, 0.9) !important;
-    border: 1px solid rgba(0, 0, 0, 0.2) !important;
-  }
-  .cursor-hidden-active .custom-cursor {
-    opacity: 0 !important;
-    transform: scale(0) !important;
-  }
-}
+@keyframes scrollhint { from { transform: translateY(-100%); } to { transform: translateY(260%); } }

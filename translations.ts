@@ -1,523 +1,456 @@
+// All copy for the site, ES / EN. Every fact here comes from the previous
+// version of the portfolio, the README and the CV — nothing is invented.
+// Inline emphasis uses **double asterisks** (rendered by <Rich />).
 
-export const translations = {
-  es: {
-    nav: {
-      home: 'Inicio',
-      about: 'Sobre mí',
-      projects: 'Proyectos',
-      journey: 'Trayectoria',
-      contact: 'Contacto',
-      downloadCV: 'CV',
-      terminal: 'Terminal (Shell)'
-    },
-    hero: {
-      role: 'Técnico SMR & Estudiante de DAM',
-      title1: 'Juan Manuel',
-      title2: 'Fernández',
-      desc: 'Técnico SMR reconvertido a {bold}. Combino la precisión técnica de los sistemas con la creatividad del software para resolver problemas reales.',
-      descBold: 'Desarrollador Multiplataforma',
-      cta: 'HABLEMOS',
-      cv: 'DESCARGAR CV',
-      location: 'Málaga, ES',
-      availability: 'Disponibilidad',
-      availabilityStatus: 'Disponible para prácticas'
-    },
-    about: {
-      badge: 'El origen de todo',
-      title1: 'PASIÓN POR EL',
-      title2: 'CACHARREO.',
-      desc1: 'El {span1} es lo que me ha gustado {span2}. Lo que empezó abriendo equipos por curiosidad es hoy la base de mi {span3}.',
-      desc1Span1: 'cacharreo',
-      desc1Span2: 'desde que tengo uso de razón',
-      desc1Span3: 'futura profesión',
-      desc2: 'Tras estudiar {strong1}, me di cuenta de que el desarrollo no es solo picar código; mi curiosidad me empuja a querer saber siempre qué ocurre "debajo del capó". Mi tiempo en {strong2} me enseñó a mantener la calma y a buscar soluciones con paciencia cuando la tecnología decide no colaborar.',
-      desc3: 'Ahora, en 1º de DAM, estoy volcando esa experiencia en aprender a construir {span}. No busco solo que compile; me motiva la elegancia de un código bien estructurado y entender a fondo el porqué de cada línea que escribo.',
-      desc3Span: 'software sólido y elegante',
-      stats: [
-        { label: 'Nota Media SMR', value: '9.2', sub: 'Excelencia técnica' },
-        { label: 'Movilidad', value: 'Italia', sub: 'Erasmus+ Campobasso' },
-        { label: 'Certificación', value: 'CCNA', sub: 'Cisco Certified' }
-      ],
-      skills: 'Hard Skills',
-      skillsSub: 'Dominio técnico',
-      skillsList: [
-        { name: 'Montaje y Mantenimiento (Hardware)', level: '95%' },
-        { name: 'Redes Locales (Cisco CCNA)', level: '85%' },
-        { name: 'Troubleshooting IT', level: '90%' },
-        { name: 'Fundamentos de Programación', level: '60%' }
-      ],
-      quote: '"Para construir algo que perdure, primero hay que saber cómo se sostiene desde abajo."',
-      status: 'En formación y abierto a retos'
-    },
-    projects: {
-      title: 'Proyectos',
-      subtitle: 'Bitácora de mi desarrollo profesional',
-      github: 'Ver GitHub',
-      sectionHeading1: 'MIS',
-      sectionHeading2: 'CREACIONES.',
-      statsCommits: 'Commits / Mes',
-      statsTech: 'Tecnologías',
-      statsProjects: 'Proyectos',
-      statsProd: 'En Producción',
-      buildingStatus: 'En Curso',
-      buildingBadge: 'DAM 1º',
-      buildingFocus: 'Enfocado en',
-      buildingTitle: 'En construcción,',
-      buildingTitleHighlight: 'permanente.',
-      buildingDesc: 'Cada commit es una versión mejorada de mí. Estoy al principio del camino, pero lo estoy recorriendo a toda velocidad.',
-      items: [
-        {
-          title: "Genetix",
-          desc: "Simulador visual de algoritmos genéticos desarrollado íntegramente en React y Java. Aplica conceptos de evolución biológica como selección, cruce y mutación para resolver problemas complejos de optimización.",
-          tech: ["React", "Java", "Tailwind CSS", "Genética"]
-        },
-        {
-          title: "Genetix Arena",
-          desc: "Simulador táctico de combate autónomo con IA emergente. Migración de alta fidelidad a TypeScript y React 19 con interfaz inspirada en SpaceX. Gestiona entidades (Ops, Hostiles, Med-Units) en un grid de 75x25.",
-          tech: ["TypeScript", "React 19", "Vite", "Tailwind"]
-        },
-        {
-          title: "Infraestructura & Redes",
-          desc: "Configuración de redes y protocolos de enrutamiento basada en la certificación Cisco CCNA. Implementación de seguridad, switching y mantenimiento de infraestructuras de comunicación y sistemas.",
-          tech: ["Cisco CCNA", "Linux", "Seguridad", "Hardware"]
-        },
-        {
-          title: "Glitch Night",
-          desc: "Diseño y desarrollo de la web oficial de Glitch Night, app de ocio nocturno para Málaga. SPA con estética cyberpunk, animaciones GSAP y ScrollTrigger, sistema QR de entrada y descubrimiento de locales y eventos.",
-          tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
-        },
-        {
-          title: "Fix Me Arcade",
-          desc: "Diseño y despliegue de la landing page oficial del servicio de recreativas de Fix Me Málaga. Una SPA con estética retro-arcade y paleta neón que presenta el catálogo de máquinas, los servicios de reparación y los canales de contacto.",
-          tech: ["HTML5", "CSS3", "JavaScript", "Vercel"]
-        },
-        {
-          title: "OpenClaw Agent",
-          desc: "Agente técnico autónomo para diagnosticar y guiar la reparación de recreativas de forma independiente. Con directivas de seguridad y red lines definidas, vive en un Mac Pro 2013 con fallo de placa que recuperé con Ubuntu Server — una máquina rescatada del vertedero, ahora servidor de IA.",
-          tech: ["Agente IA", "Ubuntu Server", "Mac Pro 2013", "Diagnóstico"]
-        },
-        {
-          title: "Kukelure",
-          desc: "Web y sistema de gestión integral para un negocio de estética, con el que reemplacé por completo el antiguo sistema de dos teléfonos saturados de WhatsApp. Ahora la gestión de reservas y el contacto con clientes son automáticos, con backend, base de datos y servidor de correo propios configurados de principio a fin.",
-          tech: ["Next.js 15", "Supabase", "TypeScript", "Tailwind CSS"]
-        },
-        {
-          title: "ProcesosBI",
-          desc: "Landing page para ProcesosBI, consultora de Business Intelligence. Sitio 100% estático sin frameworks ni dependencias, con un efecto de \"hilo de luz\" SVG animado con el scroll y despliegue automático vía GitHub Actions.",
-          tech: ["HTML5", "CSS3", "JavaScript", "GitHub Actions"]
-        },
-        {
-          title: "Biznaga Consulting",
-          desc: "Web de mi propia consultoría, todavía en fase de construcción. Sitio estático prerenderizado con escenas 3D en WebGPU (con caída a WebGL2), scroll sincronizado a mano entre DOM y Three.js, y capa de animación con GSAP y Lenis.",
-          tech: ["Next.js 16", "React 19", "TypeScript", "Three.js / WebGPU"]
-        }
-      ]
-    },
-    experience: {
-      title: 'Trayectoria Profesional',
-      footer: 'Buscando nuevos retos para seguir creciendo en el desarrollo de software...',
-      items: [
-        {
-          role: "Desarrollador Web Freelance",
-          roleDetail: "Diseño · Desarrollo Full-Stack · Despliegue",
-          color: "blue",
-          type: "Proyectos Independientes",
-          company: "Autónomo",
-          location: "Málaga, España",
-          period: "Junio 2026 - Septiembre 2026",
-          points: [
-            "Diseño y desarrollo íntegro de Kukelure, el sistema de gestión y reservas de un negocio de estética, sustituyendo por completo el antiguo flujo manual por WhatsApp que saturaba a la propietaria: reservas, contacto con clientes, backend, base de datos y servidor de correo propios, todo automatizado.",
-            "Desarrollo de la landing page de ProcesosBI, consultora de Business Intelligence, con un sitio estático sin frameworks, ligero y con animaciones propias vinculadas al scroll.",
-            "Gestión de cada proyecto de principio a fin para clientes reales: diseño, desarrollo, despliegue y mantenimiento en producción."
-          ],
-          tags: ["Next.js", "Supabase", "TypeScript", "Freelance"]
-        },
-        {
-          role: "Jefe de Automatizaciones",
-          roleDetail: "Adm. de BBDD · Programador",
-          color: "teal",
-          type: "Prácticas FCT · DAM 1º",
-          company: "Fix Me Málaga",
-          location: "Málaga, España",
-          period: "Marzo 2026 - Junio 2026",
-          points: [
-            "Diseño e implementación de automatizaciones para optimizar los procesos internos de la empresa.",
-            "Administración y gestión de la base de datos de clientes, reparaciones e inventario.",
-            "Desarrollo y mantenimiento de herramientas de software a medida para la tienda."
-          ],
-          tags: ["Automatizaciones", "Bases de Datos", "Programación", "Reparaciones"],
-          linkedinPost: "https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo",
-          slides: "https://canva.link/noamvf0lpjcpmv3"
-        },
-        {
-          role: "Técnico de Soporte e Infraestructura IT",
-          color: "purple",
-          type: "Prácticas Erasmus+",
-          company: "Music Store Campobasso",
-          location: "Campobasso, Italia",
-          period: "Marzo 2025 - Junio 2025",
-          points: [
-            "Atención al cliente y asistente de ventas.",
-            "Gestión de stock.",
-            "Mantenimiento de bases de datos."
-          ],
-          tags: ["Internacional", "Ventas", "Gestión de Stock", "Bases de Datos"]
-        }
-      ]
-    },
-    education: {
-      title: 'Formación Académica',
-      items: [
-        {
-          degree: "Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)",
-          school: "CPIFP Alan Turing",
-          period: "2025 - Presente",
-          status: "En curso",
-          desc: "Formación centrada en el desarrollo, implementación y mantenimiento de aplicaciones multiplataforma, gestión de bases de datos y usabilidad."
-        },
-        {
-          degree: "Grado Medio en Sistemas Microinformáticos y Redes (SMR)",
-          school: "CPIFP Alan Turing",
-          period: "2023 - 2025",
-          status: "Completado",
-          desc: "Instalación y configuración de equipos, mantenimiento de redes locales y seguridad informática. Enfoque práctico en troubleshooting y mejora de sistemas.",
-          highlights: ["Cisco CCNA Certification (2024)", "Nota Media Final: 9.2"]
-        }
-      ],
-      certs: {
-        title: 'Certificaciones',
-        verified: 'Verificado',
-        view: 'Ver título',
-        download: 'Descargar',
-        items: [
-          {
-            name: 'CCNA: Introduction to Networks',
-            issuer: 'Cisco Networking Academy',
-            year: '2024',
-            color: 'cyan',
-            icon: 'fa-solid fa-network-wired',
-            skills: ['TCP/IP', 'Switching', 'Routing', 'Seguridad', 'VLAN', 'IPv6'],
-            file: '/certs/ccna.pdf'
-          },
-          {
-            name: 'Introducción Práctica a DevOps',
-            issuer: 'LemonCode',
-            year: '2026',
-            color: 'amber',
-            icon: 'fa-solid fa-infinity',
-            skills: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'],
-            file: '/certs/devops-lemoncode.pdf'
-          }
-        ]
-      }
-    },
-    viewer: {
-      download: 'Descargar',
-      close: 'Cerrar',
-      openInNewTab: 'Abrir en nueva pestaña',
-      cannotDisplay: 'Tu navegador no puede mostrar el PDF.'
-    },
-    contact: {
-      title: 'Pongámonos en contacto',
-      subtitle: '¿Tienes un proyecto interesante, una oferta de prácticas o simplemente quieres charlar sobre tecnología? Estaré encantado de escucharte.',
-      infoTitle: 'Información Directa',
-      location: 'Málaga, España',
-      labels: {
-        email: 'Email',
-        phone: 'WhatsApp / Tel',
-        location: 'Ubicación'
-      },
-      form: {
-        name: 'Tu Nombre',
-        email: 'Email',
-        message: 'Mensaje',
-        placeholderName: 'Escribe aquí',
-        placeholderEmail: 'hola@ejemplo.com',
-        placeholderMsg: '¿En qué puedo ayudarte?',
-        submit: 'Enviar Mensaje',
-        sent: '¡Abriendo cliente de correo!'
-      }
-    },
-    footer: {
-      role: 'Técnico SMR & Estudiante de DAM.'
-    },
-    ai: {
-      label: 'Asistente Virtual',
-      status: 'En línea',
-      maintenanceStatus: 'Fuera de servicio',
-      maintenanceMsg: 'Lo siento, en este momento no puedo procesar tu solicitud. Por favor, inténtalo más tarde.',
-      placeholder: 'Pregunta sobre Juanma...',
-      placeholderMaintenance: 'Servicio no disponible...',
-      prompt: 'Potenciado por Gemini AI',
-      tooltip: '¿Alguna duda? Pregúntame',
-      errorTitle: 'Estado del servicio',
-      errorDesc: 'Actualmente, el asistente está experimentando una pausa técnica. Para garantizar la mejor experiencia, te invitamos a explorar la trayectoria detallada y proyectos de Juanma mientras restauramos la conexión.',
-      errorOffline: 'No se detecta conexión activa. Te animo a verificar tu red para retomar nuestra charla, o a seguir descubriendo el portfolio de Juanma a tu ritmo.',
-      greetings: [
-        "¡Hola! Soy el asistente virtual de Juanma. ¿En qué puedo ayudarte hoy?",
-        "¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?",
-        "¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?"
-      ],
-    }
+import type { ProjectId } from './engine/bus';
+
+export type Lang = 'es' | 'en';
+
+export interface ProjectText {
+  id: ProjectId;
+  title: string;
+  kicker: string;
+  desc: string;
+  role?: string;
+  status?: string;
+  tech: string[];
+}
+
+export interface Milestone {
+  id: string;
+  kind: 'edu' | 'cert' | 'work';
+  period: string;
+  title: string;
+  org: string;
+  place?: string;
+  desc?: string;
+  points?: string[];
+  tags?: string[];
+}
+
+export interface SkillLayer {
+  name: string;
+  items: string[];
+  evidence: string;
+}
+
+const es = {
+  meta: {
+    skip: 'Saltar al contenido',
   },
-  en: {
-    nav: {
-      home: 'Home',
-      about: 'About',
-      projects: 'Projects',
-      journey: 'Journey',
-      contact: 'Contact',
-      downloadCV: 'CV',
-      terminal: 'Terminal (Shell)'
-    },
-    hero: {
-      role: 'IT Systems Tech & Software Student',
-      title1: 'Juan Manuel',
-      title2: 'Fernández',
-      desc: 'Systems Technician transitioned into {bold}. Combining technical systems precision with software creativity to solve real-world problems.',
-      descBold: 'Multiplatform Developer',
-      cta: 'LET\'S TALK',
-      cv: 'DOWNLOAD CV',
-      location: 'Málaga, Spain',
-      availability: 'Availability',
-      availabilityStatus: 'Ready for internships'
-    },
-    about: {
-      badge: 'Where it all started',
-      title1: 'PASSION FOR',
-      title2: 'TINKERING.',
-      desc1: '{span1} is what I\'ve loved {span2}. What started as opening computers out of curiosity is now the foundation of my {span3}.',
-      desc1Span1: 'Tinkering',
-      desc1Span2: 'for as long as I can remember',
-      desc1Span3: 'future career',
-      desc2: 'After studying {strong1}, I realized development isn\'t just about writing code; my curiosity drives me to always know what happens "under the hood". My time in {strong2} taught me to stay calm and find solutions with patience when technology refuses to cooperate.',
-      desc3: 'Now, in my 1st year of DAM, I\'m pouring that experience into learning how to build {span}. I don\'t just want it to compile; I\'m motivated by the elegance of well-structured code and deeply understanding the "why" behind every line.',
-      desc3Span: 'solid and elegant software',
-      stats: [
-        { label: 'SMR GPA', value: '9.2', sub: 'Technical Excellence' },
-        { label: 'Mobility', value: 'Italy', sub: 'Erasmus+ Campobasso' },
-        { label: 'Certification', value: 'CCNA', sub: 'Cisco Certified' }
-      ],
-      skills: 'Hard Skills',
-      skillsSub: 'Technical proficiency',
-      skillsList: [
-        { name: 'Hardware Setup & Maintenance', level: '95%' },
-        { name: 'Local Networks (Cisco CCNA)', level: '85%' },
-        { name: 'IT Troubleshooting', level: '90%' },
-        { name: 'Programming Fundamentals', level: '60%' }
-      ],
-      quote: '"To build something that lasts, you must first know how it is supported from below."',
-      status: 'In training & open to challenges'
-    },
-    projects: {
-      title: 'Projects',
-      subtitle: 'My professional development log',
-      github: 'View GitHub',
-      sectionHeading1: 'MY',
-      sectionHeading2: 'CREATIONS.',
-      statsCommits: 'Commits / Month',
-      statsTech: 'Technologies',
-      statsProjects: 'Projects',
-      statsProd: 'In Production',
-      buildingStatus: 'In Progress',
-      buildingBadge: 'DAM 1st Yr',
-      buildingFocus: 'Currently focused on',
-      buildingTitle: 'Permanently under',
-      buildingTitleHighlight: 'construction.',
-      buildingDesc: 'Every commit is an improved version of me. I\'m at the start of the road, but I\'m running it at full speed.',
-      items: [
-        {
-          title: "Genetix",
-          desc: "Visual simulator of genetic algorithms developed entirely in React and Java. It applies biological evolution concepts such as selection, crossover, and mutation to solve complex optimization problems.",
-          tech: ["React", "Java", "Tailwind CSS", "Genetics"]
-        },
-        {
-          title: "Genetix Arena",
-          desc: "Autonomous tactical combat simulator with emergent AI. High-fidelity migration to TypeScript and React 19 with a SpaceX-inspired interface. Manages entities (Ops, Hostiles, Med-Units) on a 75x25 grid.",
-          tech: ["TypeScript", "React 19", "Vite", "Tailwind"]
-        },
-        {
-          title: "Infrastructure & Networks",
-          desc: "Network configuration and routing protocols based on Cisco CCNA certification. Implementation of security, switching, and maintenance of communication infrastructures and systems.",
-          tech: ["Cisco CCNA", "Linux", "Security", "Hardware"]
-        },
-        {
-          title: "Glitch Night",
-          desc: "Design and development of the official Glitch Night website — a nightlife app for Málaga. SPA with cyberpunk aesthetic, GSAP and ScrollTrigger animations, QR entry system, and venue and event discovery.",
-          tech: ["HTML5", "CSS3", "JavaScript", "GSAP", "SPA"]
-        },
-        {
-          title: "Fix Me Arcade",
-          desc: "Design and deployment of the official landing page for Fix Me Málaga's arcade machine repair service. An SPA with retro-arcade aesthetic and neon palette, showcasing the machine catalogue, repair services and contact channels.",
-          tech: ["HTML5", "CSS3", "JavaScript", "Vercel"]
-        },
-        {
-          title: "OpenClaw Agent",
-          desc: "Autonomous technical agent to independently diagnose and guide arcade machine repairs. Governed by defined security directives and red lines, it runs on a 2013 Mac Pro with a failed logic board that I restored with Ubuntu Server — a machine rescued from the scrap heap, now an AI server.",
-          tech: ["AI Agent", "Ubuntu Server", "Mac Pro 2013", "Diagnostics"]
-        },
-        {
-          title: "Kukelure",
-          desc: "Website and full management system for a beauty and wellness business, completely replacing the old system of two phones overwhelmed with WhatsApp. Booking management and client contact are now fully automated, with a custom backend, database and mail server configured end-to-end.",
-          tech: ["Next.js 15", "Supabase", "TypeScript", "Tailwind CSS"]
-        },
-        {
-          title: "ProcesosBI",
-          desc: "Landing page for ProcesosBI, a Business Intelligence consultancy. A 100% static site with no frameworks or dependencies, featuring a scroll-driven animated SVG \"light thread\" effect and automatic deployment via GitHub Actions.",
-          tech: ["HTML5", "CSS3", "JavaScript", "GitHub Actions"]
-        },
-        {
-          title: "Biznaga Consulting",
-          desc: "Website for my own consultancy, still under construction. A prerendered static site with WebGPU 3D scenes (falling back to WebGL2), hand-synced scroll between the DOM and Three.js, and an animation layer built with GSAP and Lenis.",
-          tech: ["Next.js 16", "React 19", "TypeScript", "Three.js / WebGPU"]
-        }
-      ]
-    },
-    experience: {
-      title: 'Professional Journey',
-      footer: 'Looking for new challenges to keep growing in software development...',
-      items: [
-        {
-          role: "Freelance Web Developer",
-          roleDetail: "Design · Full-Stack Development · Deployment",
-          color: "blue",
-          type: "Independent Projects",
-          company: "Self-Employed",
-          location: "Málaga, Spain",
-          period: "June 2026 - September 2026",
-          points: [
-            "Designed and built Kukelure end-to-end, a booking and management system for a beauty and wellness business, fully replacing the old manual WhatsApp workflow that overwhelmed the owner: bookings, client communication, backend, database and its own mail server, all automated.",
-            "Built the landing page for ProcesosBI, a Business Intelligence consultancy, as a lightweight framework-free static site with custom scroll-driven animations.",
-            "Owned each project end-to-end for real clients: design, development, deployment and ongoing production maintenance."
-          ],
-          tags: ["Next.js", "Supabase", "TypeScript", "Freelance"]
-        },
-        {
-          role: "Head of Automations",
-          roleDetail: "DB Administrator · Programmer",
-          color: "teal",
-          type: "FCT Internship · DAM 1st Year",
-          company: "Fix Me Málaga",
-          location: "Málaga, Spain",
-          period: "March 2026 - June 2026",
-          points: [
-            "Designed and implemented automations to optimise the company's internal processes.",
-            "Administration and management of the customer, repair and inventory database.",
-            "Development and maintenance of custom software tools for the store."
-          ],
-          tags: ["Automations", "Databases", "Programming", "Repairs"],
-          linkedinPost: "https://www.linkedin.com/posts/juanma-fern%C3%A1ndez-rodr%C3%ADguez_presentaci%C3%B3n-pr%C3%A1cticas-fix-me-2026-share-7466445967605760000-vEC4/?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAFOruqgByHSrgA1VcfWtYh5BeWtvxvpMzFo",
-          slides: "https://canva.link/noamvf0lpjcpmv3"
-        },
-        {
-          role: "IT Support & Infrastructure Technician",
-          color: "purple",
-          type: "Erasmus+ Internship",
-          company: "Music Store Campobasso",
-          location: "Campobasso, Italy",
-          period: "March 2025 - June 2025",
-          points: [
-            "Customer service and sales assistant.",
-            "Stock management.",
-            "Database maintenance."
-          ],
-          tags: ["International", "Sales", "Stock Management", "Databases"]
-        }
-      ]
-    },
-    education: {
-      title: 'Academic Education',
-      items: [
-        {
-          degree: "Higher Degree in Multiplatform Application Development (DAM)",
-          school: "CPIFP Alan Turing",
-          period: "2025 - Present",
-          status: "In progress",
-          desc: "Training focused on the development, implementation, and maintenance of multi-platform applications, database management, and usability."
-        },
-        {
-          degree: "Intermediate Degree in Systems and Networks (SMR)",
-          school: "CPIFP Alan Turing",
-          period: "2023 - 2025",
-          status: "Completed",
-          desc: "Installation and configuration of equipment, maintenance of local networks, and computer security. Practical focus on troubleshooting and systems improvement.",
-          highlights: ["Cisco CCNA Certification (2024)", "Final GPA: 9.2/10"]
-        }
-      ],
-      certs: {
-        title: 'Certifications',
-        verified: 'Verified',
-        view: 'View title',
-        download: 'Download',
-        items: [
-          {
-            name: 'CCNA: Introduction to Networks',
-            issuer: 'Cisco Networking Academy',
-            year: '2024',
-            color: 'cyan',
-            icon: 'fa-solid fa-network-wired',
-            skills: ['TCP/IP', 'Switching', 'Routing', 'Security', 'VLAN', 'IPv6'],
-            file: '/certs/ccna.pdf'
-          },
-          {
-            name: 'Practical Introduction to DevOps',
-            issuer: 'LemonCode',
-            year: '2026',
-            color: 'amber',
-            icon: 'fa-solid fa-infinity',
-            skills: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'],
-            file: '/certs/devops-lemoncode.pdf'
-          }
-        ]
-      }
-    },
-    viewer: {
-      download: 'Download',
-      close: 'Close',
-      openInNewTab: 'Open in new tab',
-      cannotDisplay: 'Your browser cannot display the PDF.'
-    },
-    contact: {
-      title: 'Get in touch',
-      subtitle: 'Do you have an interesting project, an internship offer, or just want to chat about tech? I\'ll be happy to hear from you.',
-      infoTitle: 'Direct Information',
-      location: 'Malaga, Spain',
-      labels: {
-        email: 'Email',
-        phone: 'WhatsApp / Tel',
-        location: 'Location'
+  nav: {
+    home: 'Identidad',
+    about: 'Origen',
+    skills: 'La pila',
+    projects: 'Construcción',
+    journey: 'Evolución',
+    contact: 'Conexión',
+    cv: 'CV',
+    menu: 'Menú',
+    close: 'Cerrar',
+    langLabel: 'Cambiar idioma a inglés',
+    themeToDark: 'Cambiar a tema oscuro',
+    themeToLight: 'Cambiar a tema claro',
+    terminal: 'Abrir terminal (tecla /)',
+  },
+  preloader: {
+    lines: [
+      'JM-BIOS v2.6 · Juanma Fernández',
+      'Comprobando hardware ............ OK',
+      'Enlace de red (CCNA) ............ OK',
+      'Montando sistemas ............... OK',
+      'Compilando proyectos ............ OK',
+      'Entrando en la dimensión píxel',
+    ],
+    skip: 'Saltar intro',
+  },
+  hero: {
+    chapter: 'Identidad',
+    place: 'Málaga, España',
+    hello: 'Hola, soy',
+    name1: 'Juanma',
+    name2: 'Fernández',
+    fullName: 'Juan Manuel Fernández Rodríguez',
+    role: 'Técnico en Sistemas y Redes reconvertido a **desarrollador multiplataforma**.',
+    lead: 'Combino la precisión de los sistemas con la creatividad del software para resolver problemas reales. Primero entiendo cómo se sostiene algo desde abajo; después lo construyo.',
+    chips: ['DAM · CPIFP Alan Turing', 'Cisco CCNA', 'SMR · Nota media 9,2'],
+    status: 'Disponible para prácticas',
+    ctaStory: 'Recorrer la historia',
+    ctaProjects: 'Ver proyectos',
+    ctaCv: 'Currículum',
+    ctaContact: 'Contacto',
+    scroll: 'Desliza para empezar',
+    visualLabel: 'Ilustración 3D en píxeles: un fragmento de placa base con un procesador que lleva grabadas las iniciales JM.',
+  },
+  about: {
+    chapter: 'Origen',
+    title1: 'Pasión por el',
+    title2: 'cacharreo.',
+    paragraphs: [
+      'El **cacharreo** es lo que me ha gustado desde que tengo uso de razón. Lo que empezó abriendo equipos por curiosidad es hoy la base de mi **futura profesión**.',
+      'Tras estudiar **SMR**, me di cuenta de que el desarrollo no es solo picar código: mi curiosidad me empuja a querer saber siempre qué ocurre «debajo del capó». Mi tiempo en **Italia** me enseñó a mantener la calma y a buscar soluciones con paciencia cuando la tecnología decide no colaborar.',
+      'Ahora, en DAM, estoy volcando esa experiencia en aprender a construir **software sólido y elegante**. No busco solo que compile: me motiva la elegancia de un código bien estructurado y entender a fondo el porqué de cada línea que escribo.',
+    ],
+    quote: 'Para construir algo que perdure, primero hay que saber cómo se sostiene desde abajo.',
+    specTitle: 'Ficha técnica',
+    specs: [
+      { label: 'Nota media SMR', value: '9,2', sub: 'Sistemas Microinformáticos y Redes' },
+      { label: 'Movilidad', value: 'Italia', sub: 'Erasmus+ · Campobasso' },
+      { label: 'Certificación', value: 'CCNA', sub: 'Cisco Networking Academy' },
+    ],
+    visualLabel: 'Ilustración 3D en píxeles: una torre de ordenador abierta, con ventiladores girando y el panel lateral flotando junto a sus tornillos.',
+  },
+  skills: {
+    chapter: 'La pila',
+    title1: 'Construida',
+    title2: 'desde abajo.',
+    intro: 'Lo que sé está ordenado como una pila: cada capa se apoya en la anterior. Sin porcentajes inventados; cada capa indica de dónde sale.',
+    hint: 'Pasa el cursor o toca una capa para destacarla.',
+    evidenceLabel: 'Base',
+    layers: [
+      { name: 'Hardware', items: ['Montaje', 'Mantenimiento', 'Diagnóstico y troubleshooting', 'Recuperación de equipos'], evidence: 'SMR · reparaciones en Fix Me Málaga · Mac Pro 2013 recuperado' },
+      { name: 'Redes', items: ['TCP/IP', 'Switching', 'Routing', 'VLAN', 'IPv6', 'Seguridad'], evidence: 'Cisco CCNA: Introduction to Networks (2024)' },
+      { name: 'Sistemas', items: ['Linux', 'Ubuntu Server', 'Servidor de correo', 'Automatizaciones'], evidence: 'OpenClaw Agent · Kukelure · Fix Me Málaga' },
+      { name: 'Datos', items: ['SQL', 'Administración de BBDD', 'Supabase', 'MongoDB'], evidence: 'Fix Me Málaga · Kukelure · curso DevOps' },
+      { name: 'Programación', items: ['Java', 'TypeScript', 'JavaScript', 'SQL'], evidence: 'DAM · Genetix · Genetix Arena' },
+      { name: 'Web', items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'HTML5 / CSS3', 'GSAP', 'Three.js'], evidence: 'Kukelure · Glitch Night · Biznaga Consulting · este portfolio' },
+      { name: 'DevOps', items: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Vercel', 'Azure', 'AWS'], evidence: 'Introducción Práctica a DevOps · LemonCode (2026)' },
+    ] as SkillLayer[],
+    visualLabel: 'Ilustración 3D renderizada con caracteres: siete losas apiladas, una por capa de conocimiento.',
+  },
+  projects: {
+    chapter: 'Construcción',
+    title1: 'Lo que he',
+    title2: 'construido.',
+    intro: 'Cada proyecto tiene su propia pieza en el pedestal. Elige uno para reconstruirlo.',
+    filters: { all: 'Todos', software: 'Software', systems: 'Sistemas' },
+    listLabel: 'Lista de proyectos',
+    visit: 'Visitar',
+    repo: 'Código',
+    course: 'Ver curso',
+    post: 'Ver publicación',
+    role: 'Mi papel',
+    stack: 'Tecnologías',
+    prev: 'Proyecto anterior',
+    next: 'Proyecto siguiente',
+    github: 'Más en GitHub',
+    items: [
+      { id: 'genetix', title: 'Genetix', kicker: 'Algoritmos genéticos', desc: 'Simulador visual de algoritmos genéticos desarrollado íntegramente en React y Java. Aplica conceptos de evolución biológica como selección, cruce y mutación para resolver problemas complejos de optimización.', role: 'Desarrollo completo', tech: ['React', 'Java', 'Tailwind CSS'] },
+      { id: 'arena', title: 'Genetix Arena', kicker: 'Simulación táctica · IA emergente', desc: 'Simulador táctico de combate autónomo con IA emergente. Migración de alta fidelidad a TypeScript y React 19 con interfaz inspirada en SpaceX. Gestiona entidades (Ops, Hostiles, Med-Units) en un grid de 75×25.', role: 'Desarrollo y migración a TypeScript', tech: ['TypeScript', 'React 19', 'Vite', 'Tailwind CSS'] },
+      { id: 'infra', title: 'Infraestructura & Redes', kicker: 'Cisco CCNA', desc: 'Configuración de redes y protocolos de enrutamiento basada en la certificación Cisco CCNA. Implementación de seguridad, switching y mantenimiento de infraestructuras de comunicación y sistemas.', tech: ['Cisco CCNA', 'Linux', 'Seguridad', 'Hardware'] },
+      { id: 'glitch', title: 'Glitch Night', kicker: 'Web oficial · ocio nocturno en Málaga', desc: 'Web oficial de Glitch Night, app de ocio nocturno para Málaga. SPA con estética cyberpunk, animaciones con GSAP y ScrollTrigger, sistema QR de entrada y descubrimiento de locales y eventos.', role: 'Diseño y desarrollo', tech: ['HTML5', 'CSS3', 'JavaScript', 'GSAP'] },
+      { id: 'arcade', title: 'Fix Me Arcade', kicker: 'Landing · recreativas', desc: 'Landing page oficial del servicio de recreativas de Fix Me Málaga. SPA con estética retro-arcade y paleta neón que presenta el catálogo de máquinas, los servicios de reparación y los canales de contacto.', role: 'Diseño y despliegue', tech: ['HTML5', 'CSS3', 'JavaScript', 'Vercel'] },
+      { id: 'openclaw', title: 'OpenClaw Agent', kicker: 'Agente IA · servidor rescatado', desc: 'Agente técnico autónomo para diagnosticar y guiar la reparación de recreativas, con directivas de seguridad y red lines definidas. Vive en un Mac Pro 2013 con fallo de placa que recuperé con Ubuntu Server: una máquina rescatada del vertedero, ahora servidor de IA.', role: 'Recuperación del equipo y despliegue del agente', tech: ['Agente IA', 'Ubuntu Server', 'Mac Pro 2013', 'Diagnóstico'] },
+      { id: 'kukelure', title: 'Kukelure', kicker: 'Web + sistema de reservas', desc: 'Web y sistema de gestión integral para un negocio de estética, que sustituyó por completo dos teléfonos saturados de WhatsApp. Reservas y contacto con clientes automáticos, con backend, base de datos y servidor de correo propios configurados de principio a fin.', role: 'Diseño y desarrollo íntegro · freelance', status: 'En producción', tech: ['Next.js 15', 'Supabase', 'TypeScript', 'Tailwind CSS'] },
+      { id: 'procesosbi', title: 'ProcesosBI', kicker: 'Landing · consultora BI', desc: 'Landing page para ProcesosBI, consultora de Business Intelligence. Sitio 100% estático sin frameworks ni dependencias, con un «hilo de luz» SVG animado con el scroll y despliegue automático vía GitHub Actions.', role: 'Desarrollo · freelance', status: 'En producción', tech: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Actions'] },
+      { id: 'biznaga', title: 'Biznaga Consulting', kicker: 'Mi consultoría', desc: 'Web de mi propia consultoría. Sitio estático prerenderizado con escenas 3D en WebGPU (con caída a WebGL2), scroll sincronizado a mano entre DOM y Three.js, y capa de animación con GSAP y Lenis.', status: 'En construcción', tech: ['Next.js 16', 'React 19', 'TypeScript', 'Three.js / WebGPU'] },
+    ] as ProjectText[],
+    visualLabel: 'Ilustración 3D en píxeles de la pieza que representa el proyecto seleccionado, sobre un pedestal.',
+  },
+  journey: {
+    chapter: 'Evolución',
+    title1: 'Una ruta que',
+    title2: 'sigue subiendo.',
+    intro: 'Formación, certificaciones y experiencia, en orden. El paquete de la ilustración viaja al hito que estás leyendo.',
+    kinds: { edu: 'Formación', cert: 'Certificación', work: 'Experiencia' },
+    view: 'Ver título',
+    download: 'Descargar',
+    linkedin: 'Publicación en LinkedIn',
+    slides: 'Presentación',
+    school: 'Web del centro',
+    items: [
+      { id: 'smr', kind: 'edu', period: '2023 – 2025', title: 'Grado Medio en Sistemas Microinformáticos y Redes (SMR)', org: 'CPIFP Alan Turing', place: 'Málaga', desc: 'Instalación y configuración de equipos, mantenimiento de redes locales y seguridad informática, con enfoque práctico en troubleshooting y mejora de sistemas.', tags: ['Nota media final: 9,2', 'Completado'] },
+      { id: 'ccna', kind: 'cert', period: '2024', title: 'CCNA: Introduction to Networks', org: 'Cisco Networking Academy', tags: ['TCP/IP', 'Switching', 'Routing', 'Seguridad', 'VLAN', 'IPv6'] },
+      { id: 'erasmus', kind: 'work', period: 'Marzo – Junio 2025', title: 'Técnico de Soporte e Infraestructura IT', org: 'Music Store Campobasso · Prácticas Erasmus+', place: 'Campobasso, Italia', points: ['Atención al cliente y asistente de ventas.', 'Gestión de stock.', 'Mantenimiento de bases de datos.'], tags: ['Internacional', 'Ventas', 'Stock', 'Bases de datos'] },
+      { id: 'dam', kind: 'edu', period: '2025 – actualidad', title: 'Grado Superior en Desarrollo de Aplicaciones Multiplataforma (DAM)', org: 'CPIFP Alan Turing', place: 'Málaga', desc: 'Desarrollo, implementación y mantenimiento de aplicaciones multiplataforma, gestión de bases de datos y usabilidad.', tags: ['En curso'] },
+      { id: 'fixme', kind: 'work', period: 'Marzo – Junio 2026', title: 'Jefe de Automatizaciones · Adm. de BBDD · Programador', org: 'Fix Me Málaga · Prácticas FCT', place: 'Málaga', points: ['Diseño e implementación de automatizaciones para optimizar los procesos internos de la empresa.', 'Administración y gestión de la base de datos de clientes, reparaciones e inventario.', 'Desarrollo y mantenimiento de herramientas de software a medida para la tienda.'], tags: ['Automatizaciones', 'Bases de datos', 'Programación', 'Reparaciones'] },
+      { id: 'devops', kind: 'cert', period: '2026', title: 'Introducción Práctica a DevOps', org: 'LemonCode', tags: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'] },
+      { id: 'freelance', kind: 'work', period: 'Junio – Septiembre 2026', title: 'Desarrollador Web Freelance', org: 'Autónomo · Proyectos independientes', place: 'Málaga', points: ['Diseño y desarrollo íntegro de Kukelure, el sistema de gestión y reservas de un negocio de estética, que sustituyó el antiguo flujo manual por WhatsApp: reservas, contacto con clientes, backend, base de datos y servidor de correo propios.', 'Landing page de ProcesosBI, consultora de Business Intelligence: sitio estático sin frameworks, ligero y con animaciones propias vinculadas al scroll.', 'Gestión de cada proyecto de principio a fin para clientes reales: diseño, desarrollo, despliegue y mantenimiento en producción.'], tags: ['Next.js', 'Supabase', 'TypeScript', 'Freelance'] },
+    ] as Milestone[],
+    footer: 'Buscando nuevos retos para seguir creciendo en el desarrollo de software.',
+    visualLabel: 'Ilustración 3D en píxeles: un archipiélago con pilares que crecen a lo largo de una ruta; uno de ellos está en otra isla, Italia.',
+  },
+  contact: {
+    chapter: 'Conexión',
+    title1: 'Pongámonos',
+    title2: 'en contacto.',
+    subtitle: '¿Tienes un proyecto interesante, una oferta de prácticas o simplemente quieres charlar sobre tecnología? Estaré encantado de escucharte.',
+    channels: 'Canales directos',
+    email: 'Email',
+    phone: 'Teléfono',
+    whatsapp: 'WhatsApp',
+    location: 'Ubicación',
+    place: 'Málaga, España',
+    copy: 'Copiar',
+    copied: 'Copiado',
+    form: {
+      title: 'Escríbeme',
+      note: 'El formulario prepara el mensaje y lo abre en tu aplicación de correo; no se envía nada a ningún servidor.',
+      name: 'Nombre',
+      email: 'Tu email',
+      message: 'Mensaje',
+      placeholderName: 'Cómo te llamas',
+      placeholderEmail: 'tu@email.com',
+      placeholderMsg: '¿En qué puedo ayudarte?',
+      submit: 'Preparar mensaje',
+      opening: 'Abriendo tu correo…',
+      done: 'Tu aplicación de correo debería haberse abierto con el mensaje listo para enviar. Si no ha ocurrido, escríbeme directamente a',
+      again: 'Escribir otro mensaje',
+      errors: {
+        name: 'Escribe tu nombre (2–80 caracteres).',
+        email: 'Introduce un email válido.',
+        message: 'El mensaje debe tener entre 10 y 2000 caracteres.',
+        summary: 'Revisa los campos marcados.',
       },
-      form: {
-        name: 'Your Name',
-        email: 'Email',
-        message: 'Message',
-        placeholderName: 'Write here',
-        placeholderEmail: 'hello@example.com',
-        placeholderMsg: 'How can I help you?',
-        submit: 'Send Message',
-        sent: 'Opening mail client!'
-      }
+      subject: 'Contacto desde el portfolio',
+      greeting: 'Hola Juanma,',
+      signature: 'Mi email de contacto:',
     },
-    footer: {
-      role: 'IT Technician & Software Engineering Student.'
-    },
-    ai: {
-      label: 'Virtual Assistant',
-      status: 'Online',
-      maintenanceStatus: 'Out of Service',
-      maintenanceMsg: 'I apologize, I cannot process your request at this moment. Please try again later.',
-      placeholder: 'Ask about Juanma...',
-      placeholderMaintenance: 'Service unavailable...',
-      prompt: 'Powered by Gemini AI',
-      tooltip: 'Any questions? Ask me',
-      errorTitle: 'Service Status',
-      errorDesc: 'The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma\'s detailed background and projects while we restore connection.',
-      errorOffline: 'No active connection detected. Please verify your network to resume our chat, or continue discovering Juanma\'s portfolio at your own pace.',
-      greetings: [
-        "Hi! I'm Juanma's virtual assistant. How can I assist you today?",
-        "Hello! As Juanma's assistant, I can provide information about his projects or education. Shall we talk?",
-        "Hi there! I have access to Juanma's career path to answer any questions you might have."
-      ],
-    }
-  }
+    visualLabel: 'Ilustración 3D en píxeles: una antena de radio sobre una roca, con la parábola orientada hacia ti y ondas de señal saliendo de ella.',
+  },
+  footer: {
+    role: 'Técnico SMR · Estudiante de DAM · Desarrollador',
+    built: 'Escenas 3D en tiempo real con Three.js y un shader propio de paleta, tramado y glifos.',
+    ascii: 'Estética de glifos inspirada en ASCII Magic (MIT).',
+    terminal: 'Pulsa / para abrir la terminal',
+    top: 'Volver arriba',
+  },
+  fallback: 'Tu navegador no ha podido iniciar WebGL: el contenido completo sigue aquí, sin las escenas 3D.',
+  viewer: {
+    download: 'Descargar',
+    close: 'Cerrar',
+    openInNewTab: 'Abrir en nueva pestaña',
+    cvTitle: 'Currículum · Juan Manuel Fernández Rodríguez',
+  },
+  ai: {
+    label: 'Asistente Virtual',
+    status: 'En línea',
+    maintenanceStatus: 'Fuera de servicio',
+    maintenanceMsg: 'Lo siento, en este momento no puedo procesar tu solicitud. Por favor, inténtalo más tarde.',
+    placeholder: 'Pregunta sobre Juanma...',
+    placeholderMaintenance: 'Servicio no disponible...',
+    prompt: 'Potenciado por Gemini AI',
+    tooltip: '¿Alguna duda? Pregúntame',
+    errorTitle: 'Estado del servicio',
+    errorDesc: 'Actualmente, el asistente está experimentando una pausa técnica. Para garantizar la mejor experiencia, te invitamos a explorar la trayectoria detallada y proyectos de Juanma mientras restauramos la conexión.',
+    errorOffline: 'No se detecta conexión activa. Te animo a verificar tu red para retomar nuestra charla, o a seguir descubriendo el portfolio de Juanma a tu ritmo.',
+    greetings: [
+      '¡Hola! Soy el asistente virtual de Juanma. ¿En qué puedo ayudarte hoy?',
+      '¡Buenas! Como asistente de Juanma, puedo informarte sobre sus proyectos o formación. ¿Hablamos?',
+      '¡Hola! Tengo acceso a la trayectoria de Juanma para resolver cualquier duda que tengas. ¿Qué te gustaría saber?',
+    ],
+  },
 };
+
+type Dict = typeof es;
+
+const en: Dict = {
+  meta: {
+    skip: 'Skip to content',
+  },
+  nav: {
+    home: 'Identity',
+    about: 'Origin',
+    skills: 'The Stack',
+    projects: 'Build',
+    journey: 'Evolution',
+    contact: 'Connection',
+    cv: 'CV',
+    menu: 'Menu',
+    close: 'Close',
+    langLabel: 'Switch language to Spanish',
+    themeToDark: 'Switch to dark theme',
+    themeToLight: 'Switch to light theme',
+    terminal: 'Open terminal (/ key)',
+  },
+  preloader: {
+    lines: [
+      'JM-BIOS v2.6 · Juanma Fernández',
+      'Checking hardware ............... OK',
+      'Network link (CCNA) ............. OK',
+      'Mounting systems ................ OK',
+      'Compiling projects .............. OK',
+      'Entering the pixel dimension',
+    ],
+    skip: 'Skip intro',
+  },
+  hero: {
+    chapter: 'Identity',
+    place: 'Málaga, Spain',
+    hello: "Hi, I'm",
+    name1: 'Juanma',
+    name2: 'Fernández',
+    fullName: 'Juan Manuel Fernández Rodríguez',
+    role: 'Systems & networks technician turned **multiplatform developer**.',
+    lead: 'I combine the precision of systems with the creativity of software to solve real problems. First I understand how something is supported from below; then I build it.',
+    chips: ['DAM · CPIFP Alan Turing', 'Cisco CCNA', 'SMR · GPA 9.2'],
+    status: 'Open to internships',
+    ctaStory: 'Walk the story',
+    ctaProjects: 'See projects',
+    ctaCv: 'Résumé',
+    ctaContact: 'Contact',
+    scroll: 'Scroll to begin',
+    visualLabel: '3D pixel-art illustration: a fragment of motherboard with a processor engraved with the initials JM.',
+  },
+  about: {
+    chapter: 'Origin',
+    title1: 'A passion for',
+    title2: 'tinkering.',
+    paragraphs: [
+      "**Tinkering** is what I've loved for as long as I can remember. What started as opening computers out of curiosity is now the foundation of my **future career**.",
+      'After studying **SMR**, I realised development isn\'t just writing code: my curiosity drives me to always know what happens "under the hood". My time in **Italy** taught me to stay calm and find solutions with patience when technology refuses to cooperate.',
+      'Now, studying DAM, I\'m pouring that experience into learning how to build **solid, elegant software**. I don\'t just want it to compile: I\'m driven by the elegance of well-structured code and by understanding the why behind every line I write.',
+    ],
+    quote: 'To build something that lasts, you must first know how it is supported from below.',
+    specTitle: 'Spec sheet',
+    specs: [
+      { label: 'SMR GPA', value: '9.2', sub: 'Microcomputer Systems & Networks' },
+      { label: 'Mobility', value: 'Italy', sub: 'Erasmus+ · Campobasso' },
+      { label: 'Certification', value: 'CCNA', sub: 'Cisco Networking Academy' },
+    ],
+    visualLabel: '3D pixel-art illustration: an open desktop tower with spinning fans, its side panel floating beside it with the screws.',
+  },
+  skills: {
+    chapter: 'The Stack',
+    title1: 'Built',
+    title2: 'from the bottom up.',
+    intro: 'What I know is organised like a stack: each layer rests on the one below. No made-up percentages; each layer says where it comes from.',
+    hint: 'Hover or tap a layer to highlight it.',
+    evidenceLabel: 'Grounded in',
+    layers: [
+      { name: 'Hardware', items: ['Assembly', 'Maintenance', 'Diagnostics & troubleshooting', 'Hardware recovery'], evidence: 'SMR · repairs at Fix Me Málaga · recovered 2013 Mac Pro' },
+      { name: 'Networks', items: ['TCP/IP', 'Switching', 'Routing', 'VLAN', 'IPv6', 'Security'], evidence: 'Cisco CCNA: Introduction to Networks (2024)' },
+      { name: 'Systems', items: ['Linux', 'Ubuntu Server', 'Mail server', 'Automations'], evidence: 'OpenClaw Agent · Kukelure · Fix Me Málaga' },
+      { name: 'Data', items: ['SQL', 'Database administration', 'Supabase', 'MongoDB'], evidence: 'Fix Me Málaga · Kukelure · DevOps course' },
+      { name: 'Programming', items: ['Java', 'TypeScript', 'JavaScript', 'SQL'], evidence: 'DAM · Genetix · Genetix Arena' },
+      { name: 'Web', items: ['React', 'Next.js', 'Vite', 'Tailwind CSS', 'HTML5 / CSS3', 'GSAP', 'Three.js'], evidence: 'Kukelure · Glitch Night · Biznaga Consulting · this portfolio' },
+      { name: 'DevOps', items: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Vercel', 'Azure', 'AWS'], evidence: 'Practical Introduction to DevOps · LemonCode (2026)' },
+    ],
+    visualLabel: '3D illustration rendered with characters: seven stacked slabs, one per layer of knowledge.',
+  },
+  projects: {
+    chapter: 'Build',
+    title1: "What I've",
+    title2: 'built.',
+    intro: 'Each project has its own piece on the pedestal. Pick one to rebuild it.',
+    filters: { all: 'All', software: 'Software', systems: 'Systems' },
+    listLabel: 'Project list',
+    visit: 'Visit',
+    repo: 'Code',
+    course: 'View course',
+    post: 'View post',
+    role: 'My role',
+    stack: 'Stack',
+    prev: 'Previous project',
+    next: 'Next project',
+    github: 'More on GitHub',
+    items: [
+      { id: 'genetix', title: 'Genetix', kicker: 'Genetic algorithms', desc: 'Visual simulator of genetic algorithms built entirely in React and Java. It applies biological evolution concepts such as selection, crossover and mutation to solve complex optimisation problems.', role: 'Full development', tech: ['React', 'Java', 'Tailwind CSS'] },
+      { id: 'arena', title: 'Genetix Arena', kicker: 'Tactical simulation · emergent AI', desc: 'Autonomous tactical combat simulator with emergent AI. High-fidelity migration to TypeScript and React 19 with a SpaceX-inspired interface. Manages entities (Ops, Hostiles, Med-Units) on a 75×25 grid.', role: 'Development and TypeScript migration', tech: ['TypeScript', 'React 19', 'Vite', 'Tailwind CSS'] },
+      { id: 'infra', title: 'Infrastructure & Networks', kicker: 'Cisco CCNA', desc: 'Network configuration and routing protocols based on the Cisco CCNA certification. Implementation of security, switching and maintenance of communication infrastructures and systems.', tech: ['Cisco CCNA', 'Linux', 'Security', 'Hardware'] },
+      { id: 'glitch', title: 'Glitch Night', kicker: 'Official site · Málaga nightlife', desc: 'Official website for Glitch Night, a nightlife app for Málaga. SPA with a cyberpunk aesthetic, GSAP and ScrollTrigger animations, a QR entry system, and venue and event discovery.', role: 'Design and development', tech: ['HTML5', 'CSS3', 'JavaScript', 'GSAP'] },
+      { id: 'arcade', title: 'Fix Me Arcade', kicker: 'Landing · arcade machines', desc: "Official landing page for Fix Me Málaga's arcade machine service. An SPA with a retro-arcade aesthetic and neon palette, showcasing the machine catalogue, repair services and contact channels.", role: 'Design and deployment', tech: ['HTML5', 'CSS3', 'JavaScript', 'Vercel'] },
+      { id: 'openclaw', title: 'OpenClaw Agent', kicker: 'AI agent · rescued server', desc: 'Autonomous technical agent to diagnose and guide arcade machine repairs, governed by defined security directives and red lines. It runs on a 2013 Mac Pro with a failed logic board that I restored with Ubuntu Server: a machine rescued from the scrap heap, now an AI server.', role: 'Hardware recovery and agent deployment', tech: ['AI Agent', 'Ubuntu Server', 'Mac Pro 2013', 'Diagnostics'] },
+      { id: 'kukelure', title: 'Kukelure', kicker: 'Website + booking system', desc: 'Website and full management system for a beauty business, completely replacing two phones overwhelmed with WhatsApp. Bookings and client contact are now automated, with a custom backend, database and mail server configured end to end.', role: 'Full design and development · freelance', status: 'In production', tech: ['Next.js 15', 'Supabase', 'TypeScript', 'Tailwind CSS'] },
+      { id: 'procesosbi', title: 'ProcesosBI', kicker: 'Landing · BI consultancy', desc: 'Landing page for ProcesosBI, a Business Intelligence consultancy. A 100% static site with no frameworks or dependencies, featuring a scroll-driven animated SVG "light thread" and automatic deployment via GitHub Actions.', role: 'Development · freelance', status: 'In production', tech: ['HTML5', 'CSS3', 'JavaScript', 'GitHub Actions'] },
+      { id: 'biznaga', title: 'Biznaga Consulting', kicker: 'My own consultancy', desc: 'Website for my own consultancy. A prerendered static site with WebGPU 3D scenes (falling back to WebGL2), hand-synced scroll between the DOM and Three.js, and an animation layer built with GSAP and Lenis.', status: 'Under construction', tech: ['Next.js 16', 'React 19', 'TypeScript', 'Three.js / WebGPU'] },
+    ],
+    visualLabel: '3D pixel-art illustration of the piece representing the selected project, on a pedestal.',
+  },
+  journey: {
+    chapter: 'Evolution',
+    title1: 'A route that',
+    title2: 'keeps climbing.',
+    intro: 'Education, certifications and experience, in order. The packet in the illustration travels to the milestone you are reading.',
+    kinds: { edu: 'Education', cert: 'Certification', work: 'Experience' },
+    view: 'View certificate',
+    download: 'Download',
+    linkedin: 'LinkedIn post',
+    slides: 'Slides',
+    school: 'School website',
+    items: [
+      { id: 'smr', kind: 'edu', period: '2023 – 2025', title: 'Intermediate Degree in Microcomputer Systems and Networks (SMR)', org: 'CPIFP Alan Turing', place: 'Málaga', desc: 'Installation and configuration of equipment, maintenance of local networks and computer security, with a practical focus on troubleshooting and systems improvement.', tags: ['Final GPA: 9.2/10', 'Completed'] },
+      { id: 'ccna', kind: 'cert', period: '2024', title: 'CCNA: Introduction to Networks', org: 'Cisco Networking Academy', tags: ['TCP/IP', 'Switching', 'Routing', 'Security', 'VLAN', 'IPv6'] },
+      { id: 'erasmus', kind: 'work', period: 'March – June 2025', title: 'IT Support & Infrastructure Technician', org: 'Music Store Campobasso · Erasmus+ internship', place: 'Campobasso, Italy', points: ['Customer service and sales assistant.', 'Stock management.', 'Database maintenance.'], tags: ['International', 'Sales', 'Stock', 'Databases'] },
+      { id: 'dam', kind: 'edu', period: '2025 – present', title: 'Higher Degree in Multiplatform Application Development (DAM)', org: 'CPIFP Alan Turing', place: 'Málaga', desc: 'Development, implementation and maintenance of multiplatform applications, database management and usability.', tags: ['In progress'] },
+      { id: 'fixme', kind: 'work', period: 'March – June 2026', title: 'Head of Automations · DB Administrator · Programmer', org: 'Fix Me Málaga · FCT internship', place: 'Málaga', points: ["Designed and implemented automations to optimise the company's internal processes.", 'Administration and management of the customer, repair and inventory database.', 'Development and maintenance of custom software tools for the store.'], tags: ['Automations', 'Databases', 'Programming', 'Repairs'] },
+      { id: 'devops', kind: 'cert', period: '2026', title: 'Practical Introduction to DevOps', org: 'LemonCode', tags: ['Docker', 'Docker Compose', 'CI/CD', 'GitHub Actions', 'Azure', 'AWS', 'Vercel', 'MongoDB'] },
+      { id: 'freelance', kind: 'work', period: 'June – September 2026', title: 'Freelance Web Developer', org: 'Self-employed · Independent projects', place: 'Málaga', points: ['Designed and built Kukelure end to end, a booking and management system for a beauty business that replaced the old manual WhatsApp workflow: bookings, client communication, backend, database and its own mail server.', 'Built the landing page for ProcesosBI, a Business Intelligence consultancy, as a lightweight framework-free static site with custom scroll-driven animations.', 'Owned each project end to end for real clients: design, development, deployment and production maintenance.'], tags: ['Next.js', 'Supabase', 'TypeScript', 'Freelance'] },
+    ],
+    footer: 'Looking for new challenges to keep growing in software development.',
+    visualLabel: '3D pixel-art illustration: an archipelago with pillars that grow along a route; one of them stands on another island, Italy.',
+  },
+  contact: {
+    chapter: 'Connection',
+    title1: "Let's get",
+    title2: 'in touch.',
+    subtitle: 'Got an interesting project, an internship offer, or just want to chat about tech? I\'ll be happy to hear from you.',
+    channels: 'Direct channels',
+    email: 'Email',
+    phone: 'Phone',
+    whatsapp: 'WhatsApp',
+    location: 'Location',
+    place: 'Málaga, Spain',
+    copy: 'Copy',
+    copied: 'Copied',
+    form: {
+      title: 'Write to me',
+      note: 'The form prepares your message and opens it in your email app; nothing is sent to any server.',
+      name: 'Name',
+      email: 'Your email',
+      message: 'Message',
+      placeholderName: 'Your name',
+      placeholderEmail: 'you@email.com',
+      placeholderMsg: 'How can I help you?',
+      submit: 'Prepare message',
+      opening: 'Opening your email…',
+      done: 'Your email app should have opened with the message ready to send. If it did not, write to me directly at',
+      again: 'Write another message',
+      errors: {
+        name: 'Enter your name (2–80 characters).',
+        email: 'Enter a valid email.',
+        message: 'The message must be between 10 and 2000 characters.',
+        summary: 'Please check the highlighted fields.',
+      },
+      subject: 'Contact from the portfolio',
+      greeting: 'Hi Juanma,',
+      signature: 'My contact email:',
+    },
+    visualLabel: '3D pixel-art illustration: a radio mast on a rock, its dish turned toward you, sending out signal waves.',
+  },
+  footer: {
+    role: 'Systems Technician · DAM Student · Developer',
+    built: 'Real-time 3D scenes with Three.js and a custom palette, dithering and glyph shader.',
+    ascii: 'Glyph aesthetic inspired by ASCII Magic (MIT).',
+    terminal: 'Press / to open the terminal',
+    top: 'Back to top',
+  },
+  fallback: 'Your browser could not start WebGL: all the content is still here, without the 3D scenes.',
+  viewer: {
+    download: 'Download',
+    close: 'Close',
+    openInNewTab: 'Open in new tab',
+    cvTitle: 'Résumé · Juan Manuel Fernández Rodríguez',
+  },
+  ai: {
+    label: 'Virtual Assistant',
+    status: 'Online',
+    maintenanceStatus: 'Out of Service',
+    maintenanceMsg: 'I apologize, I cannot process your request at this moment. Please try again later.',
+    placeholder: 'Ask about Juanma...',
+    placeholderMaintenance: 'Service unavailable...',
+    prompt: 'Powered by Gemini AI',
+    tooltip: 'Any questions? Ask me',
+    errorTitle: 'Service Status',
+    errorDesc: "The assistant is currently experiencing a technical pause. To ensure the best experience, we invite you to explore Juanma's detailed background and projects while we restore connection.",
+    errorOffline: "No active connection detected. Please verify your network to resume our chat, or continue discovering Juanma's portfolio at your own pace.",
+    greetings: [
+      "Hi! I'm Juanma's virtual assistant. How can I assist you today?",
+      "Hello! As Juanma's assistant, I can provide information about his projects or education. Shall we talk?",
+      "Hi there! I have access to Juanma's career path to answer any questions you might have.",
+    ],
+  },
+};
+
+export const translations: Record<Lang, Dict> = { es, en };
+export type T = Dict;

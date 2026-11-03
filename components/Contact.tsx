@@ -1,147 +1,202 @@
-import React, { useState, memo } from 'react';
-import { translations } from '../translations';
-import Kinetic from './Kinetic';
+import React, { useRef, useState } from 'react';
+import type { T } from '../translations';
+import { CONTACT } from '../content';
+import { firePulse } from '../engine/bus';
+import { ChapterTag, Decode, ExternalLink, StageFallback, useReveal } from './ui';
+import { ART } from './fallbackArt';
 
-interface ContactProps { lang: 'es' | 'en'; }
+interface Props {
+  t: T['contact'];
+  onOpenCv: () => void;
+  cvLabel: string;
+}
 
-const Contact: React.FC<ContactProps> = ({ lang }) => {
-  const t = translations[lang].contact;
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [sent, setSent] = useState(false);
+type Field = 'name' | 'email' | 'message';
+const EMAIL_RE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"]{2,}$/;
+// Strip control characters (except newlines/tabs) before building the mailto URL.
+const clean = (s: string) => s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
+
+const Contact: React.FC<Props> = ({ t, onOpenCv, cvLabel }) => {
+  const ref = useReveal<HTMLElement>();
+  const f = t.form;
+  const [values, setValues] = useState<Record<Field, string>>({ name: '', email: '', message: '' });
+  const [errors, setErrors] = useState<Partial<Record<Field, string>>>({});
+  const [status, setStatus] = useState<'idle' | 'opening' | 'done'>('idle');
   const [copied, setCopied] = useState<string | null>(null);
+  const inputs = useRef<Partial<Record<Field, HTMLInputElement | HTMLTextAreaElement | null>>>({});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = lang === 'en'
-      ? `Portfolio Contact: ${formData.name}`
-      : `Contacto Portfolio: ${formData.name}`;
-    const body = lang === 'en'
-      ? `Hi Juanma,\n\nI'm ${formData.name} (${formData.email}).\n\n${formData.message}`
-      : `Hola Juanma,\n\nSoy ${formData.name} (${formData.email}).\n\n${formData.message}`;
-    const mailtoUrl = `mailto:juanmafr2007@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailtoUrl;
-    setSent(true);
-    setTimeout(() => { setSent(false); setFormData({ name: '', email: '', message: '' }); }, 3000);
+  const validate = (v: Record<Field, string>) => {
+    const e: Partial<Record<Field, string>> = {};
+    const name = clean(v.name), email = clean(v.email), msg = clean(v.message);
+    if (name.length < 2 || name.length > 80) e.name = f.errors.name;
+    if (!EMAIL_RE.test(email) || email.length > 254) e.email = f.errors.email;
+    if (msg.length < 10 || msg.length > 2000) e.message = f.errors.message;
+    return e;
   };
 
-  const copyToClipboard = (text: string, id: string) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const onChange = (k: Field) => (ev: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const next = { ...values, [k]: ev.target.value };
+    setValues(next);
+    if (errors[k]) setErrors((prev) => ({ ...prev, [k]: validate(next)[k] }));
+  };
+  const onBlur = (k: Field) => () => {
+    if (values[k]) setErrors((prev) => ({ ...prev, [k]: validate(values)[k] }));
+  };
+
+  const submit = (ev: React.FormEvent) => {
+    ev.preventDefault();
+    const e = validate(values);
+    setErrors(e);
+    const first = (['name', 'email', 'message'] as Field[]).find((k) => e[k]);
+    if (first) { inputs.current[first]?.focus(); return; }
+
+    const name = clean(values.name), email = clean(values.email), msg = clean(values.message);
+    const subject = `${f.subject} — ${name}`;
+    const body = `${f.greeting}\n\n${msg}\n\n— ${name}\n${f.signature} ${email}`;
+    setStatus('opening');
+    firePulse();
+    window.location.href = `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.setTimeout(() => setStatus('done'), 700);
+  };
+
+  const copy = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
       setCopied(id);
-      setTimeout(() => setCopied(null), 2000);
-    }).catch(() => {
-      // Clipboard API unavailable — silently ignore
-    });
+    } catch {
+      setCopied(`fail-${id}`);
+    }
+    window.setTimeout(() => setCopied(null), 1800);
   };
+
+  const copyBtn = (text: string, id: string, label: string) => (
+    <button type="button" onClick={() => copy(text, id)} className="icon-btn !w-10 !h-10 shrink-0" aria-label={`${t.copy}: ${label}`}>
+      <i className={`fa-solid ${copied === id ? 'fa-check' : copied === `fail-${id}` ? 'fa-xmark' : 'fa-copy'}`} aria-hidden="true" />
+    </button>
+  );
+
+  const errCount = Object.values(errors).filter(Boolean).length;
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="text-center mb-10 md:mb-20">
-        {(() => {
-          const words = t.title.split(' ');
-          const titleStart = words.slice(0, -1).join(' ') + ' ';
-          const titleEnd = words[words.length - 1];
-          return (
-            <h2 className="text-5xl md:text-7xl font-display font-black mb-6 tracking-tighter text-neutral-900 dark:text-white">
-              <Kinetic text={titleStart.trim()} /> <span className="gradient-text k-late">{titleEnd}</span>
-            </h2>
-          );
-        })()}
-        <p className="text-neutral-600 dark:text-neutral-400 text-xl max-w-2xl mx-auto font-light leading-relaxed">{t.subtitle}</p>
-      </div>
+    <section ref={ref} id="contact" data-chapter="contact" aria-labelledby="contact-title" className="chapter pt-20 lg:pt-32 pb-16">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 grid lg:grid-cols-12 gap-10 lg:gap-10">
+        <div className="lg:col-span-5">
+          <ChapterTag n={6} label={t.chapter} />
+          <h2 id="contact-title" className="display mt-6 text-[clamp(2.6rem,6vw,5rem)] text-ink">
+            <span className="block reveal">{t.title1}</span>
+            <Decode text={t.title2} className="block text-accentText reveal" />
+          </h2>
+          <p className="mt-6 text-lg text-ink2 leading-relaxed max-w-[48ch] reveal">{t.subtitle}</p>
 
-      <div className="grid lg:grid-cols-5 gap-8 items-stretch">
-        {/* Info Card */}
-        <div className="lg:col-span-2">
-          <div className="glass-card p-5 sm:p-8 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] border border-black/10 dark:border-white/10 h-full flex flex-col bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
-            <h3 className="text-2xl font-bold mb-10 text-neutral-900 dark:text-white">{t.infoTitle}</h3>
-            <div className="space-y-8 flex-1 flex flex-col justify-center">
-              <div className="group flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500">{t.labels.email}</span>
-                <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 group-hover:border-blue-600/30 dark:group-hover:border-blue-500/30 transition-all">
-                  <span className="text-neutral-700 dark:text-neutral-300 font-medium truncate text-sm">juanmafr2007@gmail.com</span>
-                  <button 
-                    onClick={() => copyToClipboard('juanmafr2007@gmail.com', 'email')}
-                    className="text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
-                  >
-                    <i className={`fa-solid ${copied === 'email' ? 'fa-check text-emerald-600' : 'fa-copy'}`}></i>
-                  </button>
-                </div>
+          <h3 className="eyebrow mt-10 mb-3 reveal">{t.channels}</h3>
+          <ul className="border-t border-lineStrong reveal">
+            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
+              <i className="fa-solid fa-envelope w-5 text-accentText" aria-hidden="true" />
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.email}</p>
+                <a href={`mailto:${CONTACT.email}`} className="text-ink break-all link-u">{CONTACT.email}</a>
               </div>
-
-              <div className="group flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500">{t.labels.phone}</span>
-                <div className="flex items-center justify-between gap-4 p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5 group-hover:border-blue-600/30 dark:group-hover:border-blue-500/30 transition-all">
-                  <span className="text-neutral-700 dark:text-neutral-300 font-medium text-sm">(+34) 643 71 80 54</span>
-                  <button 
-                    onClick={() => copyToClipboard('643718054', 'tel')}
-                    className="text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shrink-0"
-                  >
-                    <i className={`fa-solid ${copied === 'tel' ? 'fa-check text-emerald-600' : 'fa-copy'}`}></i>
-                  </button>
-                </div>
+              {copyBtn(CONTACT.email, 'email', t.email)}
+            </li>
+            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
+              <i className="fa-solid fa-phone w-5 text-accentText" aria-hidden="true" />
+              <div className="min-w-0 flex-1">
+                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.phone}</p>
+                <a href={CONTACT.phoneHref} className="text-ink link-u">{CONTACT.phoneDisplay}</a>
               </div>
-
-              <div className="group flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500">{t.labels.location}</span>
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                  <i className="fa-solid fa-location-dot text-blue-600 dark:text-blue-500"></i>
-                  <span className="text-neutral-700 dark:text-neutral-300 font-medium text-sm">{t.location}</span>
-                </div>
+              <ExternalLink href={CONTACT.whatsapp} className="icon-btn !w-10 !h-10" aria-label={t.whatsapp}>
+                <i className="fa-brands fa-whatsapp" aria-hidden="true" />
+              </ExternalLink>
+              {copyBtn('+34643718054', 'tel', t.phone)}
+            </li>
+            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
+              <i className="fa-solid fa-location-dot w-5 text-accentText" aria-hidden="true" />
+              <div className="flex-1">
+                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.location}</p>
+                <p className="text-ink">{t.place}</p>
               </div>
-            </div>
+            </li>
+          </ul>
+          <div className="mt-6 flex flex-wrap gap-2 reveal">
+            <ExternalLink href={CONTACT.linkedin} className="btn"><i className="fa-brands fa-linkedin-in" aria-hidden="true" />LinkedIn</ExternalLink>
+            <ExternalLink href={CONTACT.github} className="btn"><i className="fa-brands fa-github" aria-hidden="true" />GitHub</ExternalLink>
+            <button type="button" onClick={onOpenCv} className="btn btn-ghost"><i className="fa-solid fa-file-lines" aria-hidden="true" />{cvLabel}</button>
           </div>
         </div>
 
-        {/* Form Card */}
-        <div className="lg:col-span-3">
-          <form onSubmit={handleSubmit} className="glass-card p-5 sm:p-8 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] h-full flex flex-col space-y-6 sm:space-y-8 border border-black/10 dark:border-white/10 bg-gradient-to-br from-black/[0.01] dark:from-white/[0.03] to-transparent shadow-sm dark:shadow-none">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <label htmlFor="contact-name" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.name}</label>
-                <input
-                  id="contact-name"
-                  type="text" required value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder={t.form.placeholderName}
-                  maxLength={100}
-                  className="w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
-                />
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          <div data-stage role="img" aria-label={t.visualLabel} className="stage h-[40svh] min-h-[260px] lg:h-[54vh] order-first lg:order-none">
+            <StageFallback art={ART.contact} />
+          </div>
+
+          <div className="panel px-frame p-5 sm:p-8 reveal">
+            <h3 className="font-display text-2xl font-semibold text-ink">{f.title}</h3>
+            <p className="mt-1 text-sm text-muted">{f.note}</p>
+
+            {status === 'done' ? (
+              <div className="mt-6" role="status">
+                <p className="text-ink2 leading-relaxed">
+                  <i className="fa-solid fa-paper-plane text-accentText mr-2" aria-hidden="true" />
+                  {f.done} <a href={`mailto:${CONTACT.email}`} className="text-ink link-u">{CONTACT.email}</a>.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button type="button" className="btn" onClick={() => copy(CONTACT.email, 'email2')}>
+                    <i className={`fa-solid ${copied === 'email2' ? 'fa-check' : 'fa-copy'}`} aria-hidden="true" />
+                    {copied === 'email2' ? t.copied : t.copy}
+                  </button>
+                  <button type="button" className="btn btn-ghost" onClick={() => { setStatus('idle'); setValues({ name: '', email: '', message: '' }); }}>
+                    {f.again}
+                  </button>
+                </div>
               </div>
-              <div className="space-y-3">
-                <label htmlFor="contact-email" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.email}</label>
-                <input
-                  id="contact-email"
-                  type="email" required value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  placeholder={t.form.placeholderEmail}
-                  maxLength={200}
-                  className="w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700"
-                />
-              </div>
-            </div>
-            <div className="space-y-3 flex-1 flex flex-col">
-              <label htmlFor="contact-message" className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest ml-1">{t.form.message}</label>
-              <textarea
-                id="contact-message"
-                required value={formData.message}
-                onChange={(e) => setFormData({...formData, message: e.target.value})}
-                placeholder={t.form.placeholderMsg}
-                maxLength={5000}
-                className="flex-1 w-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 rounded-2xl px-5 py-4 text-neutral-900 dark:text-white focus:outline-none focus:border-blue-600/50 dark:focus:border-blue-500/50 resize-none transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-700 min-h-[150px]"
-              ></textarea>
-            </div>
-            <button 
-              type="submit" disabled={sent}
-              className={`cursor-hide group w-full py-5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all active:scale-[0.98] flex items-center justify-center gap-3 ${sent ? 'bg-emerald-600 text-white shadow-emerald-500/20 shadow-xl' : 'bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-blue-600 dark:hover:bg-blue-600 hover:text-white shadow-xl shadow-black/10 dark:shadow-white/5'}`}
-            >
-              {sent ? <i className="fa-solid fa-check"></i> : <i className="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>}
-              {sent ? t.form.sent : t.form.submit}
-            </button>
-          </form>
+            ) : (
+              <form className="mt-6 grid gap-5" onSubmit={submit} noValidate>
+                <p className="sr-only" aria-live="assertive">{errCount ? f.errors.summary : ''}</p>
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="cf-name" className="block font-mono text-[11px] uppercase tracking-wider text-ink2 mb-2">{f.name}</label>
+                    <input
+                      id="cf-name" ref={(el) => { inputs.current.name = el; }} type="text" autoComplete="name" maxLength={80}
+                      value={values.name} onChange={onChange('name')} onBlur={onBlur('name')} placeholder={f.placeholderName}
+                      aria-invalid={!!errors.name} aria-describedby={errors.name ? 'cf-name-err' : undefined} className="field" required
+                    />
+                    {errors.name && <p id="cf-name-err" className="mt-1.5 text-sm text-coral">{errors.name}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="cf-email" className="block font-mono text-[11px] uppercase tracking-wider text-ink2 mb-2">{f.email}</label>
+                    <input
+                      id="cf-email" ref={(el) => { inputs.current.email = el; }} type="email" autoComplete="email" inputMode="email" maxLength={254}
+                      value={values.email} onChange={onChange('email')} onBlur={onBlur('email')} placeholder={f.placeholderEmail}
+                      aria-invalid={!!errors.email} aria-describedby={errors.email ? 'cf-email-err' : undefined} className="field" required
+                    />
+                    {errors.email && <p id="cf-email-err" className="mt-1.5 text-sm text-coral">{errors.email}</p>}
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between items-baseline mb-2">
+                    <label htmlFor="cf-msg" className="block font-mono text-[11px] uppercase tracking-wider text-ink2">{f.message}</label>
+                    <span className="font-mono text-[11px] text-muted tabular-nums" aria-hidden="true">{values.message.length}/2000</span>
+                  </div>
+                  <textarea
+                    id="cf-msg" ref={(el) => { inputs.current.message = el; }} rows={5} maxLength={2000}
+                    value={values.message} onChange={onChange('message')} onBlur={onBlur('message')} placeholder={f.placeholderMsg}
+                    aria-invalid={!!errors.message} aria-describedby={errors.message ? 'cf-msg-err' : undefined} className="field resize-y min-h-[140px]" required
+                  />
+                  {errors.message && <p id="cf-msg-err" className="mt-1.5 text-sm text-coral">{errors.message}</p>}
+                </div>
+                <div>
+                  <button type="submit" className="btn btn-primary" disabled={status === 'opening'}>
+                    {status === 'opening' ? f.opening : f.submit}
+                    <i className={`fa-solid ${status === 'opening' ? 'fa-spinner fa-spin' : 'fa-paper-plane'}`} aria-hidden="true" />
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default memo(Contact);
+export default Contact;
