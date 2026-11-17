@@ -19,32 +19,32 @@ export type ProjectId =
   | 'biznaga';
 
 export interface Bus {
-  theme: 'dark' | 'light';
   /** Skill layer hovered/focused in the Stack chapter (-1 = none). */
   activeLayer: number;
   activeProject: ProjectId;
-  /** Index of the milestone currently in view in the Journey chapter. */
+  /** Journey: index of the milestone in view, oldest first. */
   activeMilestone: number;
-  /** performance.now() of the last "signal" (project switch, message sent…). */
-  pulse: number;
   /** Set once the preloader is gone, so the world can "resolve" into view. */
   introAt: number;
   /** Normalised pointer position, -1..1 (0,0 = centre). */
   px: number;
   py: number;
+  /** The lens: pointer in CSS px, whether it is shown, and when it last moved. */
+  lx: number;
+  ly: number;
+  lens: 'off' | 'hover' | 'tap';
+  lensAt: number;
 }
 
 export const bus: Bus = {
-  theme: 'dark',
   activeLayer: -1,
   activeProject: 'genetix',
   activeMilestone: 0,
-  pulse: 0,
   introAt: 0,
   px: 0,
   py: 0,
-};
-
-export const firePulse = () => {
-  bus.pulse = performance.now();
+  lx: -9999,
+  ly: -9999,
+  lens: 'off',
+  lensAt: 0,
 };

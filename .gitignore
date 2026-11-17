@@ -1,30 +1,24 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
+# Dependencies and build output
 node_modules
 dist
-dist-ssr
-*.local
+
+# Generated from node_modules/ascii-magic-art (scripts/copy-ascii-magic.mjs)
+public/ascii-magic-art
 
 # Environment variables — never commit secrets
 .env
-.env.local
-.env.production
-.env.production.local
+.env.*
+!.env.example
 
-# Editor directories and files
+# Vercel
+.vercel
+
+# Logs
+*.log
+
+# Editors and OS
 .vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?

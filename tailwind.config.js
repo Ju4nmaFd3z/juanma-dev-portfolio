@@ -8,15 +8,14 @@ export default {
     './App.tsx',
     './components/**/*.{ts,tsx}',
     './translations.ts',
+    './content.ts',
   ],
-  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Space Grotesk', 'sans-serif'],
-        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
-        pixel: ['Silkscreen', 'monospace'],
+        sans: ['Geist', 'system-ui', 'sans-serif'],
+        display: ['"Instrument Serif"', 'Georgia', 'serif'],
+        mono: ['"Geist Mono"', 'ui-monospace', 'Menlo', 'monospace'],
       },
       colors: {
         bg: 'var(--bg)',
@@ -29,10 +28,9 @@ export default {
         accent: 'var(--accent)',
         accentText: 'var(--accent-text)',
         onAccent: 'var(--on-accent)',
-        teal: 'var(--teal)',
-        mint: 'var(--mint)',
-        coral: 'var(--coral)',
-        berry: 'var(--berry)',
+        sea: 'var(--sea)',
+        gold: 'var(--gold)',
+        rose: 'var(--rose)',
         panel: 'var(--panel)',
       },
     },

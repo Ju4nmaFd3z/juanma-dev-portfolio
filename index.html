@@ -4,17 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <script>
-      // Theme + JS flags before first paint (no flash of the wrong theme,
-      // and reveal animations only hide content when JS is running).
+      // JS flag before first paint: reveal animations only hide content when JS runs.
       (function () {
         var d = document.documentElement;
         d.classList.add('js');
-        var t = null;
-        try { t = localStorage.getItem('theme'); } catch (e) {}
-        if (t !== 'dark' && t !== 'light') {
-          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        }
-        if (t === 'dark') d.classList.add('dark');
         if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) d.style.scrollBehavior = 'smooth';
       })();
     </script>
@@ -29,10 +22,11 @@
     <meta property="og:site_name" content="Juanma Fernández" />
     <meta property="og:title" content="Juanma Fernández · Sistemas, redes y software" />
     <meta property="og:description" content="Técnico SMR, certificado Cisco CCNA y estudiante de DAM. Un portfolio construido desde abajo: hardware, redes, sistemas y código." />
-    <meta property="og:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
+    <meta property="og:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Juanma Fernández — Software Developer & Systems Tech" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content="Juanma Fernández, desarrollador multiplataforma con base en sistemas y redes, sobre una pagoda al atardecer impresa en semitono." />
     <meta property="og:locale" content="es_ES" />
     <meta property="og:locale:alternate" content="en_GB" />
 
@@ -40,10 +34,12 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Juanma Fernández · Sistemas, redes y software" />
     <meta name="twitter:description" content="Técnico SMR, certificado Cisco CCNA y estudiante de DAM. Hardware, redes, sistemas y código." />
-    <meta name="twitter:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.png" />
+    <meta name="twitter:image" content="https://juanma-dev-portfolio.vercel.app/images/og-image.jpg" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#07080f" id="theme-meta" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0b0a0d" />
+    <meta name="color-scheme" content="dark" />
 
     <script type="application/ld+json">
       {
@@ -62,7 +58,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Silkscreen&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body class="font-sans">

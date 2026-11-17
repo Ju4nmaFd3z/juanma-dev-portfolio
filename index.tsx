@@ -1,44 +1,43 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
+/** Last line of defence: if rendering throws, offer a reload instead of a blank page. */
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
   static getDerivedStateFromError() {
-    return { hasError: true };
+    return { failed: true };
   }
+
+  componentDidCatch(error: unknown) {
+    console.error('[app] render failed', error);
+  }
+
   render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#050505', color: '#a1a1aa', fontFamily: 'sans-serif', textAlign: 'center', padding: '2rem' }}>
-          <div>
-            <p style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Algo ha ido mal.</p>
-            <button onClick={() => window.location.reload()} style={{ padding: '0.5rem 1.5rem', background: '#fff', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-              Recargar página
-            </button>
-          </div>
+    if (!this.state.failed) return this.props.children;
+    const es = document.documentElement.lang !== 'en';
+    return (
+      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#0b0a0d', color: '#d2c9bb', fontFamily: 'Geist, system-ui, sans-serif', textAlign: 'center', padding: '2rem' }}>
+        <div>
+          <p style={{ fontSize: '1.1rem', marginBottom: '1.25rem' }}>{es ? 'Algo ha ido mal al cargar la página.' : 'Something went wrong loading the page.'}</p>
+          <button type="button" onClick={() => window.location.reload()} style={{ padding: '0.7rem 1.5rem', background: '#ff8a3a', color: '#120a05', border: 0, borderRadius: 999, cursor: 'pointer', fontWeight: 600 }}>
+            {es ? 'Recargar' : 'Reload'}
+          </button>
         </div>
-      );
-    }
-    return this.props.children;
+      </div>
+    );
   }
 }
 
-const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error('Could not find root element to mount to');
+const root = document.getElementById('root');
+if (!root) throw new Error('Missing #root element');
 
-ReactDOM.createRoot(rootElement).render(
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

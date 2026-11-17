@@ -1,26 +1,7 @@
-// Tiny text illustrations shown in each stage when WebGL is unavailable,
-// so the layout keeps its composition and the visual language survives.
+// Tiny text illustrations for the 3D stages when WebGL is unavailable (the
+// flat plates fall back to ASCII Magic's own player instead).
 
 export const ART = {
-  hero: [
-    '┌──┬──┬──┬──┬──┐',
-    '│  ┌─────────┐ │',
-    '├──┤ ▓▓▓ ▓ ▓ ├──┤',
-    '│  │  ▓ ▓▓▓▓ │  │',
-    '├──┤▓ ▓ ▓ ▓ ▓├──┤',
-    '│  │ ▓  ▓   ▓│  │',
-    '│  └─────────┘  │',
-    '└──┴──┴──┴──┴──┘',
-  ].join('\n'),
-  about: [
-    '┌─────────┐',
-    '│ ▒▒▒  ◎  │',
-    '│ ▒▒▒ ║║║ │',
-    '│ ███████ │',
-    '│ ◎   ◎   │',
-    '│ ▓▓▓▓▓▓  │',
-    '└─────────┘',
-  ].join('\n'),
   skills: [
     '   ▁▂▃▄▅▆▇█▇▆▅▄▃▂▁   ',
     '  ░░░░░ DEVOPS ░░░░░  ',
@@ -39,18 +20,10 @@ export const ART = {
     '  ▀▀▀▀▀▀▀▀▀▀▀▀▀  ',
   ].join('\n'),
   journey: [
-    '            ▲ ',
-    '        ▲   █ ',
-    '   ▲    █ ··█ ',
-    '▲  █ ·· █   █ ',
-    '█··█    █   █ ',
-    '≈≈≈≈≈≈≈≈≈≈≈≈≈≈',
-  ].join('\n'),
-  contact: [
-    '   ((( ◖ )))  ',
-    '      ╱╲      ',
-    '     ╱╳╳╲     ',
-    '    ╱╳╳╳╳╲    ',
-    '   ▄▄▄▄▄▄▄▄   ',
+    '                 ▄▄▄ ',
+    '            ▄▄▄  █ █ ',
+    '       ▄▄▄  █ █  █ █ ',
+    '  ▄▄▄  █ █  █ █  █ █ ',
+    '  █ █  █ █  █ █  █ █ ',
   ].join('\n'),
 };

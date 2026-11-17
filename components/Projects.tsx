@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { T } from '../translations';
 import { PROJECTS, CONTACT } from '../content';
-import { bus, firePulse, type ProjectId } from '../engine/bus';
-import { ChapterTag, Decode, ExternalLink, StageFallback, useReveal } from './ui';
+import { bus, type ProjectId } from '../engine/bus';
+import { ExternalLink, Rise, StageFallback, useReveal } from './ui';
 import { ART } from './fallbackArt';
 
 type Filter = 'all' | 'software' | 'systems';
@@ -12,6 +12,18 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
   const [filter, setFilter] = useState<Filter>('all');
   const [active, setActive] = useState<ProjectId>('genetix');
   const tabs = useRef<Map<ProjectId, HTMLButtonElement>>(new Map());
+
+  // the assistant can point at a project: "portfolio:project" selects it
+  useEffect(() => {
+    const onPick = (e: Event) => {
+      const id = (e as CustomEvent<ProjectId>).detail;
+      if (!PROJECTS.some((p) => p.id === id)) return;
+      setFilter('all');
+      setActive(id);
+    };
+    window.addEventListener('portfolio:project', onPick);
+    return () => window.removeEventListener('portfolio:project', onPick);
+  }, []);
 
   const list = useMemo(
     () => PROJECTS.filter((p) => filter === 'all' || p.category === filter).map((m) => ({ meta: m, text: t.items.find((i) => i.id === m.id)! })),
@@ -24,10 +36,7 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
   };
 
   useEffect(() => {
-    if (bus.activeProject !== active) {
-      bus.activeProject = active;
-      firePulse();
-    }
+    bus.activeProject = active;
   }, [active]);
 
   useEffect(() => {
@@ -48,24 +57,21 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
   const accent = `var(--${cur.meta.accent})`;
 
   return (
-    <section ref={ref} id="projects" data-chapter="projects" aria-labelledby="projects-title" className="chapter py-20 lg:py-32">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 grid lg:grid-cols-12 gap-8 lg:gap-10">
+    <section ref={ref} id="projects" data-chapter="projects" aria-labelledby="projects-title" className="chapter py-24 lg:py-32">
+      <div className="max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 grid lg:grid-cols-12 gap-x-10 gap-y-10">
         <div className="lg:col-span-5 min-w-0">
-          <ChapterTag n={4} label={t.chapter} />
-          <h2 id="projects-title" className="display mt-6 text-[clamp(2.6rem,6vw,5rem)] text-ink">
-            <span className="block reveal">{t.title1}</span>
-            <Decode text={t.title2} className="block text-accentText reveal" />
+          <h2 id="projects-title" className="display text-[clamp(3.6rem,8.6vw,9rem)] text-ink">
+            <Rise text={t.title1} />
+            <Rise text={t.title2} delay={100} />
           </h2>
-          <p className="mt-6 text-lg text-ink2 leading-relaxed max-w-[48ch] reveal">{t.intro}</p>
-
-          <div className="mt-8 flex gap-2 reveal" role="group" aria-label="Filtro">
+          <div className="mt-10 flex gap-2 reveal" role="group" aria-label={t.listLabel}>
             {(['all', 'software', 'systems'] as Filter[]).map((f) => (
               <button
                 key={f}
                 type="button"
                 aria-pressed={filter === f}
                 onClick={() => setFilter(f)}
-                className={`px-3 py-2 min-h-[40px] font-mono text-[12px] uppercase tracking-[0.08em] border transition-colors ${filter === f ? 'bg-ink text-bg border-ink' : 'border-lineStrong text-ink2 hover:border-ink'}`}
+                className={`btn btn-sm ${filter === f ? 'btn-solid' : ''}`}
               >
                 {t.filters[f]}
               </button>
@@ -77,7 +83,7 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
             aria-label={t.listLabel}
             aria-orientation="vertical"
             onKeyDown={onKey}
-            className="mt-6 flex lg:flex-col gap-2 lg:gap-0 overflow-x-auto no-scrollbar -mx-4 px-4 lg:mx-0 lg:px-0 lg:border-t border-lineStrong snap-x"
+            className="mt-8 flex lg:flex-col gap-2 lg:gap-0 overflow-x-auto no-scrollbar -mx-5 px-5 lg:mx-0 lg:px-0 lg:border-t border-lineStrong snap-x"
           >
             {list.map(({ meta, text }) => {
               const n = PROJECTS.findIndex((p) => p.id === meta.id) + 1;
@@ -92,25 +98,24 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
                   aria-controls="project-panel"
                   tabIndex={on ? 0 : -1}
                   onClick={() => select(meta.id)}
-                  className={`group shrink-0 snap-start text-left flex items-center gap-3 px-3 py-3 lg:py-3.5 border lg:border-0 lg:border-b transition-colors ${on ? 'bg-panel border-ink lg:border-lineStrong' : 'border-lineStrong hover:bg-panel'}`}
+                  className={`group shrink-0 snap-start text-left flex items-baseline gap-4 px-4 py-2.5 lg:px-0 lg:py-4 rounded-full lg:rounded-none border lg:border-0 lg:border-b border-line transition-colors ${on ? 'bg-ink text-bg lg:bg-transparent lg:text-ink border-ink' : 'hover:border-lineStrong'}`}
                 >
-                  <span className={`font-pixel text-[11px] ${on ? 'text-accentText' : 'text-muted'}`}>{String(n).padStart(2, '0')}</span>
-                  <span className={`font-display text-base lg:text-xl font-semibold whitespace-nowrap ${on ? 'text-ink' : 'text-ink2 group-hover:text-ink'}`}>{text.title}</span>
-                  <span className="hidden lg:block ml-auto font-mono text-[11px] uppercase tracking-wider text-muted">{t.filters[meta.category]}</span>
-                  <span className={`hidden lg:block w-2 h-2 ${on ? 'bg-accent' : 'bg-transparent'}`} aria-hidden="true" />
+                  <span className={`label hidden lg:inline ${on ? '!text-accentText' : ''}`}>{String(n).padStart(2, '0')}</span>
+                  <span className={`display text-[1.35rem] lg:text-[2.3rem] leading-none whitespace-nowrap transition-[color,transform] duration-500 ${on ? 'lg:text-accentText lg:italic lg:translate-x-2' : 'lg:text-ink2 group-hover:lg:text-ink'}`}>{text.title}</span>
+                  <span className="hidden lg:block ml-auto label">{t.filters[meta.category]}</span>
                 </button>
               );
             })}
           </div>
 
-          <ExternalLink href={CONTACT.github} className="mt-6 inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.08em] text-ink2 link-u px-0.5">
-            <i className="fa-brands fa-github" aria-hidden="true" /> {t.github}
+          <ExternalLink href={CONTACT.github} className="mt-8 inline-flex items-center gap-2 label label-ink ulink">
+            <i className="fa-brands fa-github" aria-hidden="true" /> {t.github} ↗
           </ExternalLink>
         </div>
 
         <div className="lg:col-span-7 min-w-0">
-          <div className="lg:sticky lg:top-[9vh] flex flex-col gap-4 lg:h-[84vh]">
-            <div data-stage role="img" aria-label={`${t.visualLabel} ${cur.text.title}.`} className="stage flex-1 min-h-[38svh] lg:min-h-0">
+          <div className="lg:sticky lg:top-20 flex flex-col gap-4 lg:h-[calc(100svh-6.5rem)]">
+            <div data-stage role="img" aria-label={`${t.visualLabel} ${cur.text.title}.`} className="stage flex-1 min-h-[44svh] lg:min-h-0">
               <StageFallback art={ART.projects} />
             </div>
 
@@ -119,46 +124,37 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
               role="tabpanel"
               aria-labelledby={`tab-${cur.meta.id}`}
               aria-live="polite"
-              className="panel px-frame p-5 sm:p-7 relative"
-              style={{ boxShadow: `inset 4px 0 0 ${accent}` }}
+              className="panel rounded-2xl p-5 sm:p-7 relative"
             >
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <span className="font-mono text-[11px] uppercase tracking-[0.12em]" style={{ color: accent }}>{cur.text.kicker}</span>
-                {cur.text.status && <span className="chip !py-0.5 !text-[0.68rem] !text-ink"><span className="live-dot !w-1.5 !h-1.5" aria-hidden="true" />{cur.text.status}</span>}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <span className="label" style={{ color: accent }}>{cur.text.kicker}</span>
+                {cur.text.status && <span className="tag !text-ink"><span className="live-dot !w-1.5 !h-1.5" aria-hidden="true" />{cur.text.status}</span>}
+                <span className="ml-auto label" aria-hidden="true">{String(idx + 1).padStart(2, '0')} / {String(list.length).padStart(2, '0')}</span>
               </div>
-              <h3 className="mt-2 display text-3xl sm:text-4xl text-ink">{cur.text.title}</h3>
-              <p className="mt-3 text-[0.98rem] leading-relaxed text-ink2">{cur.text.desc}</p>
+              <h3 className="mt-3 display text-[2.6rem] sm:text-[3.4rem] text-ink">{cur.text.title}</h3>
+              {cur.text.role && <p className="mt-1 text-sm text-muted">{cur.text.role}</p>}
+              <p className="mt-3 text-[0.98rem] leading-relaxed text-ink2 max-w-[68ch]">{cur.text.desc}</p>
+              <ul className="mt-5 flex flex-wrap gap-1.5" aria-label="Stack">
+                {cur.text.tech.map((x) => <li key={x} className="tag">{x}</li>)}
+              </ul>
 
-              <dl className="mt-4 grid sm:grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-                {cur.text.role && (
-                  <>
-                    <dt className="font-mono text-[11px] uppercase tracking-wider text-muted pt-1">{t.role}</dt>
-                    <dd className="text-ink">{cur.text.role}</dd>
-                  </>
-                )}
-                <dt className="font-mono text-[11px] uppercase tracking-wider text-muted pt-1">{t.stack}</dt>
-                <dd className="flex flex-wrap gap-1.5">
-                  {cur.text.tech.map((x) => <span key={x} className="chip !py-0.5 !text-[0.7rem]">{x}</span>)}
-                </dd>
-              </dl>
-
-              <div className="mt-5 flex flex-wrap items-center gap-2">
+              <div className="mt-6 flex flex-wrap items-center gap-2">
                 {cur.meta.live && (
-                  <ExternalLink href={cur.meta.live} className="btn btn-primary !min-h-[42px] !py-2">
-                    {t.visit} <i className="fa-solid fa-arrow-up-right-from-square text-[11px]" aria-hidden="true" />
+                  <ExternalLink href={cur.meta.live} className="btn btn-solid btn-sm">
+                    {t.visit} <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true" />
                     <span className="sr-only">: {cur.text.title}</span>
                   </ExternalLink>
                 )}
                 {cur.meta.repo && (
-                  <ExternalLink href={cur.meta.repo} className="btn !min-h-[42px] !py-2">
+                  <ExternalLink href={cur.meta.repo} className="btn btn-sm">
                     <i className="fa-brands fa-github" aria-hidden="true" /> {t.repo}
                     <span className="sr-only">: {cur.text.title}</span>
                   </ExternalLink>
                 )}
                 {cur.meta.other && (
-                  <ExternalLink href={cur.meta.other.url} className="btn !min-h-[42px] !py-2">
+                  <ExternalLink href={cur.meta.other.url} className="btn btn-sm">
                     {cur.meta.other.kind === 'course' ? t.course : t.post}
-                    <i className="fa-solid fa-arrow-up-right-from-square text-[11px]" aria-hidden="true" />
+                    <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" aria-hidden="true" />
                   </ExternalLink>
                 )}
                 <div className="ml-auto flex gap-2">
@@ -166,9 +162,6 @@ const Projects: React.FC<{ t: T['projects'] }> = ({ t }) => {
                   <button type="button" className="icon-btn" onClick={() => step(1)} aria-label={t.next}><i className="fa-solid fa-arrow-right" aria-hidden="true" /></button>
                 </div>
               </div>
-              <span className="absolute top-4 right-5 font-pixel text-[11px] text-muted" aria-hidden="true">
-                {String(idx + 1).padStart(2, '0')}/{String(list.length).padStart(2, '0')}
-              </span>
             </article>
           </div>
         </div>

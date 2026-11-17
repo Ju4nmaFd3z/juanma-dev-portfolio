@@ -7,7 +7,7 @@ import * as THREE from 'three';
 let ramp: THREE.DataTexture | null = null;
 
 /** Three hard light bands — the pixel-art "cel" look before dithering. */
-export function toonRamp(): THREE.DataTexture {
+function toonRamp(): THREE.DataTexture {
   if (ramp) return ramp;
   const data = new Uint8Array([70, 70, 70, 255, 150, 150, 150, 255, 255, 255, 255, 255]);
   ramp = new THREE.DataTexture(data, 3, 1, THREE.RGBAFormat);
@@ -107,38 +107,6 @@ export class Kit {
     this.geos.clear();
     this.extra = [];
   }
-}
-
-/** 5×5 bitmap glyphs used to engrave letters as voxels. */
-const FONT: Record<string, string[]> = {
-  J: ['..###', '...#.', '...#.', '#..#.', '.##..'],
-  M: ['#...#', '##.##', '#.#.#', '#...#', '#...#'],
-};
-
-export function bitmapCells(text: string, gap = 1): [number, number][] {
-  const out: [number, number][] = [];
-  let ox = 0;
-  for (const ch of text) {
-    const rows = FONT[ch];
-    if (!rows) { ox += 3; continue; }
-    rows.forEach((row, y) => {
-      [...row].forEach((c, x) => { if (c === '#') out.push([ox + x, 4 - y]); });
-    });
-    ox += 5 + gap;
-  }
-  return out;
-}
-
-/** Deterministic PRNG so every visit builds the same world. */
-export function rng(seed: number) {
-  let s = seed >>> 0;
-  return () => {
-    s = (s + 0x6d2b79f5) >>> 0;
-    let t = s;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 export const damp = (a: number, b: number, lambda: number, dt: number) =>

@@ -17,7 +17,7 @@ import { prefersReducedMotion } from './components/ui';
 import type { ViewerDoc } from './types';
 
 // The assistant is non-essential: load it after first paint, in its own chunk.
-const FloatingAI = lazy(() => import('./components/FloatingAI'));
+const Assistant = lazy(() => import('./components/Assistant'));
 
 const readLang = (): Lang => {
   try {
@@ -25,13 +25,6 @@ const readLang = (): Lang => {
     if (s === 'es' || s === 'en') return s;
   } catch { /* storage blocked */ }
   return navigator.language?.toLowerCase().startsWith('es') ? 'es' : 'en';
-};
-const readTheme = (): 'dark' | 'light' => {
-  try {
-    const s = localStorage.getItem('theme');
-    if (s === 'dark' || s === 'light') return s;
-  } catch { /* storage blocked */ }
-  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 };
 const introSeen = () => {
   try { return sessionStorage.getItem('intro') === '1'; } catch { return false; }
@@ -43,33 +36,24 @@ const SECTION_TO_CHAPTER: Record<string, ChapterId> = {
 
 const App: React.FC = () => {
   const [lang, setLang] = useState<Lang>(readLang);
-  const [theme, setTheme] = useState<'dark' | 'light'>(readTheme);
   const [loading, setLoading] = useState(() => !introSeen() && !prefersReducedMotion());
   const [active, setActive] = useState<ChapterId>('hero');
   const [terminal, setTerminal] = useState(false);
   const [doc, setDoc] = useState<ViewerDoc | null>(null);
   const [webgl, setWebgl] = useState<'pending' | 'on' | 'off'>('pending');
   const [aiReady, setAiReady] = useState(false);
+  const [noteOpen, setNoteOpen] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const terminalRef = useRef(terminal);
   terminalRef.current = terminal;
 
   const t = translations[lang];
+  const flat = webgl === 'off';
 
-  // ── Theme & language ──────────────────────────────────────────
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
-    document.getElementById('theme-meta')?.setAttribute('content', theme === 'dark' ? '#07080f' : '#f2ecdf');
-    bus.theme = theme;
-    try { localStorage.setItem('theme', theme); } catch { /* ignore */ }
-  }, [theme]);
-
+  // ── Language ──────────────────────────────────────────────────
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.title = lang === 'es'
-      ? 'Juanma Fernández · Sistemas, redes y software'
-      : 'Juanma Fernández · Systems, networks & software';
+    document.title = translations[lang].meta.title;
     try { localStorage.setItem('lang', lang); } catch { /* ignore */ }
   }, [lang]);
 
@@ -90,7 +74,12 @@ const App: React.FC = () => {
         if (forced2d || !canUseWebGL() || !canvasRef.current) { fail(); return; }
         const low = window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768 || (navigator.hardwareConcurrency ?? 8) <= 4;
         try {
-          world = new World(canvasRef.current, { reduced: prefersReducedMotion(), low, onFail: fail });
+          world = new World(canvasRef.current, {
+            reduced: prefersReducedMotion(),
+            low,
+            journey: [...translations.es.journey.items].reverse().map((m) => ({ kind: m.kind, year: m.period.match(/\d{4}/)?.[0] ?? '' })),
+            onFail: fail,
+          });
           setWebgl('on');
         } catch (err) {
           console.warn('[world] WebGL unavailable, using fallback', err);
@@ -105,29 +94,64 @@ const App: React.FC = () => {
     document.documentElement.classList.toggle('no-webgl', webgl === 'off');
   }, [webgl]);
 
-  // Intro resolve: when the preloader is gone, the world "resolves" in.
+  // Intro: the hero prints itself in as the loader breaks away (or at once
+  // when there is no loader).
   useEffect(() => {
     if (!loading) {
-      bus.introAt = performance.now();
+      if (!bus.introAt) bus.introAt = performance.now();
       const id = window.setTimeout(() => setAiReady(true), 1500);
       return () => clearTimeout(id);
     }
   }, [loading]);
 
+  const revealIntro = useCallback(() => { bus.introAt = performance.now(); }, []);
   const finishIntro = useCallback(() => {
     try { sessionStorage.setItem('intro', '1'); } catch { /* ignore */ }
     setLoading(false);
   }, []);
 
-  // ── Pointer → world (parallax, dish aim) ──────────────────────
+  // ── Pointer → world (parallax, the lens) ──────────────────────
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse') return;
       bus.px = (e.clientX / window.innerWidth) * 2 - 1;
       bus.py = (e.clientY / window.innerHeight) * 2 - 1;
+      bus.lx = e.clientX;
+      bus.ly = e.clientY;
+      bus.lens = 'hover';
     };
+    // Touch: the lens blooms only on a real tap. A finger that starts a scroll
+    // moves (or the browser cancels the pointer), so it never fires mid-scroll.
+    let down: { x: number; y: number; t: number; id: number } | null = null;
+    const onDown = (e: PointerEvent) => {
+      if (e.pointerType === 'mouse') return;
+      down = { x: e.clientX, y: e.clientY, t: e.timeStamp, id: e.pointerId };
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!down || e.pointerId !== down.id) return;
+      // event timestamps, not handler time: a busy main thread must not turn a tap into a press
+      const still = Math.hypot(e.clientX - down.x, e.clientY - down.y) < 10 && e.timeStamp - down.t < 350;
+      down = null;
+      if (!still) return;
+      bus.lx = e.clientX;
+      bus.ly = e.clientY;
+      bus.lens = 'tap';
+      bus.lensAt = performance.now();
+    };
+    const onCancel = () => { down = null; };
+    const onOut = (e: MouseEvent) => { if (!e.relatedTarget) bus.lens = 'off'; };
     window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
+    window.addEventListener('pointerdown', onDown, { passive: true });
+    window.addEventListener('pointerup', onUp, { passive: true });
+    window.addEventListener('pointercancel', onCancel, { passive: true });
+    document.addEventListener('mouseout', onOut);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onCancel);
+      document.removeEventListener('mouseout', onOut);
+    };
   }, []);
 
   // ── Active chapter for the navigation ─────────────────────────
@@ -142,7 +166,14 @@ const App: React.FC = () => {
       const el = document.querySelector(`[data-chapter="${c}"]`);
       if (el) io.observe(el);
     });
-    return () => io.disconnect();
+    // The last chapter is shorter than the viewport: at the very bottom of the
+    // page its middle line is never crossed, so claim it explicitly.
+    const onScroll = () => {
+      const d = document.documentElement;
+      if (window.scrollY + window.innerHeight >= d.scrollHeight - 8) setActive('contact');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => { io.disconnect(); window.removeEventListener('scroll', onScroll); };
   }, []);
 
   // ── Terminal shortcut ─────────────────────────────────────────
@@ -160,11 +191,10 @@ const App: React.FC = () => {
   }, []);
 
   const openCv = useCallback(() => setDoc(buildCvDoc(lang, t.viewer.cvTitle)), [lang, t.viewer.cvTitle]);
-  const toggleTheme = useCallback(() => setTheme((p) => (p === 'dark' ? 'light' : 'dark')), []);
 
   return (
     <>
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[30000] btn btn-primary">{t.meta.skip}</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[30000] btn btn-solid">{t.meta.skip}</a>
 
       {webgl !== 'off' ? (
         <canvas ref={canvasRef} className="world" aria-hidden="true" />
@@ -172,38 +202,48 @@ const App: React.FC = () => {
         <div className="world-fallback" aria-hidden="true" />
       )}
 
-      {loading && <Preloader t={t.preloader} onDone={finishIntro} />}
+      {loading && <Preloader t={t.preloader} onReveal={revealIntro} onDone={finishIntro} />}
 
       <Navbar
         active={active}
         lang={lang}
         setLang={setLang}
-        theme={theme}
-        toggleTheme={toggleTheme}
         onOpenCv={openCv}
         onOpenTerminal={() => setTerminal(true)}
         t={t.nav}
       />
 
       <main id="main" className="relative z-[1]" aria-hidden={loading || undefined}>
-        <Hero t={t.hero} onOpenCv={openCv} />
-        <About t={t.about} />
+        <Hero t={t.hero} flat={flat} onOpenCv={openCv} />
+        <About t={t.about} flat={flat} />
         <Skills t={t.skills} />
         <Projects t={t.projects} />
         <Journey t={t.journey} onOpenDocument={setDoc} />
-        <Contact t={t.contact} onOpenCv={openCv} cvLabel={t.hero.ctaCv} />
+        <Contact t={t.contact} flat={flat} />
       </main>
 
       <Footer t={t.footer} quote={t.about.quote} />
 
-      {webgl === 'off' && (
-        <p className="fixed bottom-3 left-3 z-[50] max-w-xs panel px-3 py-2 text-xs text-muted" role="note">{t.fallback}</p>
+      {webgl === 'off' && noteOpen && (
+        <div className="fixed bottom-4 left-4 z-[50] max-w-xs panel rounded-xl pl-4 pr-2 py-2 flex items-start gap-2 text-xs text-ink2" role="note">
+          <p className="py-1">{t.fallback}</p>
+          <button type="button" onClick={() => setNoteOpen(false)} className="shrink-0 w-7 h-7 rounded-full grid place-items-center text-muted hover:text-ink" aria-label={t.meta.dismiss}>
+            <i className="fa-solid fa-xmark text-[11px]" aria-hidden="true" />
+          </button>
+        </div>
       )}
 
-      <Terminal isOpen={terminal} onClose={() => setTerminal(false)} lang={lang} />
+      <Terminal
+        isOpen={terminal}
+        onClose={() => setTerminal(false)}
+        lang={lang}
+        t={t}
+        setLang={setLang}
+        onOpenCv={openCv}
+      />
       {aiReady && (
         <Suspense fallback={null}>
-          <FloatingAI lang={lang} />
+          <Assistant lang={lang} onOpenCv={openCv} />
         </Suspense>
       )}
       <DocumentViewer doc={doc} onClose={() => setDoc(null)} labels={t.viewer} />

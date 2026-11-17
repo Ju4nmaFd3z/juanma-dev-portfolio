@@ -1,14 +1,12 @@
 import React, { useRef, useState } from 'react';
 import type { T } from '../translations';
 import { CONTACT } from '../content';
-import { firePulse } from '../engine/bus';
-import { ChapterTag, Decode, ExternalLink, StageFallback, useReveal } from './ui';
-import { ART } from './fallbackArt';
+import { AsciiArt, ExternalLink, Rise, useReveal } from './ui';
 
 interface Props {
   t: T['contact'];
-  onOpenCv: () => void;
-  cvLabel: string;
+  /** WebGL is unavailable: play the piece with ASCII Magic's own 2D player. */
+  flat: boolean;
 }
 
 type Field = 'name' | 'email' | 'message';
@@ -16,7 +14,7 @@ const EMAIL_RE = /^[^\s@<>()[\]\\,;:"]+@[^\s@<>()[\]\\,;:"]+\.[^\s@<>()[\]\\,;:"
 // Strip control characters (except newlines/tabs) before building the mailto URL.
 const clean = (s: string) => s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim();
 
-const Contact: React.FC<Props> = ({ t, onOpenCv, cvLabel }) => {
+const Contact: React.FC<Props> = ({ t, flat }) => {
   const ref = useReveal<HTMLElement>();
   const f = t.form;
   const [values, setValues] = useState<Record<Field, string>>({ name: '', email: '', message: '' });
@@ -54,7 +52,6 @@ const Contact: React.FC<Props> = ({ t, onOpenCv, cvLabel }) => {
     const subject = `${f.subject} — ${name}`;
     const body = `${f.greeting}\n\n${msg}\n\n— ${name}\n${f.signature} ${email}`;
     setStatus('opening');
-    firePulse();
     window.location.href = `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.setTimeout(() => setStatus('done'), 700);
   };
@@ -70,129 +67,128 @@ const Contact: React.FC<Props> = ({ t, onOpenCv, cvLabel }) => {
   };
 
   const copyBtn = (text: string, id: string, label: string) => (
-    <button type="button" onClick={() => copy(text, id)} className="icon-btn !w-10 !h-10 shrink-0" aria-label={`${t.copy}: ${label}`}>
+    <button type="button" onClick={() => copy(text, id)} className="icon-btn shrink-0" aria-label={`${t.copy}: ${label}`}>
       <i className={`fa-solid ${copied === id ? 'fa-check' : copied === `fail-${id}` ? 'fa-xmark' : 'fa-copy'}`} aria-hidden="true" />
     </button>
   );
 
   const errCount = Object.values(errors).filter(Boolean).length;
 
-  return (
-    <section ref={ref} id="contact" data-chapter="contact" aria-labelledby="contact-title" className="chapter pt-20 lg:pt-32 pb-16">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 grid lg:grid-cols-12 gap-10 lg:gap-10">
-        <div className="lg:col-span-5">
-          <ChapterTag n={6} label={t.chapter} />
-          <h2 id="contact-title" className="display mt-6 text-[clamp(2.6rem,6vw,5rem)] text-ink">
-            <span className="block reveal">{t.title1}</span>
-            <Decode text={t.title2} className="block text-accentText reveal" />
-          </h2>
-          <p className="mt-6 text-lg text-ink2 leading-relaxed max-w-[48ch] reveal">{t.subtitle}</p>
+  const errText = 'mt-1.5 text-sm text-[#e5484d]';
 
-          <h3 className="eyebrow mt-10 mb-3 reveal">{t.channels}</h3>
-          <ul className="border-t border-lineStrong reveal">
-            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
-              <i className="fa-solid fa-envelope w-5 text-accentText" aria-hidden="true" />
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.email}</p>
-                <a href={`mailto:${CONTACT.email}`} className="text-ink break-all link-u">{CONTACT.email}</a>
-              </div>
-              {copyBtn(CONTACT.email, 'email', t.email)}
-            </li>
-            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
-              <i className="fa-solid fa-phone w-5 text-accentText" aria-hidden="true" />
-              <div className="min-w-0 flex-1">
-                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.phone}</p>
-                <a href={CONTACT.phoneHref} className="text-ink link-u">{CONTACT.phoneDisplay}</a>
-              </div>
-              <ExternalLink href={CONTACT.whatsapp} className="icon-btn !w-10 !h-10" aria-label={t.whatsapp}>
-                <i className="fa-brands fa-whatsapp" aria-hidden="true" />
-              </ExternalLink>
-              {copyBtn('+34643718054', 'tel', t.phone)}
-            </li>
-            <li className="flex items-center gap-3 py-3 border-b border-lineStrong">
-              <i className="fa-solid fa-location-dot w-5 text-accentText" aria-hidden="true" />
-              <div className="flex-1">
-                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{t.location}</p>
-                <p className="text-ink">{t.place}</p>
-              </div>
-            </li>
-          </ul>
-          <div className="mt-6 flex flex-wrap gap-2 reveal">
-            <ExternalLink href={CONTACT.linkedin} className="btn"><i className="fa-brands fa-linkedin-in" aria-hidden="true" />LinkedIn</ExternalLink>
-            <ExternalLink href={CONTACT.github} className="btn"><i className="fa-brands fa-github" aria-hidden="true" />GitHub</ExternalLink>
-            <button type="button" onClick={onOpenCv} className="btn btn-ghost"><i className="fa-solid fa-file-lines" aria-hidden="true" />{cvLabel}</button>
+  return (
+    <section ref={ref} id="contact" data-chapter="contact" aria-labelledby="contact-title" className="chapter relative pb-24">
+      <div data-stage role="img" aria-label={t.visualLabel} className="stage absolute top-0 inset-x-0 h-[100svh] min-h-[640px]">
+        {flat && (
+          <div className="flat-plate justify-center" aria-hidden="true">
+            <AsciiArt piece="cliff-village-sea" size={6} label={t.visualLabel} />
+          </div>
+        )}
+      </div>
+
+      <div className="relative max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 min-h-[100svh] flex flex-col justify-end pt-28 pb-16">
+        <h2 id="contact-title" data-calm className="w-fit display text-[clamp(3.8rem,11.5vw,12rem)] text-ink">
+          <Rise text={t.title1} />
+          <Rise text={t.title2} delay={100} className="sm:pl-[0.8em]" />
+        </h2>
+        <div data-calm className="mt-8 w-fit max-w-full reveal">
+          <p className="lede max-w-[40ch]">{t.subtitle}</p>
+          <div className="mt-5 flex items-center gap-3 min-w-0">
+            <a href={`mailto:${CONTACT.email}`} className="display text-[clamp(1.8rem,4vw,3.4rem)] leading-none text-ink break-all ulink hover:text-accentText transition-colors">{CONTACT.email}</a>
+            {copyBtn(CONTACT.email, 'email', t.email)}
           </div>
         </div>
+      </div>
 
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          <div data-stage role="img" aria-label={t.visualLabel} className="stage h-[40svh] min-h-[260px] lg:h-[54vh] order-first lg:order-none">
-            <StageFallback art={ART.contact} />
+      <div className="relative max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 grid lg:grid-cols-12 gap-x-10 gap-y-10">
+        <ul className="lg:col-span-4 border-t border-lineStrong self-start reveal">
+          <li className="flex items-center gap-3 py-4 border-b border-line">
+            <span className="label w-24 shrink-0">{t.phone}</span>
+            <a href={CONTACT.phoneHref} className="flex-1 text-ink ulink whitespace-nowrap">{CONTACT.phoneDisplay}</a>
+            <ExternalLink href={CONTACT.whatsapp} className="icon-btn" aria-label={t.whatsapp}>
+              <i className="fa-brands fa-whatsapp" aria-hidden="true" />
+            </ExternalLink>
+            {copyBtn('+34643718054', 'tel', t.phone)}
+          </li>
+          <li className="flex items-center gap-3 py-4 border-b border-line">
+            <span className="label w-24 shrink-0">LinkedIn</span>
+            <ExternalLink href={CONTACT.linkedin} className="flex-1 text-ink ulink">Juanma Fernández ↗</ExternalLink>
+          </li>
+          <li className="flex items-center gap-3 py-4 border-b border-line">
+            <span className="label w-24 shrink-0">GitHub</span>
+            <ExternalLink href={CONTACT.github} className="flex-1 text-ink ulink">Ju4nmaFd3z ↗</ExternalLink>
+          </li>
+        </ul>
+
+        <div className="lg:col-span-8 panel rounded-2xl p-5 sm:p-8 reveal">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
+            <h3 className="display text-[2.4rem] text-ink">{f.title}</h3>
+            <p className="caption max-w-[44ch]">{f.note}</p>
           </div>
 
-          <div className="panel px-frame p-5 sm:p-8 reveal">
-            <h3 className="font-display text-2xl font-semibold text-ink">{f.title}</h3>
-            <p className="mt-1 text-sm text-muted">{f.note}</p>
-
-            {status === 'done' ? (
-              <div className="mt-6" role="status">
+          {status === 'done' ? (
+            <div className="mt-6 grid sm:grid-cols-[auto_1fr] gap-6 items-center" role="status">
+              <div className="overflow-hidden rounded-xl border border-line p-2 flex justify-center">
+                <AsciiArt piece="paper-plane-loop" size={5} label={f.doneArt} />
+              </div>
+              <div>
                 <p className="text-ink2 leading-relaxed">
-                  <i className="fa-solid fa-paper-plane text-accentText mr-2" aria-hidden="true" />
-                  {f.done} <a href={`mailto:${CONTACT.email}`} className="text-ink link-u">{CONTACT.email}</a>.
+                  {f.done} <a href={`mailto:${CONTACT.email}`} className="text-ink ulink">{CONTACT.email}</a>.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
-                  <button type="button" className="btn" onClick={() => copy(CONTACT.email, 'email2')}>
+                  <button type="button" className="btn btn-sm" onClick={() => copy(CONTACT.email, 'email2')}>
                     <i className={`fa-solid ${copied === 'email2' ? 'fa-check' : 'fa-copy'}`} aria-hidden="true" />
                     {copied === 'email2' ? t.copied : t.copy}
                   </button>
-                  <button type="button" className="btn btn-ghost" onClick={() => { setStatus('idle'); setValues({ name: '', email: '', message: '' }); }}>
+                  <button type="button" className="btn btn-sm" onClick={() => { setStatus('idle'); setValues({ name: '', email: '', message: '' }); }}>
                     {f.again}
                   </button>
                 </div>
               </div>
-            ) : (
-              <form className="mt-6 grid gap-5" onSubmit={submit} noValidate>
-                <p className="sr-only" aria-live="assertive">{errCount ? f.errors.summary : ''}</p>
-                <div className="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label htmlFor="cf-name" className="block font-mono text-[11px] uppercase tracking-wider text-ink2 mb-2">{f.name}</label>
-                    <input
-                      id="cf-name" ref={(el) => { inputs.current.name = el; }} type="text" autoComplete="name" maxLength={80}
-                      value={values.name} onChange={onChange('name')} onBlur={onBlur('name')} placeholder={f.placeholderName}
-                      aria-invalid={!!errors.name} aria-describedby={errors.name ? 'cf-name-err' : undefined} className="field" required
-                    />
-                    {errors.name && <p id="cf-name-err" className="mt-1.5 text-sm text-coral">{errors.name}</p>}
-                  </div>
-                  <div>
-                    <label htmlFor="cf-email" className="block font-mono text-[11px] uppercase tracking-wider text-ink2 mb-2">{f.email}</label>
-                    <input
-                      id="cf-email" ref={(el) => { inputs.current.email = el; }} type="email" autoComplete="email" inputMode="email" maxLength={254}
-                      value={values.email} onChange={onChange('email')} onBlur={onBlur('email')} placeholder={f.placeholderEmail}
-                      aria-invalid={!!errors.email} aria-describedby={errors.email ? 'cf-email-err' : undefined} className="field" required
-                    />
-                    {errors.email && <p id="cf-email-err" className="mt-1.5 text-sm text-coral">{errors.email}</p>}
-                  </div>
-                </div>
+            </div>
+          ) : (
+            <form className="mt-4 grid gap-6" onSubmit={submit} noValidate>
+              <p className="sr-only" aria-live="assertive">{errCount ? f.errors.summary : ''}</p>
+              <div className="grid sm:grid-cols-2 gap-6">
                 <div>
-                  <div className="flex justify-between items-baseline mb-2">
-                    <label htmlFor="cf-msg" className="block font-mono text-[11px] uppercase tracking-wider text-ink2">{f.message}</label>
-                    <span className="font-mono text-[11px] text-muted tabular-nums" aria-hidden="true">{values.message.length}/2000</span>
-                  </div>
-                  <textarea
-                    id="cf-msg" ref={(el) => { inputs.current.message = el; }} rows={5} maxLength={2000}
-                    value={values.message} onChange={onChange('message')} onBlur={onBlur('message')} placeholder={f.placeholderMsg}
-                    aria-invalid={!!errors.message} aria-describedby={errors.message ? 'cf-msg-err' : undefined} className="field resize-y min-h-[140px]" required
+                  <label htmlFor="cf-name" className="block label label-ink mb-1">{f.name}</label>
+                  <input
+                    id="cf-name" ref={(el) => { inputs.current.name = el; }} type="text" autoComplete="name" maxLength={80}
+                    value={values.name} onChange={onChange('name')} onBlur={onBlur('name')} placeholder={f.placeholderName}
+                    aria-invalid={!!errors.name} aria-describedby={errors.name ? 'cf-name-err' : undefined} className="field" required
                   />
-                  {errors.message && <p id="cf-msg-err" className="mt-1.5 text-sm text-coral">{errors.message}</p>}
+                  {errors.name && <p id="cf-name-err" className={errText}>{errors.name}</p>}
                 </div>
                 <div>
-                  <button type="submit" className="btn btn-primary" disabled={status === 'opening'}>
-                    {status === 'opening' ? f.opening : f.submit}
-                    <i className={`fa-solid ${status === 'opening' ? 'fa-spinner fa-spin' : 'fa-paper-plane'}`} aria-hidden="true" />
-                  </button>
+                  <label htmlFor="cf-email" className="block label label-ink mb-1">{f.email}</label>
+                  <input
+                    id="cf-email" ref={(el) => { inputs.current.email = el; }} type="email" autoComplete="email" inputMode="email" maxLength={254}
+                    value={values.email} onChange={onChange('email')} onBlur={onBlur('email')} placeholder={f.placeholderEmail}
+                    aria-invalid={!!errors.email} aria-describedby={errors.email ? 'cf-email-err' : undefined} className="field" required
+                  />
+                  {errors.email && <p id="cf-email-err" className={errText}>{errors.email}</p>}
                 </div>
-              </form>
-            )}
-          </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-baseline">
+                  <label htmlFor="cf-msg" className="block label label-ink mb-1">{f.message}</label>
+                  <span className="label tabular-nums" aria-hidden="true">{values.message.length}/2000</span>
+                </div>
+                <textarea
+                  id="cf-msg" ref={(el) => { inputs.current.message = el; }} rows={4} maxLength={2000}
+                  value={values.message} onChange={onChange('message')} onBlur={onBlur('message')} placeholder={f.placeholderMsg}
+                  aria-invalid={!!errors.message} aria-describedby={errors.message ? 'cf-msg-err' : undefined} className="field" required
+                />
+                {errors.message && <p id="cf-msg-err" className={errText}>{errors.message}</p>}
+              </div>
+              <div>
+                <button type="submit" className="btn btn-accent" disabled={status === 'opening'}>
+                  {status === 'opening' ? f.opening : f.submit}
+                  <i className={`fa-solid ${status === 'opening' ? 'fa-spinner fa-spin' : 'fa-arrow-right arrow'}`} aria-hidden="true" />
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </section>
